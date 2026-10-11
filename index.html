@@ -1,0 +1,1957 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أسرة الانبا ارسانيوس والقديس نيقولاوس لوسائل الايضاح</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+        
+        /* الوضع النهاري - Day Mode */
+        :root {
+            --bg-color: #f7f1e7;
+            --text-color: #493521;
+            --card-bg: linear-gradient(135deg, #fffaf0 0%, #f0e2c8 100%);
+            --card-text-color: #493521;
+            --header-bg: linear-gradient(135deg, #a97c42 0%, #d4b16d 100%);
+            --header-text: #ffffff;
+            --accent-color: #ad813f;
+            --button-primary-bg: linear-gradient(135deg, #936b36 0%, #6f4b27 100%);
+            --button-primary-hover: linear-gradient(135deg, #79572f 0%, #56391f 100%);
+        }
+
+        /* الوضع الليلي - Night Mode */
+        .dark {
+            --bg-color: #211912;
+            --text-color: #f2e7d4;
+            --card-bg: linear-gradient(135deg, #3a2a1d 0%, #2b1e15 100%);
+            --card-text-color: #f0d28a;
+            --header-bg: linear-gradient(135deg, #332317 0%, #76542c 100%);
+            --header-text: #ffffff;
+            --accent-color: #d7ad5c;
+            --button-primary-bg: linear-gradient(135deg, #bd9148 0%, #89612e 100%);
+            --button-primary-hover: linear-gradient(135deg, #d0a653 0%, #a67838 100%);
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease;
+            direction: inherit;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Floating Coptic Symbols */
+        .floating-symbols {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .symbol {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+            user-select: none;
+        }
+        
+        .symbol.cross { color: #c9a227; }
+        .symbol.fish { color: #d7ad5c; }
+        .symbol.lamb { color: #ef4444; }
+        .symbol.book { color: #10b981; }
+        .symbol.censer { color: #f59e0b; }
+        .symbol.coptic { color: #a97c42; font-family: serif; }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(10vw, 25vh) rotate(90deg);
+            }
+            50% {
+                transform: translate(20vw, 10vh) rotate(180deg);
+            }
+            75% {
+                transform: translate(5vw, 30vh) rotate(270deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+        
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg); color: var(--text-color); border-radius: 1.5rem;
+            padding: 2.5rem; width: 90%; max-width: 600px; max-height: 90vh; text-align: center;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2); overflow-y: auto; animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quick-add-list { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+        .quick-add-item { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.75rem;
+            background-color: var(--bg-color); border-radius: 0.75rem; transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .quick-add-item:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); }
+
+        .person-card-container { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+
+        .person-card {
+            background: var(--card-bg);
+            color: var(--card-text-color);
+            border-radius: 1.5rem; padding: 2rem; text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .person-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: -1;
+            margin: -2px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, #6f4b27, #d7ad5c, #f0d28a);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .person-card:hover::before {
+            opacity: 1;
+        }
+
+        .person-card h3 { color: var(--card-text-color); }
+        .person-card .mt-4 { color: var(--card-text-color); }
+
+        .person-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); }
+
+        .avatar {
+            width: 96px; height: 96px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 3rem; font-weight: bold; color: white; margin-bottom: 1rem; 
+            background: linear-gradient(135deg, #6f4b27, #bd9148, #e2c17d);
+            transition: all 0.3s ease-in-out; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .avatar:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Attendance Box Styling */
+        .attendance-box {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: inherit;
+            padding: 1.5rem; border-radius: 1rem; font-size: 2.5rem; font-weight: bold;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            margin-top: 1.5rem; transition: background-color 0.3s ease; min-width: 150px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .attendance-box span:first-child { font-size: 2.5rem; }
+        .attendance-box span:last-child { font-size: 1rem; font-weight: normal; margin-top: 0.25rem;}
+        
+        /* Specific colors for Attendance */
+        .attendance-box.perfect { 
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white; 
+        }
+        .attendance-box.absent-critical { 
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white; 
+        }
+
+        /* Specific colors for Tasks */
+        .task-box {
+            background: linear-gradient(135deg, #a7f3d0, #6ee7b7);
+            color: #065f46;
+            margin-top: 1rem;
+        }
+        .task-box.low-ratio {
+            background: linear-gradient(135deg, #fca5a5, #f87171);
+            color: #991b1b;
+        }
+
+        .attendance-text { font-size: 1rem; font-weight: normal; }
+
+        .history-list li, .day-details-list li { 
+            padding: 0.75rem; border-radius: 0.75rem; transition: all 0.2s ease-in-out; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .history-list li.present { background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
+        .history-list li.absent { background: linear-gradient(135deg, #fee2e2, #fecaca); }
+        /* Task history status colors */
+        .history-list li.task-completed { background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
+        .history-list li.task-pending { background: linear-gradient(135deg, #fffbeb, #fef3c7); }
+        .history-list li.task-in-progress { background: linear-gradient(135deg, #dbeafe, #93c5fd); }
+        .history-list li.task-not-completed { background: linear-gradient(135deg, #fee2e2, #fecaca); }
+
+        .dark .history-list li.present, .dark .history-list li.task-completed { background: linear-gradient(135deg, #064e3b, #065f46); }
+        .dark .history-list li.absent { background: linear-gradient(135deg, #7f1d1d, #991b1b); }
+        .dark .history-list li.task-pending { background: linear-gradient(135deg, #78350f, #92400e); }
+        .dark .history-list li.task-in-progress { background: linear-gradient(135deg, #1e3a8a, #1e40af); }
+        .dark .history-list li.task-not-completed { background: linear-gradient(135deg, #7f1d1d, #991b1b); }
+        
+        .logo-container {
+            position: relative; width: 120px; height: 120px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; 
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); animation: pulse 2s infinite;
+            overflow: hidden;
+        }
+
+        @keyframes pulse { 
+            0% { transform: scale(1); } 
+            50% { transform: scale(1.05); } 
+            100% { transform: scale(1); } 
+        }
+        
+        .logo-container img { 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 50%; 
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo-container:hover img {
+            transform: scale(1.1);
+        }
+        
+        .connection-dot { 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            background-color: #ef4444; 
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px #ef4444;
+        }
+        .connection-dot.online { 
+            background-color: #10b981; 
+            box-shadow: 0 0 10px #10b981;
+            animation: pulse-dot 2s infinite;
+        }
+        
+        @keyframes pulse-dot {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%;
+            border-left-color: var(--accent-color); animation: spin 1s ease infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #personCardsContainer { min-height: 200px; }
+
+        .days-list { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+        .day-item {
+            background: var(--card-bg); border-radius: 1rem; padding: 1.5rem;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); transition: all 0.2s ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            flex-direction: column;
+        }
+        @media (min-width: 640px) {
+            .day-item { flex-direction: row; align-items: center; }
+        }
+        .day-item:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); }
+        .day-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+        @media (min-width: 640px) { .day-actions { margin-top: 0; } }
+        
+        .day-action-btn { 
+            padding: 0.5rem; 
+            border-radius: 0.5rem; 
+            cursor: pointer; 
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .day-action-btn:hover { 
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+        .form-input {
+            width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #9ca3af;
+            background-color: var(--bg-color); color: var(--text-color);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-input:focus { 
+            outline: none; 
+            border-color: var(--accent-color); 
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.5); 
+        }
+        .dark .form-input { border: 1px solid #4b5563; }
+        
+        /* Task status styling for the list */
+        .task-status-completed { color: #10b981; }
+        .task-status-pending { color: #f59e0b; }
+        .task-status-in-progress { color: #3b82f6; }
+        .task-status-not-completed { color: #ef4444; }
+        
+        /* Task status circles */
+        .task-status-circles {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .status-circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        
+        .status-circle:hover {
+            transform: scale(1.2);
+        }
+        
+        .status-circle.pending {
+            background-color: #f59e0b;
+        }
+        
+        .status-circle.in-progress {
+            background-color: #3b82f6;
+        }
+        
+        .status-circle.completed {
+            background-color: #10b981;
+        }
+        
+        .status-circle.active {
+            border: 2px solid #000;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+        
+        .dark .status-circle.active {
+            border: 2px solid #fff;
+            box-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+        
+        /* Button styles with gradients */
+        .btn-primary {
+            background: var(--button-primary-bg);
+            color: white;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary:hover {
+            background: var(--button-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #4b5563, #374151);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Person Tag in Task List */
+        .person-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            margin-left: 4px;
+            margin-bottom: 4px;
+        }
+        .dark .person-tag {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .language-toggle {
+            width: 42px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            font-size: 1.45rem;
+            line-height: 1;
+        }
+        .ltr .text-right { text-align: left; }
+        .ltr .text-left { text-align: right; }
+    </style>
+</head>
+<body class="transition-colors duration-300">
+
+    <!-- Floating Coptic Symbols -->
+    <div class="floating-symbols" id="floatingSymbols"></div>
+
+    <div id="customAlertModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle" class="text-xl font-bold mb-4"></h2>
+            <p id="modalMessage" class="text-md mb-6"></p>
+            <div class="modal-buttons">
+                <button id="modalOkBtn" class="btn-primary">حسناً</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="customConfirmModal" class="modal">
+        <div class="modal-content">
+            <h2 id="confirmTitle" class="text-xl font-bold mb-4">تأكيد</h2>
+            <p id="confirmMessage" class="text-md mb-6">هل أنت متأكد من حذف هذا الشخص؟</p>
+            <div class="modal-buttons flex justify-center gap-4">
+                <button id="confirmYesBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200">نعم</button>
+                <button id="confirmNoBtn" class="btn-secondary">لا</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="quickAddModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-6">إضافة سريعة ليوم جديد</h2>
+            <div class="mb-4 text-right">
+                <label for="dayNameInput" class="block mb-2 font-semibold">اسم اليوم (اختياري)</label>
+                <input type="text" id="dayNameInput" class="form-input" placeholder="مثال: اجتماع الخدام">
+            </div>
+            <p class="text-sm mb-6 text-right">حدد الأشخاص الحاضرين لهذا اليوم.</p>
+            <div id="quickAddList" class="quick-add-list mb-6"></div>
+            <div class="flex justify-end gap-4">
+                <button id="quickAddConfirmBtn" class="btn-primary">إضافة</button>
+                <button id="quickAddCancelBtn" class="btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="addTaskModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-6">إضافة مهمة جديدة</h2>
+            <div class="mb-4 text-right">
+                <label for="taskDescriptionInput" class="block mb-2 font-semibold">وصف المهمة</label>
+                <input type="text" id="taskDescriptionInput" class="form-input" placeholder="مثال: شراء 15 شارة لمارمينا" required>
+            </div>
+            <div class="mb-4 text-right">
+                <label for="taskDateInput" class="block mb-2 font-semibold">تاريخ الاستحقاق</label>
+                <input type="date" id="taskDateInput" class="form-input" required>
+            </div>
+            <div class="mb-6 text-right">
+                <label class="block mb-2 font-semibold">تعيين لـ (اختر شخصاً أو أكثر):</label>
+                <div id="taskPeopleList" class="quick-add-list" style="max-height: 200px; overflow-y: auto; padding: 10px; border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem;"></div>
+            </div>
+            <div class="flex justify-end gap-4">
+                <button id="addTaskConfirmBtn" class="btn-primary">إضافة</button>
+                <button id="addTaskCancelBtn" class="btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="editTaskModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-6">تعديل المهمة</h2>
+            <p class="text-sm mb-4 text-gray-500 dark:text-gray-400">تنبيه: تعديل الحالة أو الوصف سيطبق على جميع الأشخاص المشاركين في هذه المهمة.</p>
+            <input type="hidden" id="editTaskId">
+            <div class="mb-4 text-right">
+                <label for="editTaskDescriptionInput" class="block mb-2 font-semibold">وصف المهمة</label>
+                <input type="text" id="editTaskDescriptionInput" class="form-input" required>
+            </div>
+            <div class="mb-4 text-right">
+                <label for="editTaskDateInput" class="block mb-2 font-semibold">تاريخ الاستحقاق</label>
+                <input type="date" id="editTaskDateInput" class="form-input" required>
+            </div>
+            <div class="mb-6 text-right">
+                <label for="editTaskStatus" class="block mb-2 font-semibold">الحالة (للجميع)</label>
+                <select id="editTaskStatus" class="form-input">
+                    <option value="pending">قيد الانتظار</option>
+                    <option value="in-progress">قيد التنفيذ</option>
+                    <option value="completed">منجزة</option>
+                    <option value="not-completed">لم يتم إنجازها</option>
+                </select>
+            </div>
+            <div class="flex justify-end gap-4">
+                <button id="editTaskSaveBtn" class="btn-primary">حفظ</button>
+                <button id="editTaskCancelBtn" class="btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="editDayModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-6">تعديل اليوم وإضافة حضور</h2>
+            <div class="mb-4 text-right">
+                <label for="editDayNameInput" class="block mb-2 font-semibold">اسم اليوم (اختياري)</label>
+                <input type="text" id="editDayNameInput" class="form-input" placeholder="مثال: اجتماع الخدام">
+            </div>
+            <div class="mb-6 text-right">
+                <label for="editDateInput" class="block mb-2 font-semibold">التاريخ</label>
+                <input type="date" id="editDateInput" class="form-input">
+            </div>
+            <div class="mb-4 text-right border-t border-gray-200 dark:border-gray-700 pt-4">
+                <label class="block mb-2 font-semibold">إضافة أشخاص لم يتم تسجيل حضورهم:</label>
+                <p class="text-xs text-gray-500 mb-2">القائمة التالية تحتوي فقط على الأشخاص الغائبين في هذا اليوم.</p>
+                <div id="editDayAddList" class="quick-add-list" style="max-height: 150px; overflow-y: auto;">
+                    <!-- Checkboxes will be rendered here -->
+                </div>
+            </div>
+            <div class="flex justify-end gap-4 mt-4">
+                <button id="editDaySaveBtn" class="btn-primary">حفظ وتحديث</button>
+                <button id="editDayCancelBtn" class="btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="personHistoryModal" class="modal">
+        <div class="modal-content">
+            <h2 id="personHistoryTitle" class="text-2xl font-bold mb-6">تاريخ الحضور لـ</h2>
+            <ul id="personHistoryList" class="history-list space-y-2 text-right"></ul>
+        </div>
+    </div>
+    
+    <div id="editNameModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-6">تعديل اسم الشخص</h2>
+            <input type="text" id="editNameInput" dir="auto" class="form-input mb-6" placeholder="أدخل الاسم الجديد">
+            <div class="flex justify-end gap-4">
+                <button id="editNameSaveBtn" class="btn-primary">حفظ</button>
+                <button id="editNameCancelBtn" class="btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dayDetailsModal" class="modal">
+        <div class="modal-content">
+            <h2 id="dayDetailsTitle" class="text-2xl font-bold mb-6">تفاصيل الحضور ليوم</h2>
+            <ul id="dayDetailsList" class="day-details-list space-y-2 text-right"></ul>
+        </div>
+    </div>
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="flex flex-col items-center p-6 mb-8 text-white rounded-3xl shadow-lg" style="background: var(--header-bg)">
+            <h1 class="text-3xl font-bold mb-4 text-center">أسرة الانبا ارسانيوس والقديس نيقولاوس لوسائل الايضاح</h1>
+            <div class="flex items-center justify-between w-full max-w-2xl relative">
+                <div class="flex items-center gap-2">
+                    <div id="connectionStatus" class="connection-dot"></div>
+                    <span id="connectionText" class="text-sm">جاري الاتصال...</span>
+                </div>
+
+                <div class="logo-container">
+                    <img src="logo.png" alt="Family Logo" onerror="this.onerror=null; this.src='https://placehold.co/120x120/a770ef/ffffff?text=شعار العائلة'">
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <button id="languageToggleBtn" class="language-toggle hover:bg-white/20 transition-colors duration-200" type="button" aria-label="Switch language">🇪🇬</button>
+                    <button id="themeToggleBtn" class="p-2 rounded-full hover:bg-white/20 transition-colors duration-200" type="button" aria-label="Toggle theme">
+                        <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                        <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="w-full p-6 rounded-3xl shadow-lg flex flex-col mb-8" style="background: var(--card-bg);">
+                <h2 class="text-2xl font-bold mb-6" style="color: var(--card-text-color);">الحضور والمهام وإضافة أشخاص</h2>
+                <div class="flex flex-col gap-4">
+                    <div class="grid grid-cols-2 gap-4"> 
+                        <button id="quickAddBtn" class="btn-primary">
+                            الحضور السريع ⚡
+                        </button>
+                        <button id="addTaskBtn" class="btn-primary" style="background: linear-gradient(135deg, #bd9148, #89612e);">
+                             إضافة مهمة 📝
+                        </button>
+                    </div>
+                    <div class="flex-grow w-full">
+                        <div class="flex gap-2 w-full">
+                            <input type="text" id="personNameInput" dir="auto" class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 text-gray-800" placeholder="أدخل اسم شخص جديد">
+                            <button id="addPersonBtn" class="btn-primary" style="background: linear-gradient(135deg, #8c6635, #5f4226);">
+                                إضافة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="personCardsContainer" class="person-card-container"></div>
+            
+            <div id="loadingIndicator" class="text-center mt-8 text-lg">
+                <div class="flex justify-center items-center gap-4">
+                    <div class="spinner"></div>
+                    <p>جاري تحميل البيانات...</p>
+                </div>
+            </div>
+            <div id="noDataMessage" class="text-center mt-8 text-gray-500 hidden">
+                <p>لا يوجد أشخاص مضافة بعد. استخدم الحقل أعلاه لإضافة أول شخص.</p>
+            </div>
+            <div id="connectionError" class="text-center mt-8 text-red-500 hidden">
+                <p>فشل في الاتصال بالسيرفر. يرجى التأكد من أن السيرفر يعمل بشكل صحيح.</p>
+            </div>
+
+            <div class="w-full p-6 rounded-3xl shadow-lg flex flex-col mb-8 mt-8" style="background: var(--card-bg);">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2" style="color: var(--card-text-color);">
+                    <span>قائمة الأيام المسجلة</span>
+                    <span class="text-lg">📃</span>
+                </h2>
+                <div id="daysListContainer" class="days-list"></div>
+                <div id="daysLoadingIndicator" class="text-center mt-4 text-lg hidden">
+                    <div class="flex justify-center items-center gap-4">
+                        <div class="spinner"></div>
+                        <p>جاري تحميل قائمة الأيام...</p>
+                    </div>
+                </div>
+                <div id="noDaysMessage" class="text-center mt-4 text-gray-500 hidden">
+                    <p>لا توجد أيام مسجلة بعد.</p>
+                </div>
+            </div>
+
+            <div class="w-full p-6 rounded-3xl shadow-lg flex flex-col mb-8 mt-8" style="background: var(--card-bg);">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2" style="color: var(--card-text-color);">
+                    <span>قائمة المهام</span>
+                    <span class="text-lg">📋</span>
+                </h2>
+                <div id="tasksListContainer" class="days-list"></div>
+                <div id="tasksLoadingIndicator" class="text-center mt-4 text-lg hidden">
+                    <div class="flex justify-center items-center gap-4">
+                        <div class="spinner"></div>
+                        <p>جاري تحميل قائمة المهام...</p>
+                    </div>
+                </div>
+                <div id="noTasksMessage" class="text-center mt-4 text-gray-500 hidden">
+                    <p>لا توجد مهام مسجلة بعد.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // API endpoint for the Node.js server
+        const API_URL = 'http://localhost:3000/api';
+        
+        // UI elements
+        const personNameInput = document.getElementById('personNameInput');
+        const addPersonBtn = document.getElementById('addPersonBtn');
+        const quickAddBtn = document.getElementById('quickAddBtn');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const personCardsContainer = document.getElementById('personCardsContainer');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const noDataMessage = document.getElementById('noDataMessage');
+        const connectionError = document.getElementById('connectionError');
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const languageToggleBtn = document.getElementById('languageToggleBtn');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+        const connectionStatusDot = document.getElementById('connectionStatus');
+        const connectionStatusText = document.getElementById('connectionText');
+        const floatingSymbolsContainer = document.getElementById('floatingSymbols');
+        
+        // Modals
+        const quickAddModal = document.getElementById('quickAddModal');
+        const quickAddList = document.getElementById('quickAddList');
+        const dayNameInput = document.getElementById('dayNameInput');
+        const quickAddConfirmBtn = document.getElementById('quickAddConfirmBtn');
+        const quickAddCancelBtn = document.getElementById('quickAddCancelBtn');
+        
+        const editNameModal = document.getElementById('editNameModal');
+        const editNameInput = document.getElementById('editNameInput');
+        const editNameSaveBtn = document.getElementById('editNameSaveBtn');
+        const editNameCancelBtn = document.getElementById('editNameCancelBtn');
+
+        const editDayModal = document.getElementById('editDayModal');
+        const editDayNameInput = document.getElementById('editDayNameInput');
+        const editDateInput = document.getElementById('editDateInput');
+        const editDayAddList = document.getElementById('editDayAddList'); // New element
+        const editDaySaveBtn = document.getElementById('editDaySaveBtn');
+        const editDayCancelBtn = document.getElementById('editDayCancelBtn');
+        
+        const personHistoryModal = document.getElementById('personHistoryModal');
+        const personHistoryTitle = document.getElementById('personHistoryTitle');
+        const personHistoryList = document.getElementById('personHistoryList');
+        
+        const dayDetailsModal = document.getElementById('dayDetailsModal');
+        const dayDetailsTitle = document.getElementById('dayDetailsTitle');
+        const dayDetailsList = document.getElementById('dayDetailsList');
+        
+        const daysListContainer = document.getElementById('daysListContainer');
+        const daysLoadingIndicator = document.getElementById('daysLoadingIndicator');
+        const noDaysMessage = document.getElementById('noDaysMessage');
+
+        // Task UI Elements
+        const addTaskModal = document.getElementById('addTaskModal');
+        const taskDescriptionInput = document.getElementById('taskDescriptionInput');
+        const taskDateInput = document.getElementById('taskDateInput');
+        const taskPeopleList = document.getElementById('taskPeopleList'); // New element for multi-select
+        const addTaskConfirmBtn = document.getElementById('addTaskConfirmBtn');
+        const addTaskCancelBtn = document.getElementById('addTaskCancelBtn');
+        
+        const editTaskModal = document.getElementById('editTaskModal');
+        const editTaskId = document.getElementById('editTaskId');
+        const editTaskDescriptionInput = document.getElementById('editTaskDescriptionInput');
+        const editTaskDateInput = document.getElementById('editTaskDateInput');
+        const editTaskStatus = document.getElementById('editTaskStatus');
+        const editTaskSaveBtn = document.getElementById('editTaskSaveBtn');
+        const editTaskCancelBtn = document.getElementById('editTaskCancelBtn');
+        
+        const tasksListContainer = document.getElementById('tasksListContainer');
+        const tasksLoadingIndicator = document.getElementById('tasksLoadingIndicator');
+        const noTasksMessage = document.getElementById('noTasksMessage');
+
+        let currentEditingPersonId = null;
+        let currentEditingDay = null;
+        let currentPersonTasks = []; 
+        let currentLanguage = localStorage.getItem('language') === 'en' ? 'en' : 'ar';
+
+        const translations = {
+            'أسرة الانبا ارسانيوس والقديس نيقولاوس لوسائل الايضاح': 'St. Arsenius and St. Nicholas Family',
+            'الحضور والمهام وإضافة أشخاص': 'Attendance, Tasks & People',
+            'جاري الاتصال...': 'Connecting...', 'متصل': 'Connected', 'غير متصل': 'Disconnected',
+            'الحضور السريع ⚡': 'Quick attendance ⚡', 'إضافة مهمة 📝': 'Add task 📝',
+            'أدخل اسم شخص جديد': 'Enter a new person name', 'إضافة': 'Add',
+            'جاري تحميل البيانات...': 'Loading data...',
+            'لا يوجد أشخاص مضافة بعد. استخدم الحقل أعلاه لإضافة أول شخص.': 'No people have been added yet. Use the field above to add the first person.',
+            'فشل في الاتصال بالسيرفر. يرجى التأكد من أن السيرفر يعمل بشكل صحيح.': 'Could not connect to the server. Please make sure it is running.',
+            'قائمة الأيام المسجلة': 'Attendance days', 'جاري تحميل قائمة الأيام...': 'Loading attendance days...',
+            'لا توجد أيام مسجلة بعد.': 'No attendance days recorded yet.', 'قائمة المهام': 'Tasks',
+            'جاري تحميل قائمة المهام...': 'Loading tasks...', 'لا توجد مهام مسجلة بعد.': 'No tasks recorded yet.',
+            'حسناً': 'OK', 'تأكيد': 'Confirm', 'هل أنت متأكد من حذف هذا الشخص؟': 'Are you sure you want to delete this person?',
+            'نعم': 'Yes', 'لا': 'No', 'إلغاء': 'Cancel', 'حفظ': 'Save', 'حفظ وتحديث': 'Save and update',
+            'إضافة سريعة ليوم جديد': 'Quick attendance for a new day', 'اسم اليوم (اختياري)': 'Day name (optional)',
+            'مثال: اجتماع الخدام': 'e.g. Servants meeting', 'حدد الأشخاص الحاضرين لهذا اليوم.': 'Select the people who attended this day.',
+            'وصف المهمة': 'Task description', 'مثال: شراء 15 شارة لمارمينا': 'e.g. Buy 15 badges for Mina',
+            'تاريخ الاستحقاق': 'Due date', 'تعيين لـ (اختر شخصاً أو أكثر):': 'Assign to (select one or more people):',
+            'تعديل المهمة': 'Edit task', 'تنبيه: تعديل الحالة أو الوصف سيطبق على جميع الأشخاص المشاركين في هذه المهمة.': 'Note: Changing the status or description applies to everyone assigned to this task.',
+            'الحالة (للجميع)': 'Status (for everyone)', 'قيد الانتظار': 'Pending', 'قيد التنفيذ': 'In progress',
+            'منجزة': 'Completed', 'لم يتم إنجازها': 'Not completed', 'تعديل اليوم وإضافة حضور': 'Edit day and add attendance',
+            'التاريخ': 'Date', 'إضافة أشخاص لم يتم تسجيل حضورهم:': 'Add people not marked present:',
+            'القائمة التالية تحتوي فقط على الأشخاص الغائبين في هذا اليوم.': 'This list contains only people marked absent on this day.',
+            'تفاصيل الحضور ليوم': 'Attendance details for', 'تاريخ الحضور لـ': 'Attendance history for',
+            'تعديل اسم الشخص': 'Edit person name', 'أدخل الاسم الجديد': 'Enter the new name',
+            'إضافة مهمة جديدة': 'Add a new task', 'إضافة أشخاص': 'Add people', 'سجل الحضور': 'Attendance history',
+            'لا يوجد تاريخ حضور لهذا الشخص.': 'No attendance history for this person.', 'المهام': 'Tasks',
+            'لم يتم تعيين أي مهام لهذا الشخص.': 'No tasks have been assigned to this person.',
+            'حاضر': 'Present', 'غائب': 'Absent', 'آخر حضور:': 'Last attendance:', 'حضور': 'attended',
+            'مهام': 'tasks', 'لا يوجد': 'None', 'بتاريخ:': 'On:', 'قيد الانتظار': 'Pending',
+            'عرض التفاصيل': 'View details', 'تعديل اليوم': 'Edit day', 'حذف اليوم': 'Delete day',
+            'تعديل المهمة (للجميع)': 'Edit task (everyone)', 'حذف المهمة (للجميع)': 'Delete task (everyone)',
+            'يوم': 'Day', 'لا يوجد أشخاص مضافين بعد.': 'No people have been added yet.',
+            'فشل في جلب قائمة الأشخاص.': 'Could not load the people list.', 'تحديد الكل': 'Select all',
+            'لا يوجد أشخاص.': 'No people.', 'فشل تحميل القائمة': 'Could not load the list',
+            'الرجاء ملء وصف المهمة وتاريخ الاستحقاق.': 'Please enter a task description and due date.',
+            'الرجاء اختيار شخص واحد على الأقل.': 'Please select at least one person.',
+            'تم إضافة المهمة لـ': 'Task assigned to', 'شخص بنجاح.': 'people successfully.',
+            'المهمة غير موجودة.': 'Task not found.', 'الوصف والتاريخ لا يمكن أن يكونا فارغين.': 'Description and date cannot be empty.',
+            'تم تحديث المهمة بنجاح.': 'Task updated successfully.', 'تم حذف المهمة بنجاح.': 'Task deleted successfully.',
+            'هل أنت متأكد من حذف هذه المهمة؟ (سيتم حذفها لجميع الأشخاص المشاركين فيها)': 'Delete this task for everyone assigned to it?',
+            'الجميع حاضرون في هذا اليوم! 🎉': 'Everyone is present today! 🎉',
+            'فشل تحميل القائمة': 'Could not load the list', 'لا توجد بيانات حضور لهذا اليوم.': 'No attendance data for this day.',
+            'تفاصيل حضور:': 'Attendance details:', 'هل أنت متأكد من حذف هذا اليوم؟ سيتم حذفه من سجلات جميع الأشخاص.': 'Delete this day from everyone’s attendance history?',
+            'تم حذف اليوم بنجاح.': 'Day deleted successfully.', 'تم تحديث بيانات اليوم والحضور بنجاح.': 'Day and attendance updated successfully.',
+            'الاسم لا يمكن أن يكون فارغاً.': 'Name cannot be empty.', 'خطأ': 'Error', 'نجاح': 'Success',
+            'فشل في إضافة الشخص.': 'Could not add person.', 'فشل في تحديث الاسم.': 'Could not update the name.',
+            'فشل في حذف الشخص.': 'Could not delete person.', 'فشل في الاتصال بالسيرفر.': 'Could not connect to the server.',
+            'لم يتم العثور على بيانات المهمة.': 'Task data was not found.', 'فشل في تحديث حالة المهمة.': 'Could not update task status.',
+            'فشل في جلب السجل.': 'Could not load the history.', 'الشخص غير موجود.': 'Person not found.',
+            'فشل في جلب تفاصيل اليوم.': 'Could not load day details.', 'التاريخ لا يمكن أن يكون فارغاً.': 'Date cannot be empty.',
+            'فشل في تحديث اليوم.': 'Could not update the day.', 'فشل في حذف اليوم.': 'Could not delete the day.',
+            'فشل في حذف المهمة.': 'Could not delete the task.', 'فشل في تحديث المهمة': 'Could not update task',
+            'فشل في إضافة المهمة': 'Could not add task', 'فشل في إضافة الحضور السريع': 'Could not add quick attendance',
+            'فشل في إضافة الحضور:': 'Could not add attendance:', 'فشل في تحديث بيانات اليوم والحضور بنجاح.': 'Could not update the day and attendance.',
+            'سجل لـ': 'History for', 'تاريخ الاستحقاق:': 'Due:', 'شعار العائلة': 'Family logo'
+        };
+
+        const arabicLetterMap = {
+            'ا':'a','أ':'a','إ':'e','آ':'aa','ب':'b','ت':'t','ث':'th','ج':'g','ح':'h','خ':'kh','د':'d','ذ':'dh',
+            'ر':'r','ز':'z','س':'s','ش':'sh','ص':'s','ض':'d','ط':'t','ظ':'z','ع':'','غ':'gh','ف':'f','ق':'q',
+            'ك':'k','ل':'l','م':'m','ن':'n','ه':'h','و':'w','ؤ':'w','ي':'y','ى':'a','ئ':'y','ء':'','ة':'a','ﻻ':'la'
+        };
+
+        function transliterateArabic(value) {
+            if (currentLanguage !== 'en') return value;
+            const normalized = String(value).normalize('NFKD').replace(/[\u064B-\u065F\u0670\u0640]/g, '');
+            const latin = Array.from(normalized, character => arabicLetterMap[character] ?? character).join('');
+            return latin.replace(/(^|[\s-])([a-z])/g, (_, boundary, letter) => boundary + letter.toUpperCase());
+        }
+
+        function translateText(value) {
+            const entries = Object.entries(translations).sort((a, b) => b[0].length - a[0].length);
+            return entries.reduce((text, [arabic, english]) => {
+                const source = currentLanguage === 'en' ? arabic : english;
+                const target = currentLanguage === 'en' ? english : arabic;
+                return text.split(source).join(target);
+            }, value);
+        }
+
+        function applyLanguageToPage() {
+            const isEnglish = currentLanguage === 'en';
+            document.documentElement.lang = isEnglish ? 'en' : 'ar';
+            document.documentElement.dir = isEnglish ? 'ltr' : 'rtl';
+            document.body.classList.toggle('ltr', isEnglish);
+            languageToggleBtn.textContent = isEnglish ? '🇬🇧' : '🇪🇬';
+            languageToggleBtn.title = isEnglish ? 'Switch to Arabic' : 'Switch to English';
+            languageToggleBtn.setAttribute('aria-label', languageToggleBtn.title);
+            document.title = isEnglish ? translations['أسرة الانبا ارسانيوس والقديس نيقولاوس لوسائل الايضاح'] : 'أسرة الانبا ارسانيوس والقديس نيقولاوس لوسائل الايضاح';
+
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+            let textNode;
+            while ((textNode = walker.nextNode())) {
+                const translated = translateText(textNode.nodeValue);
+                if (translated !== textNode.nodeValue) textNode.nodeValue = translated;
+            }
+            document.querySelectorAll('[placeholder], [title], [alt]').forEach(element => {
+                for (const attribute of ['placeholder', 'title', 'alt']) {
+                    if (element.hasAttribute(attribute)) element.setAttribute(attribute, translateText(element.getAttribute(attribute)));
+                }
+            });
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('language', currentLanguage);
+            applyLanguageToPage();
+            renderCards();
+            renderDaysList();
+            renderTasksList();
+        }
+
+        function dateLocale() {
+            return currentLanguage === 'en' ? 'en-GB' : 'ar-EG';
+        }
+
+        // Create floating Coptic symbols
+        function createFloatingSymbols() {
+            const symbols = [
+                { class: 'cross', text: '✝' },
+                { class: 'fish', text: '🐟' },
+                { class: 'lamb', text: '🐑' },
+                { class: 'book', text: '📖' },
+                { class: 'censer', text: '🕯️' },
+                { class: 'coptic', text: 'Ⲁ' },
+                { class: 'coptic', text: 'Ⲃ' },
+                { class: 'coptic', text: 'Ⲅ' },
+                { class: 'coptic', text: 'Ⲇ' },
+                { class: 'coptic', text: 'Ⲉ' }
+            ];
+
+            for (let i = 0; i < 20; i++) {
+                const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+                const element = document.createElement('div');
+                element.className = `symbol ${symbol.class}`;
+                element.textContent = symbol.text;
+                
+                // Random position
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const delay = Math.random() * 20;
+                
+                element.style.left = `${left}vw`;
+                element.style.top = `${top}vh`;
+                element.style.animationDelay = `${delay}s`;
+                
+                floatingSymbolsContainer.appendChild(element);
+            }
+        }
+
+        // Custom Alert Function
+        async function showCustomAlert(title, message) {
+            return new Promise(resolve => {
+                const modal = document.getElementById('customAlertModal');
+                document.getElementById('modalTitle').innerText = title;
+                document.getElementById('modalMessage').innerText = message;
+                modal.style.display = 'flex';
+                document.getElementById('modalOkBtn').onclick = () => {
+                    modal.style.display = 'none';
+                    resolve();
+                };
+            });
+        }
+        
+        // Custom Confirmation Function
+        async function showCustomConfirm(message) {
+            return new Promise(resolve => {
+                const modal = document.getElementById('customConfirmModal');
+                document.getElementById('confirmMessage').innerText = message;
+                modal.style.display = 'flex';
+                document.getElementById('confirmYesBtn').onclick = () => {
+                    modal.style.display = 'none';
+                    resolve(true);
+                };
+                document.getElementById('confirmNoBtn').onclick = () => {
+                    modal.style.display = 'none';
+                    resolve(false);
+                };
+            });
+        }
+        
+        // Function to update connection status
+        async function updateConnectionStatus() {
+            try {
+                const response = await fetch(`${API_URL}/status`);
+                if (response.ok) {
+                    connectionStatusDot.classList.add('online');
+                    connectionStatusText.innerText = 'متصل';
+                    return true;
+                } else {
+                    throw new Error('Server not responding');
+                }
+            } catch (error) {
+                connectionStatusDot.classList.remove('online');
+                connectionStatusText.innerText = 'غير متصل';
+                return false;
+            }
+        }
+
+        // Function to generate a random color for the avatar
+        function getRandomColor(name) {
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) {
+                hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            let color = '#';
+            for (let i = 0; i < 3; i++) {
+                const value = (hash >> (i * 8)) & 0xFF;
+                color += ('00' + value.toString(16)).substr(-2);
+            }
+            return color;
+        }
+
+        // Function to fetch and render the person cards
+        async function renderCards() {
+            loadingIndicator.classList.remove('hidden');
+            connectionError.classList.add('hidden');
+            noDataMessage.classList.add('hidden');
+            personCardsContainer.innerHTML = '';
+            
+            try {
+                const response = await fetch(`${API_URL}/people`);
+                if (!response.ok) {
+                    throw new Error(`Server returned status: ${response.status}`);
+                }
+                const { people } = await response.json();
+                
+                loadingIndicator.classList.add('hidden');
+                
+                if (people.length === 0) {
+                    noDataMessage.classList.remove('hidden');
+                    return;
+                }
+                
+                people.forEach((person) => {
+                    const card = document.createElement('div');
+                    card.className = 'person-card';
+                    card.setAttribute('data-id', person.id);
+                    
+                    const displayName = transliterateArabic(person.name);
+                    const firstLetter = displayName.charAt(0);
+                    const avatarColor = getRandomColor(person.name);
+                    const attendedSessions = person.attendedSessions;
+                    const totalSessions = person.totalSessions;
+                    const attendanceRatio = person.attendanceRatio;
+                    
+                    // Task Stats - حساب المهام المنجزة فقط
+                    const completedTasks = person.completedTasks;
+                    const totalTasks = person.totalTasks;
+                    const taskRatio = totalTasks > 0 ? `${completedTasks}/${totalTasks}` : 'لا يوجد';
+                    const taskPercentage = totalTasks > 0 ? (person.taskRatio * 100).toFixed(0) : 0;
+                    
+                    let attendanceBoxClass = '';
+                    if (attendedSessions === totalSessions && totalSessions > 0) {
+                        attendanceBoxClass = 'perfect';
+                    } else if (totalSessions > 0 && (totalSessions - attendedSessions) >= 5) {
+                        attendanceBoxClass = 'absent-critical';
+                    }
+                    
+                    let taskBoxClass = 'task-box';
+                    if (totalTasks > 0 && taskPercentage < 50) {
+                        taskBoxClass = 'task-box low-ratio';
+                    }
+
+                    const attendedSessionsList = person.attendance
+                        .filter(s => s.status)
+                        .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                    let lastAttendedDate = '-';
+                    if (attendedSessionsList.length > 0) {
+                        lastAttendedDate = new Date(attendedSessionsList[0].date).toLocaleDateString(dateLocale(), {
+                            day: 'numeric', month: 'long', year: 'numeric'
+                        });
+                    }
+                    
+                    card.innerHTML = `
+                        <div class="absolute top-4 left-4 flex gap-2 z-20">
+                            <button class="edit-name-btn" data-id="${person.id}" style="color: inherit">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                            </button>
+                            <button class="delete-person-btn" data-id="${person.id}" style="color: inherit">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                            </button>
+                        </div>
+                        <div class="avatar shadow-md" style="background: ${avatarColor};" data-id="${person.id}">
+                            ${firstLetter}
+                        </div>
+                        <h3 class="text-xl font-bold mt-2 cursor-pointer" data-id="${person.id}" data-original-name="${encodeURIComponent(person.name)}">${displayName}</h3>
+                        
+                        <div class="attendance-box ${attendanceBoxClass}">
+                            <span>${(attendanceRatio * 100).toFixed(0)}%</span>
+                            <span class="attendance-text mt-1">${attendedSessions}/${totalSessions} حضور</span>
+                        </div>
+                        
+                        <div class="attendance-box ${taskBoxClass}">
+                            <span>${taskRatio}</span>
+                            <span class="attendance-text mt-1">${taskPercentage}% مهام</span>
+                        </div>
+                        
+                        <div class="mt-4 text-sm">
+                            <span>آخر حضور:</span>
+                            <span class="font-semibold">${lastAttendedDate}</span>
+                        </div>
+                    `;
+                    
+                    personCardsContainer.appendChild(card);
+                });
+                
+                attachEventListeners();
+
+            } catch (error) {
+                loadingIndicator.classList.add('hidden');
+                connectionError.classList.remove('hidden');
+                console.error("Error fetching or rendering data:", error);
+            }
+        }
+        
+        function attachEventListeners() {
+            document.querySelectorAll('.edit-name-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const personId = e.currentTarget.dataset.id;
+                    const personNameElement = document.querySelector(`.person-card[data-id="${personId}"] h3`);
+                    editNameInput.value = decodeURIComponent(personNameElement.dataset.originalName);
+                    currentEditingPersonId = personId;
+                    editNameModal.style.display = 'flex';
+                });
+            });
+            document.querySelectorAll('.delete-person-btn').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const personId = e.currentTarget.dataset.id;
+                    const personName = document.querySelector(`.person-card[data-id="${personId}"] h3`).innerText;
+                    const confirmed = await showCustomConfirm(`هل أنت متأكد من حذف ${personName}؟`);
+                    if (confirmed) {
+                        await deletePerson(personId);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.person-card .avatar, .person-card h3').forEach(element => {
+                element.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const personId = e.currentTarget.dataset.id;
+                    await showPersonHistory(personId);
+                });
+            });
+        }
+        
+        async function addPerson() {
+            const name = personNameInput.value.trim();
+            if (!name) {
+                await showCustomAlert('خطأ', 'الاسم لا يمكن أن يكون فارغاً.');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/people`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name })
+                });
+                if (response.ok) {
+                    personNameInput.value = '';
+                    await renderCards();
+                    await renderDaysList();
+                } else {
+                    const errorData = await response.json();
+                    await showCustomAlert('خطأ', errorData.message || 'فشل في إضافة الشخص.');
+                }
+            } catch (error) {
+                await showCustomAlert('خطأ', 'فشل في الاتصال بالسيرفر.');
+                console.error("Error adding person:", error);
+            }
+        }
+
+        async function updatePersonName() {
+            const name = editNameInput.value.trim();
+            if (!name) {
+                await showCustomAlert('خطأ', 'الاسم لا يمكن أن يكون فارغاً.');
+                return;
+            }
+            if (!currentEditingPersonId) return;
+
+            try {
+                const response = await fetch(`${API_URL}/people/${currentEditingPersonId}/name`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name })
+                });
+                if (response.ok) {
+                    editNameModal.style.display = 'none';
+                    await renderCards();
+                    await renderTasksList();
+                } else {
+                    const errorData = await response.json();
+                    await showCustomAlert('خطأ', errorData.message || 'فشل في تحديث الاسم.');
+                }
+            } catch (error) {
+                await showCustomAlert('خطأ', 'فشل في الاتصال بالسيرفر.');
+                console.error("Error updating person name:", error);
+            }
+        }
+
+        async function deletePerson(personId) {
+            try {
+                const response = await fetch(`${API_URL}/people/${personId}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    await renderCards();
+                    await renderDaysList();
+                    await renderTasksList();
+                } else {
+                    const errorData = await response.json();
+                    await showCustomAlert('خطأ', errorData.message || 'فشل في حذف الشخص.');
+                }
+            } catch (error) {
+                await showCustomAlert('خطأ', 'فشل في الاتصال بالسيرفر.');
+                console.error("Error deleting person:", error);
+            }
+        }
+
+        async function renderQuickAddList() {
+            quickAddList.innerHTML = '<div class="flex justify-center items-center h-20"><div class="spinner"></div></div>';
+            try {
+                const response = await fetch(`${API_URL}/people`);
+                const { people } = await response.json();
+                
+                quickAddList.innerHTML = '';
+                if (people.length === 0) {
+                    quickAddList.innerHTML = '<p class="text-center text-gray-500">لا يوجد أشخاص مضافين بعد.</p>';
+                    return;
+                }
+
+                people.forEach(person => {
+                    const listItem = document.createElement('label');
+                    listItem.className = 'quick-add-item flex items-center gap-2 text-right';
+                    listItem.innerHTML = `
+                        <input type="checkbox" class="accent-blue-500" data-person-id="${person.id}">
+                        <span class="text-sm font-medium flex-grow">${transliterateArabic(person.name)}</span>
+                    `;
+                    quickAddList.appendChild(listItem);
+                });
+            } catch (error) {
+                quickAddList.innerHTML = '<p class="text-center text-red-500">فشل في جلب قائمة الأشخاص.</p>';
+                console.error("Error rendering quick add list:", error);
+            }
+        }
+        
+        async function quickAddSessions() {
+            try {
+                const presentIds = Array.from(quickAddList.querySelectorAll('input[type="checkbox"]:checked'))
+                                      .map(input => input.dataset.personId);
+                const name = dayNameInput.value.trim();
+                const today = new Date().toISOString().slice(0, 10);
+
+                const response = await fetch(`${API_URL}/quick-session-all`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ presentIds, date: today, dayName: name })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'فشل في إضافة الحضور السريع');
+                }
+
+                quickAddModal.style.display = 'none';
+                dayNameInput.value = '';
+                await renderCards();
+                await renderDaysList();
+            } catch (error) {
+                await showCustomAlert('خطأ', `فشل في إضافة الحضور: ${error.message}`);
+                console.error("Error during quick add sessions:", error);
+            }
+        }
+        
+        // Function to populate person selector for task modal (Now Multiselect Checklist)
+        async function populatePersonChecklist() {
+            taskPeopleList.innerHTML = '<div class="flex justify-center p-2"><div class="spinner" style="width:20px;height:20px;"></div></div>';
+            try {
+                const response = await fetch(`${API_URL}/people`);
+                const { people } = await response.json();
+                
+                taskPeopleList.innerHTML = '';
+                
+                if (people.length === 0) {
+                    taskPeopleList.innerHTML = '<p class="text-center text-gray-500 p-2">لا يوجد أشخاص.</p>';
+                    return;
+                }
+
+                // Checkbox to select all
+                const selectAllContainer = document.createElement('div');
+                selectAllContainer.className = 'flex items-center gap-2 p-2 border-b border-gray-200 dark:border-gray-700 mb-2';
+                selectAllContainer.innerHTML = `
+                    <input type="checkbox" id="selectAllTasks" class="accent-blue-500 w-4 h-4">
+                    <label for="selectAllTasks" class="text-sm font-bold cursor-pointer">تحديد الكل</label>
+                `;
+                taskPeopleList.appendChild(selectAllContainer);
+
+                // Event listener for Select All
+                const selectAllCb = selectAllContainer.querySelector('#selectAllTasks');
+                selectAllCb.addEventListener('change', (e) => {
+                    const checkboxes = taskPeopleList.querySelectorAll('.person-task-cb');
+                    checkboxes.forEach(cb => cb.checked = e.target.checked);
+                });
+
+                people.forEach(person => {
+                    const item = document.createElement('label');
+                    item.className = 'flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer';
+                    item.innerHTML = `
+                        <input type="checkbox" value="${person.id}" class="person-task-cb accent-blue-500 w-4 h-4">
+                        <span class="text-sm">${transliterateArabic(person.name)}</span>
+                    `;
+                    taskPeopleList.appendChild(item);
+                });
+                
+            } catch (error) {
+                console.error("Failed to populate person checklist:", error);
+                taskPeopleList.innerHTML = '<p class="text-red-500">فشل تحميل القائمة</p>';
+            }
+        }
+
+        // Function to add tasks (Modified for multi-select)
+        async function addTask() {
+            const description = taskDescriptionInput.value.trim();
+            const date = taskDateInput.value;
+            
+            // Gather selected IDs
+            const selectedCheckboxes = taskPeopleList.querySelectorAll('.person-task-cb:checked');
+            const personIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+
+            if (!description || !date) {
+                await showCustomAlert('خطأ', 'الرجاء ملء وصف المهمة وتاريخ الاستحقاق.');
+                return;
+            }
+            
+            if (personIds.length === 0) {
+                await showCustomAlert('خطأ', 'الرجاء اختيار شخص واحد على الأقل.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/tasks`, { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ description, personIds, date, status: 'pending' })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'فشل في إضافة المهمة');
+                }
+
+                addTaskModal.style.display = 'none';
+                taskDescriptionInput.value = '';
+                taskDateInput.value = new Date().toISOString().slice(0, 10);
+                await renderTasksList();
+                await renderCards();
+                await showCustomAlert('نجاح', `تم إضافة المهمة لـ ${personIds.length} شخص بنجاح.`);
+            } catch (error) {
+                await showCustomAlert('خطأ', `فشل في إضافة المهمة: ${error.message}`);
+                console.error("Error during adding task:", error);
+            }
+        }
+
+        // Function to render the list of all tasks (Updated to Group by Batch)
+        async function renderTasksList() {
+            tasksLoadingIndicator.classList.remove('hidden');
+            noTasksMessage.classList.add('hidden');
+            tasksListContainer.innerHTML = '';
+            
+            try {
+                const response = await fetch(`${API_URL}/tasks`); 
+                if (!response.ok) throw new Error(`Server returned status: ${response.status}`);
+                const tasks = await response.json();
+                
+                tasksLoadingIndicator.classList.add('hidden');
+                
+                if (tasks.length === 0) {
+                    noTasksMessage.classList.remove('hidden');
+                    return;
+                }
+                
+                // Group tasks by batchId (if exists) or unique ID
+                const groups = {};
+                tasks.forEach(task => {
+                    // Use batchId as key if it exists, otherwise use the task ID (legacy support)
+                    const key = task.batchId || task.id; 
+                    
+                    if (!groups[key]) {
+                        groups[key] = {
+                            ...task, // Copy main details (desc, date, etc.)
+                            people: [] // Array to store people in this batch
+                        };
+                    }
+                    
+                    groups[key].people.push({
+                        id: task.id, // Individual task ID for deletion/updates
+                        name: task.personName,
+                        status: task.status
+                    });
+                });
+                
+                // Convert groups object to array
+                const groupedTasks = Object.values(groups);
+                
+                // Sort by date desc
+                groupedTasks.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                groupedTasks.forEach((group) => {
+                    const taskItem = document.createElement('div');
+                    
+                    const today = new Date().toISOString().slice(0, 10);
+                    // Calculate overall status color based on first person (or logic)
+                    // For display purposes, we show names with icons, so main color can be neutral or based on date
+                    
+                    let statusColor = 'bg-white/10'; // default neutral
+                    
+                    const date = new Date(group.date).toLocaleDateString(dateLocale(), {
+                        year: 'numeric', month: 'long', day: 'numeric'
+                    });
+
+                    // Generate people list HTML
+                    const peopleHtml = group.people.map(p => {
+                        let icon = '⏳';
+                        let colorClass = 'text-yellow-600 dark:text-yellow-400';
+                        if (p.status === 'completed') { icon = '✅'; colorClass = 'text-green-600 dark:text-green-400'; }
+                        else if (p.status === 'in-progress') { icon = '🔄'; colorClass = 'text-blue-600 dark:text-blue-400'; }
+                        else if (p.status === 'not-completed') { icon = '❌'; colorClass = 'text-red-600 dark:text-red-400'; }
+                        
+                        return `<span class="person-tag ${colorClass}">${transliterateArabic(p.name)} ${icon}</span>`;
+                    }).join('');
+
+                    // Using the ID of the first task in the group for Edit/Delete buttons
+                    // The backend handles batch updates via batchId, so passing one ID is sufficient if backend logic supports it
+                    // Our backend supports finding by ID then updating by BatchID
+                    const representativeId = group.people[0].id;
+
+                    taskItem.className = `day-item`;
+                    
+                    taskItem.innerHTML = `
+                        <div class="flex-grow" style="color: var(--card-text-color)">
+                            <p class="font-bold text-lg">${transliterateArabic(group.description)}</p>
+                            <p class="text-sm mt-1 text-gray-600 dark:text-gray-400">بتاريخ: <span class="font-semibold">${date}</span></p>
+                            <div class="mt-2 flex flex-wrap">
+                                ${peopleHtml}
+                            </div>
+                        </div>
+                        <div class="day-actions">
+                             <button class="day-action-btn edit-task-btn" data-id="${representativeId}" title="تعديل المهمة (للجميع)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                            </button>
+                            <button class="day-action-btn delete-task-btn" data-id="${representativeId}" title="حذف المهمة (للجميع)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                            </button>
+                        </div>
+                    `;
+                    tasksListContainer.appendChild(taskItem);
+                });
+                
+                attachTasksEventListeners();
+
+            } catch (error) {
+                tasksLoadingIndicator.classList.add('hidden');
+                console.error("Error fetching or rendering tasks:", error);
+            }
+        }
+        
+        function attachTasksEventListeners() {
+            document.querySelectorAll('.edit-task-btn').forEach(button => {
+                button.addEventListener('click', e => showEditTaskModal(e.currentTarget.dataset.id));
+            });
+            document.querySelectorAll('.delete-task-btn').forEach(button => {
+                button.addEventListener('click', async e => {
+                    const taskId = e.currentTarget.dataset.id;
+                    const confirmed = await showCustomConfirm(`هل أنت متأكد من حذف هذه المهمة؟ (سيتم حذفها لجميع الأشخاص المشاركين فيها)`);
+                    if (confirmed) await deleteTask(taskId);
+                });
+            });
+        }
+        
+        async function showEditTaskModal(taskId) {
+            try {
+                 const response = await fetch(`${API_URL}/tasks`);
+                 const tasks = await response.json();
+                 const task = tasks.find(t => t.id === taskId);
+                 
+                if (!task) {
+                    await showCustomAlert('خطأ', 'المهمة غير موجودة.');
+                    return;
+                }
+                
+                // Populate the modal fields
+                editTaskId.value = task.id;
+                editTaskDescriptionInput.value = task.description;
+                editTaskDateInput.value = task.date;
+                editTaskStatus.value = task.status;
+
+                editTaskModal.style.display = 'flex';
+            } catch (error) {
+                await showCustomAlert('خطأ', 'فشل في جلب بيانات المهمة.');
+                console.error("Error showing edit task modal:", error);
+            }
+        }
+
+        async function updateTask() {
+            const taskId = editTaskId.value;
+            const newDescription = editTaskDescriptionInput.value.trim();
+            const newDate = editTaskDateInput.value;
+            const newStatus = editTaskStatus.value;
+            
+            if (!newDescription || !newDate) {
+                await showCustomAlert('خطأ', 'الوصف والتاريخ لا يمكن أن يكونا فارغين.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/tasks/${taskId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ description: newDescription, date: newDate, status: newStatus })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'فشل في تحديث المهمة');
+                }
+
+                editTaskModal.style.display = 'none';
+                await renderCards();
+                await renderTasksList();
+                await showCustomAlert('نجاح', 'تم تحديث المهمة بنجاح.');
+            } catch (error) {
+                await showCustomAlert('خطأ', `فشل في تحديث المهمة: ${error.message}`);
+                console.error("Error updating task:", error);
+            }
+        }
+
+        async function deleteTask(taskId) {
+            try {
+                const response = await fetch(`${API_URL}/tasks/${taskId}`, { method: 'DELETE' });
+                if (response.ok) {
+                    await renderCards();
+                    await renderTasksList();
+                    await showCustomAlert('نجاح', 'تم حذف المهمة بنجاح.');
+                } else {
+                    const errorData = await response.json();
+                    await showCustomAlert('خطأ', errorData.message || 'فشل في حذف المهمة.');
+                }
+            } catch (error) {
+                await showCustomAlert('خطأ', 'فشل في الاتصال بالسيرفر.');
+                console.error("Error deleting task:", error);
+            }
+        }
+
+        async function showPersonHistory(personId) {
+            try {
+                const response = await fetch(`${API_URL}/people`);
+                const { people } = await response.json();
+                const person = people.find(p => p.id === personId);
+
+                if (!person) {
+                    await showCustomAlert('خطأ', 'الشخص غير موجود.');
+                    return;
+                }
+
+                personHistoryTitle.innerHTML = `سجل لـ <span>${transliterateArabic(person.name)}</span>`;
+                personHistoryList.innerHTML = '';
+
+                // --- Attendance History ---
+                const attendanceHeader = document.createElement('h3');
+                attendanceHeader.className = 'text-xl font-bold mt-4 mb-2 text-blue-800 dark:text-blue-300';
+                attendanceHeader.innerText = 'سجل الحضور';
+                personHistoryList.appendChild(attendanceHeader);
+
+                if (person.attendance.length === 0) {
+                    const p = document.createElement('p');
+                    p.className = 'text-center text-gray-500 mb-4';
+                    p.innerText = 'لا يوجد تاريخ حضور لهذا الشخص.';
+                    personHistoryList.appendChild(p);
+                } else {
+                    person.attendance.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    person.attendance.forEach(session => {
+                        const listItem = document.createElement('li');
+                        listItem.className = `flex justify-between items-center p-3 rounded-lg shadow-sm ${session.status ? 'present' : 'absent'}`;
+                        
+                        const date = new Date(session.date).toLocaleDateString(dateLocale(), {
+                            day: 'numeric', month: 'long', year: 'numeric'
+                        });
+                        const displayName = session.dayName ? `${transliterateArabic(session.dayName)} (${date})` : date;
+
+                        const statusText = session.status ? 'حاضر' : 'غائب';
+                        const iconSvg = session.status 
+                            ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-8.08"/><path d="m9.24 11.24 3.2 3.2 7-7"/></svg>`
+                            : `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`;
+
+                        listItem.innerHTML = `
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold">${iconSvg}</span>
+                                <span>${displayName}</span>
+                            </div>
+                            <span class="font-semibold">${statusText}</span>
+                        `;
+                        personHistoryList.appendChild(listItem);
+                    });
+                }
+                
+                // --- Task History ---
+                const tasksHeader = document.createElement('h3');
+                tasksHeader.className = 'text-xl font-bold mt-6 mb-2 text-yellow-800 dark:text-yellow-300 border-t pt-4';
+                tasksHeader.innerText = 'المهام';
+                personHistoryList.appendChild(tasksHeader);
+                
+                const tasksResponse = await fetch(`${API_URL}/tasks`);
+                const allTasks = await tasksResponse.json();
+                const personTasks = allTasks.filter(t => t.personId === personId);
+                currentPersonTasks = personTasks; 
+                
+                if (personTasks.length === 0) {
+                    const p = document.createElement('p');
+                    p.className = 'text-center text-gray-500';
+                    p.innerText = 'لم يتم تعيين أي مهام لهذا الشخص.';
+                    personHistoryList.appendChild(p);
+                } else {
+                    personTasks.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    personTasks.forEach(task => {
+                        const listItem = document.createElement('li');
+                        const today = new Date().toISOString().slice(0, 10);
+                        const isFutureTask = task.date > today;
+                        
+                        let statusClass, statusText, iconSvg;
+                        
+                        if (task.status === 'completed') {
+                            statusClass = 'task-completed';
+                            statusText = 'منجزة';
+                            iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-8.08"/><path d="m9.24 11.24 3.2 3.2 7-7"/></svg>`;
+                        } else if (task.status === 'in-progress') {
+                            statusClass = 'task-in-progress';
+                            statusText = 'قيد التنفيذ';
+                            iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`;
+                        } else if (task.status === 'not-completed') {
+                            statusClass = 'task-not-completed';
+                            statusText = 'لم يتم إنجازها';
+                            iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`;
+                        } else {
+                            statusClass = 'task-pending';
+                            statusText = isFutureTask ? 'قيد الانتظار' : 'لم يتم إنجازها';
+                            iconSvg = isFutureTask 
+                                ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`
+                                : `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`;
+                        }
+                        
+                        listItem.className = `flex justify-between items-center p-3 rounded-lg shadow-sm ${statusClass}`;
+                        
+                        const date = new Date(task.date).toLocaleDateString(dateLocale(), {
+                            day: 'numeric', month: 'long', year: 'numeric'
+                        });
+
+                        listItem.innerHTML = `
+                            <div class="flex flex-col items-start gap-1">
+                                <span class="font-bold">${transliterateArabic(task.description)}</span>
+                                <span class="text-xs text-gray-600 dark:text-gray-400">تاريخ الاستحقاق: ${date}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                ${isFutureTask && task.status !== 'completed' && task.status !== 'not-completed' ? `
+                                    <div class="task-status-circles">
+                                        <div class="status-circle in-progress ${task.status === 'in-progress' ? 'active' : ''}" data-task-id="${task.id}" data-status="in-progress"></div>
+                                        <div class="status-circle completed ${task.status === 'completed' ? 'active' : ''}" data-task-id="${task.id}" data-status="completed"></div>
+                                        <div class="status-circle pending ${task.status === 'pending' ? 'active' : ''}" data-task-id="${task.id}" data-status="not-completed"></div>
+                                    </div>
+                                ` : ''}
+                                <span>${iconSvg}</span>
+                                <span class="font-semibold">${statusText}</span>
+                            </div>
+                        `;
+                        personHistoryList.appendChild(listItem);
+                    });
+                    
+                    // Add event listeners for status circles
+                    document.querySelectorAll('.status-circle').forEach(circle => {
+                        circle.addEventListener('click', async (e) => {
+                            const taskId = e.target.dataset.taskId;
+                            const newStatus = e.target.dataset.status;
+                            
+                            try {
+                                const task = currentPersonTasks.find(t => t.id === taskId);
+                                if (!task) {
+                                    await showCustomAlert('خطأ', 'لم يتم العثور على بيانات المهمة.');
+                                    return;
+                                }
+                                
+                                const response = await fetch(`${API_URL}/tasks/${taskId}`, {
+                                    method: 'PUT',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ 
+                                        description: task.description, 
+                                        personId: task.personId, 
+                                        date: task.date, 
+                                        status: newStatus 
+                                    })
+                                });
+                                
+                                if (response.ok) {
+                                    await showPersonHistory(personId);
+                                    await renderCards();
+                                    await renderTasksList();
+                                } else {
+                                    await showCustomAlert('خطأ', 'فشل في تحديث حالة المهمة.');
+                                }
+                            } catch (error) {
+                                await showCustomAlert('خطأ', 'فشل في الاتصال بالسيرفر.');
+                                console.error("Error updating task status:", error);
+                            }
+                        });
+                    });
+                }
+                
+                personHistoryModal.style.display = 'flex';
+            } catch (error) {
+                await showCustomAlert('خطأ', 'فشل في جلب السجل.');
+                console.error("Error showing person history:", error);
+            }
+        }
+
+        async function renderDaysList() {
+            daysLoadingIndicator.classList.remove('hidden');
+            noDaysMessage.classList.add('hidden');
+            daysListContainer.innerHTML = '';
+            
+            try {
+                const response = await fetch(`${API_URL}/days`);
+                if (!response.ok) throw new Error(`Server returned status: ${response.status}`);
+                const days = await response.json();
+                
+                daysLoadingIndicator.classList.add('hidden');
+                
+                if (days.length === 0) {
+                    noDaysMessage.classList.remove('hidden');
+                    return;
+                }
+                
+                days.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                days.forEach((day) => {
+                    const dayItem = document.createElement('div');
+                    dayItem.className = 'day-item';
+                    
+                    const formattedDate = new Date(day.date).toLocaleDateString(dateLocale(), {
+                        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                    });
+                    
+                    dayItem.innerHTML = `
+                        <div style="color: var(--card-text-color)">
+                            <p class="font-bold text-lg">${transliterateArabic(day.dayName || (currentLanguage === 'en' ? 'Day' : 'يوم'))}</p>
+                            <p class="text-sm">${formattedDate}</p>
+                        </div>
+                        <div class="day-actions">
+                            <button class="day-action-btn view-day-btn" data-date="${day.date}" title="عرض التفاصيل">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                            </button>
+                             <button class="day-action-btn edit-day-btn" data-date='${JSON.stringify(day)}' title="تعديل اليوم">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                            </button>
+                            <button class="day-action-btn delete-day-btn" data-date="${day.date}" title="حذف اليوم">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                            </button>
+                        </div>
+                    `;
+                    daysListContainer.appendChild(dayItem);
+                });
+                
+                attachDaysEventListeners();
+
+            } catch (error) {
+                daysLoadingIndicator.classList.add('hidden');
+                console.error("Error fetching or rendering days:", error);
+            }
+        }
+        
+        function attachDaysEventListeners() {
+            document.querySelectorAll('.view-day-btn').forEach(button => {
+                button.addEventListener('click', e => showDayDetails(e.currentTarget.dataset.date));
+            });
+             document.querySelectorAll('.edit-day-btn').forEach(button => {
+                button.addEventListener('click', async e => {
+                    const dayData = JSON.parse(e.currentTarget.dataset.date);
+                    currentEditingDay = dayData;
+                    editDayNameInput.value = dayData.dayName;
+                    editDateInput.value = dayData.date;
+                    
+                    // Populate missing people list
+                    editDayAddList.innerHTML = '<div class="flex justify-center"><div class="spinner"></div></div>';
+                    
+                    try {
+                        const response = await fetch(`${API_URL}/days/${dayData.date}/attendance`);
+                        const { attendance } = await response.json();
+                        
+                        // We need all people to know who is MISSING
+                        // Wait, the API returns EVERYONE with their status for that day.
+                        // So we just filter for status === false.
+                        
+                        const missingPeople = attendance.filter(p => !p.status);
+                        
+                        editDayAddList.innerHTML = '';
+                        
+                        if (missingPeople.length === 0) {
+                            editDayAddList.innerHTML = '<p class="text-xs text-green-600 font-bold text-center">الجميع حاضرون في هذا اليوم! 🎉</p>';
+                        } else {
+                            missingPeople.forEach(person => {
+                                const item = document.createElement('label');
+                                item.className = 'flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer border-b border-gray-100 dark:border-gray-800';
+                                item.innerHTML = `
+                                    <input type="checkbox" value="${person.id}" class="add-attendee-cb accent-blue-500 w-4 h-4">
+                                    <span class="text-sm">${transliterateArabic(person.name)}</span>
+                                `;
+                                editDayAddList.appendChild(item);
+                            });
+                        }
+                    } catch (err) {
+                        editDayAddList.innerHTML = '<p class="text-red-500 text-xs">فشل تحميل القائمة</p>';
+                    }
+
+                    editDayModal.style.display = 'flex';
+                });
+            });
+            document.querySelectorAll('.delete-day-btn').forEach(button => {
+                button.addEventListener('click', async e => {
+                    const date = e.currentTarget.dataset.date;
+                    const confirmed = await showCustomConfirm(`هل أنت متأكد من حذف هذا اليوم؟ سيتم حذفه من سجلات جميع الأشخاص.`);
+                    if (confirmed) await deleteDay(date);
+                });
+            });
+        }
+        
+        async function showDayDetails(date) {
+            try {
+                const response = await fetch(`${API_URL}/days/${date}/attendance`);
+                if (!response.ok) throw new Error(`Server returned status: ${response.status}`);
+                const { attendance, dayName } = await response.json();
+                
+                const formattedDate = new Date(date).toLocaleDateString(dateLocale(), {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                });
+                
+                dayDetailsTitle.innerHTML = `${currentLanguage === 'en' ? 'Attendance details:' : 'تفاصيل حضور:'} ${transliterateArabic(dayName || formattedDate)}`;
+                dayDetailsList.innerHTML = '';
+                
+                if (attendance.length === 0) {
+                    dayDetailsList.innerHTML = `<p class="text-center text-gray-500">لا توجد بيانات حضور لهذا اليوم.</p>`;
+                } else {
+                    attendance.sort((a, b) => a.name.localeCompare(b.name));
+                    attendance.forEach(person => {
+                        const listItem = document.createElement('li');
+                        listItem.className = `flex justify-between items-center p-3 rounded-lg shadow-sm ${person.status ? 'present' : 'absent'}`;
+                        const statusText = person.status ? 'حاضر' : 'غائب';
+                        const iconSvg = person.status 
+                            ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-8.08"/><path d="m9.24 11.24 3.2 3.2 7-7"/></svg>`
+                            : `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`;
+
+                        listItem.innerHTML = `
+                            <div class="flex items-center gap-3"><span>${iconSvg}</span><span>${transliterateArabic(person.name)}</span></div>
+                            <span class="font-semibold">${statusText}</span>`;
+                        dayDetailsList.appendChild(listItem);
+                    });
+                }
+                dayDetailsModal.style.display = 'flex';
+            } catch (error) {
+                await showCustomAlert('خطأ', 'فشل في جلب تفاصيل اليوم.');
+                console.error("Error showing day details:", error);
+            }
+        }
+        
+        async function deleteDay(date) {
+            try {
+                const response = await fetch(`${API_URL}/days/${date}`, { method: 'DELETE' });
+                if (response.ok) {
+                    await renderCards();
+                    await renderDaysList();
+                    await showCustomAlert('نجاح', 'تم حذف اليوم بنجاح.');
+                } else {
+                    const errorData = await response.json();
+                    await showCustomAlert('خطأ', errorData.message || 'فشل في حذف اليوم.');
+                }
+            } catch (error) {
+                await showCustomAlert('خطأ', 'فشل في الاتصال بالسيرفر.');
+                console.error("Error deleting day:", error);
+            }
+        }
+        
+        async function updateDay() {
+            if (!currentEditingDay) return;
+
+            const newDayName = editDayNameInput.value.trim();
+            const newDate = editDateInput.value;
+            const originalDate = currentEditingDay.date;
+            
+            // Get selected additional attendees
+            const additionalAttendees = Array.from(editDayAddList.querySelectorAll('.add-attendee-cb:checked'))
+                                             .map(cb => cb.value);
+
+            if (!newDate) {
+                await showCustomAlert('خطأ', 'التاريخ لا يمكن أن يكون فارغاً.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/days/${originalDate}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ newDate, newDayName, additionalAttendees })
+                });
+
+                if (response.ok) {
+                    editDayModal.style.display = 'none';
+                    await renderCards();
+                    await renderDaysList();
+                    await showCustomAlert('نجاح', 'تم تحديث بيانات اليوم والحضور بنجاح.');
+                } else {
+                    const errorData = await response.json();
+                    await showCustomAlert('خطأ', errorData.message || 'فشل في تحديث اليوم.');
+                }
+            } catch (error) {
+                await showCustomAlert('خطأ', 'فشل في الاتصال بالسيرفر.');
+                console.error("Error updating day:", error);
+            }
+        }
+        
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcons(isDark);
+        }
+        
+        function updateThemeIcons(isDark) {
+            if (isDark) {
+                sunIcon.classList.remove('hidden'); 
+                moonIcon.classList.add('hidden');
+            } else {
+                sunIcon.classList.add('hidden'); 
+                moonIcon.classList.remove('hidden');
+            }
+        }
+        
+        function initializeTheme() {
+            const storedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = (storedTheme === 'dark' || (!storedTheme && prefersDark));
+            
+            if (isDark) document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+            updateThemeIcons(isDark);
+        }
+
+        // Event listeners
+        addPersonBtn.addEventListener('click', addPerson);
+        personNameInput.addEventListener('keypress', e => { if (e.key === 'Enter') addPerson(); });
+        
+        quickAddBtn.addEventListener('click', () => {
+            renderQuickAddList();
+            quickAddModal.style.display = 'flex';
+        });
+        quickAddConfirmBtn.addEventListener('click', quickAddSessions);
+        quickAddCancelBtn.addEventListener('click', () => quickAddModal.style.display = 'none');
+        
+        // Task Event Listeners
+        addTaskBtn.addEventListener('click', () => {
+            populatePersonChecklist(); // Use new function
+            taskDateInput.value = new Date().toISOString().slice(0, 10);
+            addTaskModal.style.display = 'flex';
+        });
+        addTaskConfirmBtn.addEventListener('click', addTask);
+        addTaskCancelBtn.addEventListener('click', () => addTaskModal.style.display = 'none');
+        editTaskSaveBtn.addEventListener('click', updateTask);
+        editTaskCancelBtn.addEventListener('click', () => editTaskModal.style.display = 'none');
+
+        themeToggleBtn.addEventListener('click', toggleTheme);
+        languageToggleBtn.addEventListener('click', toggleLanguage);
+        editNameSaveBtn.addEventListener('click', updatePersonName);
+        editNameCancelBtn.addEventListener('click', () => editNameModal.style.display = 'none');
+        editDaySaveBtn.addEventListener('click', updateDay);
+        editDayCancelBtn.addEventListener('click', () => editDayModal.style.display = 'none');
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            initializeTheme();
+            applyLanguageToPage();
+            new MutationObserver(() => applyLanguageToPage()).observe(document.body, { childList: true, subtree: true });
+            createFloatingSymbols();
+            const connected = await updateConnectionStatus();
+            
+            const today = new Date().toISOString().slice(0, 10);
+            if (taskDateInput) taskDateInput.value = today; 
+
+            if (connected) {
+                await renderCards();
+                await renderDaysList();
+                await renderTasksList(); 
+                await populatePersonChecklist(); // Initialize checklist
+            } else {
+                 loadingIndicator.classList.add('hidden');
+                 connectionError.classList.remove('hidden');
+            }
+            setInterval(updateConnectionStatus, 10000);
+        });
+
+    </script>
+</body>
+</html>
