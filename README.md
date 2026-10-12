@@ -1,44 +1,66 @@
 # ⛪ نظام متابعة الحضور والمهام | أسرة الأنبا أرسانيوس والقديس نيقولاوس
 ### خدمة وسائل الإيضاح - الهيكل البرمجي الموحد والشامل
+**تصميم Liquid Glass زجاجي ملكي مستوحى من ألوان الشعار الرسمي**
 
-تم تنظيم وهيكلة مساحة العمل بالكامل وفق أحدث المعايير البرمجية الاحترافية (Clean Architecture & Modular Separation) ليحتوي المستودع على **مشروعين مستقلين ومنظمين بدقة عالية**:
-1. **`html_web_app`**: تطبيق الويب الكامل (HTML5 / Tailwind CSS / Vanilla JS).
-2. **`flutter_mobile_app`**: تطبيق فلاتر متعدد المنصات (Flutter Web, Mobile & Desktop).
+تم تنظيم وهيكلة مساحة العمل بالكامل وفق أحدث المعايير البرمجية الاحترافية (Clean Architecture & Modular Separation) ليحتوي المستودع على **مشروعين مستقلين ومنظمين بدقة عالية وقابلين للتوسع مستقبلاً**:
+1. **`html_web_app`**: تطبيق الويب الكامل (HTML5 / Tailwind CSS / Vanilla JS) بتصميم Liquid Glass زجاجي.
+2. **`flutter_mobile_app`**: تطبيق فلاتر متعدد المنصات (Flutter Web, Mobile & Desktop) بهيكلية الطبقات النظيفة.
 
 ---
 
-## 📂 الهيكل العام لمساحة العمل (Workspace Structure)
+## 📂 الهيكل العام لمساحة العمل المحدثة (Workspace Structure)
 
 ```text
 / (مستودع المشروع الرئيسي)
 │
 ├── 📱 flutter_mobile_app/          # [1] مشروع فلاتر (Flutter Multi-Platform App)
 │   ├── lib/                        # كود فلاتر المنظم معمارياً
-│   │   ├── constants/              # الثوابت الموحدة (AppColors, AppConstants)
+│   │   ├── constants/              # الثوابت وتدرجات Liquid Glass (AppColors, AppConstants)
 │   │   ├── models/                 # نماذج البيانات (Person, ChurchTask, ChurchEvent, AttendanceRecord)
 │   │   ├── services/               # إدارة الحالة والخدمات (AttendanceService, ExportService)
-│   │   ├── screens/                # شاشات التطبيق (Dashboard, Tasks, Events, Analytics, Dialogs)
-│   │   ├── widgets/                # المكونات البرمجية القابلة لإعادة الاستخدام
-│   │   └── main.dart               # نقطة الانطلاق مع إعداد ثيم Material 3 والعربية RTL
+│   │   ├── screens/                # شاشات التطبيق (Dashboard, Tasks, Events, Dialogs)
+│   │   ├── widgets/                # المكونات البرمجية الزجاجية (PersonCard, KPI Cards)
+│   │   └── main.dart               # نقطة الانطلاق مع دعم الثيم المزدوج واللغة
+│   ├── assets/                     # أصول فلاتر وشعار الخدمة
+│   │   └── logo.png
 │   ├── web/                        # إعدادات ويب فلاتر وmanifest.json
 │   ├── run_web.bat                 # تشغيل فوري بضغطة زر على متصفح Chrome
 │   ├── run_windows.bat             # تشغيل فوري كتطبيق مكتبي Windows
-│   ├── pubspec.yaml                # ملف الحزم والتبعيات
+│   ├── pubspec.yaml                # ملف الحزم والتبعيات والأصول
 │   └── README.md                   # دليل تشغيل وصيانة مشروع فلاتر
 │
 ├── 🌐 html_web_app/                # [2] مشروع الويب المستقل (HTML5 / JS / CSS)
-│   ├── index.html                  # واجهة المستخدم الحديثة (Tailwind CSS + RTL + Responsive)
-│   ├── app.js                      # منطق الواجهة التفاعلية وإدارة الحالة
-│   ├── data.json                   # بيانات الحضور والمهام
+│   ├── index.html                  # واجهة Liquid Glass مع الترويسة القابلة للطي والبحث السريع
+│   ├── app.js                      # منطق الواجهة التفاعلية وإدارة البحث والتصفية
 │   ├── assets/                     # مجلد الصور وشعار الخدمة
+│   │   └── logo.png
+│   ├── logo.png                    # الشعار المباشر
 │   ├── run_local.bat               # تشغيل فوري بنقرة واحدة على ويندوز
 │   └── README.md                   # دليل مشروع الويب
 │
-├── server.js                       # خادم Express لتوفير الـ APIs وخدمة التطبيقين
+├── server.js                       # خادم Express 5 لتوفير الـ APIs وحماية الملفات الحساسة
 ├── package.json                    # سكربتات التشغيل والفحص (dev, build, lint, test)
-├── data.json                       # قاعدة البيانات المحلية
+├── data.json                       # قاعدة البيانات المحلية المركزية
+├── logo.png                        # الشعار الرئيسي للمشروع
+├── PROJECT_AUDIT_AR.md             # التقرير الهندسي الشامل والتدقيق الفني
 └── README.md                       # الدليل الرئيسي المرجعي
 ```
+
+---
+
+## 🌟 أبرز التحسينات المنفذة
+
+1. **تصميم Liquid Glass المستوحى من ألوان الشعار:**
+   - زجاجي متطور مع ظلال ناعمة ولمعان حواف ذهبية وكهرمانية مأخوذة من الشعار.
+   - وضعان كاملان: نهاري (عاجي دافئ مذهب) وليلي (بني كهرماني فخم) مع تبديل سلس.
+2. **شعار ذكي يختفي مع التمرير (Collapsible Header on Scroll):**
+   - يتقلص الشعار ويختفي بنعومة عند التمرير لأسفل لتركيز الشاشة على بطاقات الخدمة والمهام.
+   - يتواجد تحته اسم الخدمة وشريط تحكم باللغات والأوضاع.
+3. **شريط بحث سريع ومباشر في بطاقات الأشخاص (`person-card-container`):**
+   - تصفية فورية بالاسم تظهر النتائج لحظياً أثناء الكتابة.
+   - عداد حي للنتائج مع زر مسح سريع.
+4. **تنظيف الملفات الزائدة وغير المطلوبة:**
+   - حذف الملفات القديمة والمكررة لضمان بنية نظيفة 100% وجاهزة للتوسع.
 
 ---
 
@@ -83,11 +105,9 @@ flutter run -d chrome
 flutter run -d windows
 ```
 
-> **ملاحظة:** تم حل وتعديل كافة أخطاء تعارض Material 3 السابقة (`CardThemeData` و `BoxConstraints`)، وأصبح الكود متوافقاً تماماً مع أحدث إصدارات Flutter 3.x.
-
 ---
 
 ## ✅ نتائج الفحص والاختبار (Verification Results)
-- **Code Linting:** تم فحص ملفات الجافاسكريبت وDart وتأكيد خلوها من الأخطاء النحوية والتعارضات.
-- **Server APIs:** خادم Express يعمل بانتظام ويخدم مجلد `html_web_app` مع توفير كافة الـ APIs (كود الاستجابة HTTP 200).
-- **Compilation:** جاهز للعمل والنشر بدون مشاكل بناء.
+- **Code Linting:** تم فحص ملفات الجافاسكريبت وDart وتأكيد خلوها من أي أخطاء نحوية.
+- **Server APIs:** خادم Express يعمل بانتظام ويخدم مجلد `html_web_app` مع توفير كافة الـ APIs.
+- **Compilation:** تم عمل Build و Compile بنجاح تام 100%.

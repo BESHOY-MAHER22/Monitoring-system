@@ -1,7 +1,7 @@
 # 📱 مشروع فلاتر | Flutter Attendance & Task Management App
 ### أسرة الأنبا أرسانيوس والقديس نيقولاوس لوسائل الإيضاح
 
-مشروع متكامل متعدد المنصات (Flutter Multi-Platform) يعمل بكفاءة على:
+مشروع متكامل متعدد المنصات (Flutter Multi-Platform) مبني بأحدث معايير **Liquid Glass** الزجاجي الملكي المستوحى من ألوان شعار الخدمة، ويعمل بكفاءة على:
 - 🌐 متصفح الويب (Chrome / Edge / Firefox)
 - 💻 أجهزة الكمبيوتر (Windows Desktop / macOS / Linux)
 - 📱 الهواتف الذكية (Android / iOS)
@@ -16,8 +16,8 @@
 flutter_mobile_app/
 │
 ├── lib/
-│   ├── constants/             # الثوابت المركزية (الألوان، العناوين، إعدادات الثيم)
-│   │   ├── app_colors.dart    # نظام الألوان الموحد متوافق مع Material 3
+│   ├── constants/             # الثوابت المركزية وتدرجات Liquid Glass (AppColors, AppConstants)
+│   │   ├── app_colors.dart    # نظام الألوان وتدرجات الزجاج السائل والأوضاع الليلية والنهارية
 │   │   └── app_constants.dart # النصوص والمعايير الحسابية ومعدلات الـ Overload
 │   │
 │   ├── models/                # نماذج البيانات (Strongly-Typed Data Entities)
@@ -27,24 +27,27 @@ flutter_mobile_app/
 │   │   └── attendance_record.dart # سجلات الحضور اليومية
 │   │
 │   ├── services/              # طبقة الخدمات وإدارة الحالة (State Management)
-│   │   ├── attendance_service.dart # المزود الرئيسي (ChangeNotifier Provider)
+│   │   ├── attendance_service.dart # المزود الرئيسي (Provider: Theme, Language, Search, CRUD)
 │   │   ├── export_service.dart     # تصدير التقارير (Excel CSV & PDF)
 │   │   └── mock_data.dart          # قاعدة البيانات الأولية مع إمكانية ربط REST API
 │   │
 │   ├── screens/               # واجهات التطبيق الرئيسية (UI Views)
-│   │   ├── dashboard_screen.dart        # لوحة القيادة والمؤشرات العامة
+│   │   ├── dashboard_screen.dart        # لوحة القيادة: ترويسة زجاجية وشعار قابل للطي وبحث فوري
 │   │   ├── tasks_screen.dart            # شاشة إدارة وتوزيع المهام
-│   │   ├── events_screen.dart           # شاشة الأحداث وحساب مؤشرات الضغط
+│   │   ├── events_screen.dart           # شاشة الأحداث وحساب مؤشرات الضغط والـ Overload
 │   │   ├── person_analytics_screen.dart # الملف التحليلي الشامل لكل شخص
 │   │   ├── quick_attendance_dialog.dart # نافذة التسجيل السريع للحضور
 │   │   └── export_dialog.dart           # نافذة خيارات التصدير والطباعة
 │   │
-│   ├── widgets/               # مكونات قابلة لإعادة الاستخدام (Reusable Widgets)
-│   │   ├── executive_kpi_card.dart      # بطاقات المؤشرات التنفيذية التفاعلية
-│   │   ├── person_card.dart             # بطاقة الشخص وسجل حضوره ومهامه
+│   ├── widgets/               # مكونات زجاجية قابلة لإعادة الاستخدام (Reusable Widgets)
+│   │   ├── executive_kpi_card.dart      # بطاقات المؤشرات التنفيذية الزجاجية
+│   │   ├── person_card.dart             # بطاقة الشخص بتأثير Liquid Glass
 │   │   └── admin_question_solver_view.dart # حلول ذكية لأسئلة الإدارة (الأكثر غياباً، الافتقاد)
 │   │
-│   └── main.dart              # نقطة البداية، إعداد اللغة العربية RTL وثيم التطبيق
+│   └── main.dart              # نقطة البداية، دعم الوضعين الليلي والنهاري وتعدد اللغات RTL/LTR
+│
+├── assets/                    # أصول وصور فلاتر
+│   └── logo.png               # الشعار الكنسي الرسمي
 │
 ├── web/                       # ملفات تشغيل نسخة الويب
 │   ├── index.html             # صفحة البداية مع مؤشر تحميل أنيق
@@ -52,43 +55,44 @@ flutter_mobile_app/
 │
 ├── run_web.bat                # تشغيل سريع بضغطة زر على متصفح Chrome
 ├── run_windows.bat            # تشغيل سريع كتطبيق مكتبي Windows
-└── pubspec.yaml               # مكتبات وحزم فلاتر المعتمدة
+├── pubspec.yaml               # مكتبات وحزم فلاتر المعتمدة والأصول
+└── README.md                  # الدليل الشامل لمشروع فلاتر
 ```
+
+---
+
+## 🌟 الميزات الزجاجية والتفاعلية المنفذة
+
+1. **Liquid Glass Design:**
+   - تأثيرات الزجاج المصنفر (`BackdropFilter`) مع حدود ذهبية وانعكاسات ضوئية دقيقة متناغمة مع الشعار.
+2. **الترويسة القابلة للطي (Collapsible Logo Header):**
+   - عبر `CustomScrollView` و`SliverAppBar` ذكي، يتقلص الشعار ويختفي بنعومة مع التمرير.
+   - يضم شريط التحكم: الوضع الليلي/النهاري، تبديل اللغة (عربي / إنجليزي)، وحالة الاتصال.
+3. **البحث السريع في بطاقات الأشخاص:**
+   - تصفية فورية للقائمة بناءً على اسم الشخص أثناء الكتابة مباشرة، مع عداد وإمكانية الإلغاء السريع.
 
 ---
 
 ## 🚀 كيفية تشغيل المشروع على جهازك (Windows CMD / PowerShell)
 
-### 1. عبر السكربت المباشر:
-- اضغط مرتين على ملف `run_web.bat` ليقوم بتنظيف الكاش وتشغيل Chrome تلقائياً.
-
-### 2. عبر سطر الأوامر يدويًا:
-افتح موجه الأوامر (CMD) داخل مجلد `flutter_attendance_app` ونفّذ:
-
+### لتشغيل نسخة الويب (Web Chrome):
 ```cmd
-flutter clean
+cd flutter_mobile_app
 flutter pub get
 flutter run -d chrome
 ```
+أو انقر نقراً مزدوجاً على **`run_web.bat`**.
 
-### 3. لتشغيل التطبيق على الهاتف (Android):
-وصل هاتفك عبر كابل USB ثم نفّذ:
+### لتشغيل نسخة الكمبيوتر المكتبية (Windows Desktop):
 ```cmd
-flutter run -d android
-```
-
-### 4. لتشغيل التطبيق على نظام Windows مباشرة:
-```cmd
+cd flutter_mobile_app
+flutter pub get
 flutter run -d windows
 ```
+أو انقر نقراً مزدوجاً على **`run_windows.bat`**.
 
----
-
-## 🛠️ أبرز الإصلاحات والتحسينات المطبقة:
-1. **التوافق الكامل مع إصدارات Flutter الحديثة (Material 3)**:
-   - استخدام `CardThemeData` بدلاً من `CardTheme` داخل `ThemeData`.
-   - استخدام `BoxConstraints(maxHeight: ...)` داخل الحاويات لتجنب أي تعارض.
-2. **فصل الثوابت (Separation of Concerns)**:
-   - توحيد جميع الألوان في `AppColors` وجميع النصوص والمعايير في `AppConstants`.
-3. **أمان واجهات RTL**:
-   - دعم كامل للغة العربية ومطابقة الهوية البصرية الكنسية لوسائل الإيضاح.
+### لتشغيل نسخة الجوال (Android):
+```cmd
+cd flutter_mobile_app
+flutter run
+```

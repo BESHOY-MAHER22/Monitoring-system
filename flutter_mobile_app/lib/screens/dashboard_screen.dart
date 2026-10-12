@@ -126,7 +126,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 ),
                                 child: ClipOval(
                                   child: Image.asset(
-                                    'logo.png',
+                                    'assets/logo.png',
                                     fit: BoxFit.cover,
                                     errorBuilder: (_, __, ___) => const Center(
                                       child: Icon(Icons.church, size: 44, color: Color(0xFF6F4921)),
