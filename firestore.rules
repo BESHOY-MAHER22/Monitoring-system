@@ -1,0 +1,114 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Catch-All Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isBootstrappedAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'besoo5118@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isAdmin() {
+      return isBootstrappedAdmin();
+    }
+
+    function isServant() {
+      return isSignedIn() && (
+        isAdmin() ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'servant'])
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidPerson(data) {
+      return data.name is string &&
+             data.name.size() >= 1 &&
+             data.name.size() <= 100;
+    }
+
+    function isValidTask(data) {
+      return data.description is string &&
+             data.description.size() >= 1 &&
+             data.description.size() <= 500 &&
+             data.personId is string &&
+             data.date is string &&
+             data.status in ['pending', 'in-progress', 'completed', 'not-completed'];
+    }
+
+    function isValidEvent(data) {
+      return data.name is string &&
+             data.name.size() >= 1 &&
+             data.name.size() <= 100 &&
+             data.startDate is string;
+    }
+
+    // Admins Collection
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow create: if isSignedIn() && request.auth.uid == userId && (
+        incoming().role in ['servant', 'viewer'] || isAdmin()
+      );
+      allow update: if isSignedIn() && (
+        isAdmin() ||
+        (request.auth.uid == userId && !incoming().diff(existing()).affectedKeys().hasAny(['role']))
+      );
+      allow delete: if isAdmin();
+    }
+
+    // People Collection
+    match /people/{personId} {
+      allow read: if isSignedIn();
+      allow create: if isServant() && isValidId(personId) && isValidPerson(incoming());
+      allow update: if isServant() && isValidId(personId) && isValidPerson(incoming());
+      allow delete: if isServant() && isValidId(personId);
+    }
+
+    // Tasks Collection
+    match /tasks/{taskId} {
+      allow read: if isSignedIn();
+      allow create: if isServant() && isValidId(taskId) && isValidTask(incoming());
+      allow update: if isServant() && isValidId(taskId) && isValidTask(incoming());
+      allow delete: if isServant() && isValidId(taskId);
+    }
+
+    // Events Collection
+    match /events/{eventId} {
+      allow read: if isSignedIn();
+      allow create: if isServant() && isValidId(eventId) && isValidEvent(incoming());
+      allow update: if isServant() && isValidId(eventId) && isValidEvent(incoming());
+      allow delete: if isServant() && isValidId(eventId);
+    }
+  }
+}

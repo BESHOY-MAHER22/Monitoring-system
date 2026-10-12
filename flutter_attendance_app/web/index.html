@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="نظام متابعة الحضور والمهام وإدارة الأحداث والـ Overload لأسرة الأنبا أرسانيوس والقديس نيقولاوس لوسائل الإيضاح">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="نظام المتابعة">
+  <title>أسرة الأنبا أرسانيوس والقديس نيقولاوس - نظام المتابعة</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f7f1e7;
+      font-family: 'Cairo', sans-serif;
+      overflow: hidden;
+    }
+    #loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #936b36;
+      font-family: 'Cairo', sans-serif;
+      text-align: center;
+    }
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #eadbce;
+      border-top-color: #936b36;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div id="loading-container">
+    <div class="spinner"></div>
+    <div style="font-weight: 700; font-size: 1.1rem;">جاري تحميل نظام المتابعة الكنسية...</div>
+    <div style="font-size: 0.85rem; color: #6e5d4f; margin-top: 4px;">أسرة الأنبا أرسانيوس والقديس نيقولاوس</div>
+  </div>
+
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      var loader = document.getElementById('loading-container');
+      if (loader) {
+        loader.remove();
+      }
+    });
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

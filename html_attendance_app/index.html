@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أسرة الانبا ارسانيوس والقديس نيقولاوس لوسائل الايضاح</title>
+    <meta name="description" content="نظام متابعة الحضور والمهام وإضافة الأشخاص لأسرة الانبا ارسانيوس والقديس نيقولاوس لوسائل الايضاح">
+    <meta property="og:title" content="Monitoring System - أسرة الانبا ارسانيوس والقديس نيقولاوس">
+    <meta property="og:description" content="نظام متابعة الحضور والمهام وإضافة الأشخاص لأسرة الانبا ارسانيوس والقديس نيقولاوس لوسائل الايضاح">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+        
+        /* الوضع النهاري - Day Mode */
+        :root {
+            --bg-color: #f7f1e7;
+            --text-color: #493521;
+            --card-bg: linear-gradient(135deg, #fffaf0 0%, #f0e2c8 100%);
+            --card-text-color: #493521;
+            --header-bg: linear-gradient(135deg, #a97c42 0%, #d4b16d 100%);
+            --header-text: #ffffff;
+            --accent-color: #ad813f;
+            --button-primary-bg: linear-gradient(135deg, #936b36 0%, #6f4b27 100%);
+            --button-primary-hover: linear-gradient(135deg, #79572f 0%, #56391f 100%);
+        }
+
+        /* الوضع الليلي - Night Mode */
+        .dark {
+            --bg-color: #211912;
+            --text-color: #f2e7d4;
+            --card-bg: linear-gradient(135deg, #3a2a1d 0%, #2b1e15 100%);
+            --card-text-color: #f0d28a;
+            --header-bg: linear-gradient(135deg, #332317 0%, #76542c 100%);
+            --header-text: #ffffff;
+            --accent-color: #d7ad5c;
+            --button-primary-bg: linear-gradient(135deg, #bd9148 0%, #89612e 100%);
+            --button-primary-hover: linear-gradient(135deg, #d0a653 0%, #a67838 100%);
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease;
+            direction: inherit;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Floating Coptic Symbols */
+        .floating-symbols {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .symbol {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+            user-select: none;
+        }
+        
+        .symbol.cross { color: #c9a227; }
+        .symbol.fish { color: #d7ad5c; }
+        .symbol.lamb { color: #ef4444; }
+        .symbol.book { color: #10b981; }
+        .symbol.censer { color: #f59e0b; }
+        .symbol.coptic { color: #a97c42; font-family: serif; }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(10vw, 25vh) rotate(90deg);
+            }
+            50% {
+                transform: translate(20vw, 10vh) rotate(180deg);
+            }
+            75% {
+                transform: translate(5vw, 30vh) rotate(270deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+        
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg); color: var(--text-color); border-radius: 1.5rem;
+            padding: 2.5rem; width: 90%; max-width: 600px; max-height: 90vh; text-align: center;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2); overflow-y: auto; animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quick-add-list { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+        .quick-add-item { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.75rem;
+            background-color: var(--bg-color); border-radius: 0.75rem; transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .quick-add-item:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); }
+
+        .person-card-container { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+
+        .person-card {
+            background: var(--card-bg);
+            color: var(--card-text-color);
+            border-radius: 1.5rem; padding: 2rem; text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .person-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: -1;
+            margin: -2px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, #6f4b27, #d7ad5c, #f0d28a);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .person-card:hover::before {
+            opacity: 1;
+        }
+
+        .person-card h3 { color: var(--card-text-color); }
+        .person-card .mt-4 { color: var(--card-text-color); }
+
+        .person-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); }
+
+        .avatar {
+            width: 96px; height: 96px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 3rem; font-weight: bold; color: white; margin-bottom: 1rem; 
+            background: linear-gradient(135deg, #6f4b27, #bd9148, #e2c17d);
+            transition: all 0.3s ease-in-out; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .avatar:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Attendance Box Styling */
+        .attendance-box {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: inherit;
+            padding: 1.5rem; border-radius: 1rem; font-size: 2.5rem; font-weight: bold;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            margin-top: 1.5rem; transition: background-color 0.3s ease; min-width: 150px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .attendance-box span:first-child { font-size: 2.5rem; }
+        .attendance-box span:last-child { font-size: 1rem; font-weight: normal; margin-top: 0.25rem;}
+        
+        /* Specific colors for Attendance */
+        .attendance-box.perfect { 
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white; 
+        }
+        .attendance-box.absent-critical { 
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white; 
+        }
+
+        /* Specific colors for Tasks */
+        .task-box {
+            background: linear-gradient(135deg, #a7f3d0, #6ee7b7);
+            color: #065f46;
+            margin-top: 1rem;
+        }
+        .task-box.low-ratio {
+            background: linear-gradient(135deg, #fca5a5, #f87171);
+            color: #991b1b;
+        }
+
+        .attendance-text { font-size: 1rem; font-weight: normal; }
+
+        .history-list li, .day-details-list li { 
+            padding: 0.75rem; border-radius: 0.75rem; transition: all 0.2s ease-in-out; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .history-list li.present, .day-details-list li.present { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; }
+        .history-list li.excused, .day-details-list li.excused { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; }
+        .history-list li.absent, .day-details-list li.absent { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #991b1b; }
+        /* Task history status colors */
+        .history-list li.task-completed { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; }
+        .history-list li.task-pending { background: linear-gradient(135deg, #fffbeb, #fef3c7); color: #92400e; }
+        .history-list li.task-in-progress { background: linear-gradient(135deg, #dbeafe, #93c5fd); color: #1e40af; }
+        .history-list li.task-not-completed { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #991b1b; }
+
+        .dark .history-list li.present, .dark .day-details-list li.present, .dark .history-list li.task-completed { background: linear-gradient(135deg, #064e3b, #065f46); color: #a7f3d0; }
+        .dark .history-list li.excused, .dark .day-details-list li.excused, .dark .history-list li.task-pending { background: linear-gradient(135deg, #78350f, #92400e); color: #fde68a; }
+        .dark .history-list li.absent, .dark .day-details-list li.absent, .dark .history-list li.task-not-completed { background: linear-gradient(135deg, #7f1d1d, #991b1b); color: #fecaca; }
+        .dark .history-list li.task-in-progress { background: linear-gradient(135deg, #1e3a8a, #1e40af); color: #93c5fd; }
+        
+        .logo-container {
+            position: relative; width: 120px; height: 120px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; 
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); animation: pulse 2s infinite;
+            overflow: hidden;
+        }
+
+        @keyframes pulse { 
+            0% { transform: scale(1); } 
+            50% { transform: scale(1.05); } 
+            100% { transform: scale(1); } 
+        }
+        
+        .logo-container img { 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 50%; 
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo-container:hover img {
+            transform: scale(1.1);
+        }
+        
+        .connection-dot { 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            background-color: #ef4444; 
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px #ef4444;
+        }
+        .connection-dot.online { 
+            background-color: #10b981; 
+            box-shadow: 0 0 10px #10b981;
+            animation: pulse-dot 2s infinite;
+        }
+        
+        @keyframes pulse-dot {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%;
+            border-left-color: var(--accent-color); animation: spin 1s ease infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #personCardsContainer { min-height: 200px; }
+
+        .days-list { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+        .day-item {
+            background: var(--card-bg); border-radius: 1rem; padding: 1.5rem;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); transition: all 0.2s ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            flex-direction: column;
+        }
+        @media (min-width: 640px) {
+            .day-item { flex-direction: row; align-items: center; }
+        }
+        .day-item:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); }
+        .day-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+        @media (min-width: 640px) { .day-actions { margin-top: 0; } }
+        
+        .day-action-btn { 
+            padding: 0.5rem; 
+            border-radius: 0.5rem; 
+            cursor: pointer; 
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .day-action-btn:hover { 
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+        .form-input {
+            width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #9ca3af;
+            background-color: var(--bg-color); color: var(--text-color);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-input:focus { 
+            outline: none; 
+            border-color: var(--accent-color); 
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.5); 
+        }
+        .dark .form-input { border: 1px solid #4b5563; }
+        
+        /* Task status styling for the list */
+        .task-status-completed { color: #10b981; }
+        .task-status-pending { color: #f59e0b; }
+        .task-status-in-progress { color: #3b82f6; }
+        .task-status-not-completed { color: #ef4444; }
+        
+        /* Task status circles */
+        .task-status-circles {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .status-circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        
+        .status-circle:hover {
+            transform: scale(1.2);
+        }
+        
+        .status-circle.pending {
+            background-color: #f59e0b;
+        }
+        
+        .status-circle.in-progress {
+            background-color: #3b82f6;
+        }
+        
+        .status-circle.completed {
+            background-color: #10b981;
+        }
+        
+        .status-circle.active {
+            border: 2px solid #000;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+        
+        .dark .status-circle.active {
+            border: 2px solid #fff;
+            box-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+        
+        /* Button styles with gradients */
+        .btn-primary {
+            background: var(--button-primary-bg);
+            color: white;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary:hover {
+            background: var(--button-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #4b5563, #374151);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Person Tag in Task List */
+        .person-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            margin-left: 4px;
+            margin-bottom: 4px;
+        }
+        .dark .person-tag {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .language-toggle {
+            width: 42px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            font-size: 1.45rem;
+            line-height: 1;
+        }
+        .ltr .text-right { text-align: left; }
+        .ltr .text-left { text-align: right; }
+
+        /* Report Tables & Print Layout */
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: right;
+        }
+        .report-table th, .report-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px 12px;
+        }
+        .report-table th {
+            background-color: #f3f4f6;
+            color: #374151;
+            font-weight: 700;
+        }
+        .report-table tr:nth-child(even) td {
+            background-color: #fafafa;
+        }
+        .dark .report-table th {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            border-color: #374151;
+        }
+        .dark .report-table td {
+            border-color: #374151;
+        }
+        .dark .report-table tr:nth-child(even) td {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Pure Print Stylesheet */
+        @media print {
+            body {
+                background: #ffffff !important;
+                color: #111827 !important;
+                font-size: 12pt !important;
+            }
+            body * {
+                visibility: hidden !important;
+            }
+            #printableReportArea, #printableReportArea * {
+                visibility: visible !important;
+            }
+            #printableReportArea {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 10mm !important;
+                background: #ffffff !important;
+                color: #111827 !important;
+                display: block !important;
+            }
+            .no-print, .modal-buttons, .floating-symbols {
+                display: none !important;
+            }
+            .avoid-break {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .page-break {
+                page-break-before: always !important;
+                break-before: page !important;
+            }
+        }
+    </style>
+</head>
+<body class="transition-colors duration-300">
+
+    <!-- Floating Coptic Symbols -->
+    <div class="floating-symbols" id="floatingSymbols"></div>
+
+    <div id="customAlertModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle" class="text-xl font-bold mb-4"></h2>
+            <p id="modalMessage" class="text-md mb-6"></p>
+            <div class="modal-buttons">
+                <button id="modalOkBtn" class="btn-primary">حسناً</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="customConfirmModal" class="modal">
+        <div class="modal-content">
+            <h2 id="confirmTitle" class="text-xl font-bold mb-4">تأكيد</h2>
+            <p id="confirmMessage" class="text-md mb-6">هل أنت متأكد من حذف هذا الشخص؟</p>
+            <div class="modal-buttons flex justify-center gap-4">
+                <button id="confirmYesBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200">نعم</button>
+                <button id="confirmNoBtn" class="btn-secondary">لا</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="quickAddModal" class="modal">
+        <div class="modal-content" style="max-width: 720px; width: 95%; max-height: 92vh;">
+            <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-3 mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">⚡</span>
+                    <h2 class="text-xl font-bold">تسجيل الحضور السريع والغياب والاعتذارات</h2>
+                </div>
+                <button id="quickAddCloseXBtn" class="text-gray-400 hover:text-gray-600 text-2xl font-bold cursor-pointer" type="button">&times;</button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 text-right">
+                <div>
+                    <label for="dayNameInput" class="block mb-1 text-xs font-bold text-gray-700 dark:text-gray-300">اسم اليوم / الاجتماع (اختياري)</label>
+                    <input type="text" id="dayNameInput" class="form-input text-sm py-2" placeholder="مثال: اجتماع الخدام / درس كتاب">
+                </div>
+                <div>
+                    <label for="quickAddDateInput" class="block mb-1 text-xs font-bold text-gray-700 dark:text-gray-300">تاريخ الجلسة</label>
+                    <input type="date" id="quickAddDateInput" class="form-input text-sm py-2">
+                </div>
+            </div>
+
+            <!-- Quick Action Toolbar -->
+            <div class="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 mb-3">
+                <div class="flex items-center gap-2">
+                    <button id="markAllPresentBtn" type="button" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition cursor-pointer shadow-sm">
+                        🟢 الكل حاضر
+                    </button>
+                    <button id="markAllAbsentBtn" type="button" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-red-600 hover:bg-red-700 text-white transition cursor-pointer shadow-sm">
+                        🔴 الكل غائب بدون عذر
+                    </button>
+                </div>
+                <div class="flex-grow max-w-xs">
+                    <input type="text" id="quickAddSearchInput" class="form-input text-xs py-1.5 px-3 w-full" placeholder="بحث بالاسم لتسجيل عذر...">
+                </div>
+            </div>
+
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-2 text-right">
+                حدد حالة كل شخص: <span class="font-bold text-emerald-600">حاضر 🟢</span> | <span class="font-bold text-amber-600">غياب باعتذار 🟡</span> | <span class="font-bold text-red-600">غياب بدون عذر 🔴</span>
+            </p>
+
+            <div id="quickAddList" class="quick-add-list mb-4 overflow-y-auto max-h-72 divide-y divide-gray-100 dark:divide-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-2 bg-white/5"></div>
+
+            <div class="flex justify-end gap-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                <button id="quickAddConfirmBtn" class="btn-primary">حفظ واعتماد الجلسة</button>
+                <button id="quickAddCancelBtn" class="btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="addTaskModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-6">إضافة مهمة جديدة</h2>
+            <div class="mb-4 text-right">
+                <label for="taskDescriptionInput" class="block mb-2 font-semibold">وصف المهمة</label>
+                <input type="text" id="taskDescriptionInput" class="form-input" placeholder="مثال: شراء 15 شارة لمارمينا" required>
+            </div>
+            <div class="mb-4 text-right">
+                <label for="taskDateInput" class="block mb-2 font-semibold">تاريخ الاستحقاق</label>
+                <input type="date" id="taskDateInput" class="form-input" required>
+            </div>
+            <div class="mb-6 text-right">
+                <label class="block mb-2 font-semibold">تعيين لـ (اختر شخصاً أو أكثر):</label>
+                <div id="taskPeopleList" class="quick-add-list" style="max-height: 200px; overflow-y: auto; padding: 10px; border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem;"></div>
+            </div>
+            <div class="flex justify-end gap-4">
+                <button id="addTaskConfirmBtn" class="btn-primary">إضافة</button>
+                <button id="addTaskCancelBtn" class="btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="editTaskModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-6">تعديل المهمة</h2>
+            <p class="text-sm mb-4 text-gray-500 dark:text-gray-400">تنبيه: تعديل الحالة أو الوصف سيطبق على جميع الأشخاص المشاركين في هذه المهمة.</p>
+            <input type="hidden" id="editTaskId">
+            <div class="mb-4 text-right">
+                <label for="editTaskDescriptionInput" class="block mb-2 font-semibold">وصف المهمة</label>
+                <input type="text" id="editTaskDescriptionInput" class="form-input" required>
+            </div>
+            <div class="mb-4 text-right">
+                <label for="editTaskDateInput" class="block mb-2 font-semibold">تاريخ الاستحقاق</label>
+                <input type="date" id="editTaskDateInput" class="form-input" required>
+            </div>
+            <div class="mb-6 text-right">
+                <label for="editTaskStatus" class="block mb-2 font-semibold">الحالة (للجميع)</label>
+                <select id="editTaskStatus" class="form-input">
+                    <option value="pending">قيد الانتظار</option>
+                    <option value="in-progress">قيد التنفيذ</option>
+                    <option value="completed">منجزة</option>
+                    <option value="not-completed">لم يتم إنجازها</option>
+                </select>
+            </div>
+            <div class="flex justify-end gap-4">
+                <button id="editTaskSaveBtn" class="btn-primary">حفظ</button>
+                <button id="editTaskCancelBtn" class="btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="editDayModal" class="modal">
+        <div class="modal-content" style="max-width: 720px; width: 95%; max-height: 92vh;">
+            <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-3 mb-4">
+                <h2 class="text-xl font-bold text-right flex items-center gap-2">
+                    <span>✏️ تعديل بيانات اليوم وحالات الحضور والاعتذار</span>
+                </h2>
+                <button id="closeEditDayXBtn" class="text-gray-400 hover:text-gray-600 text-2xl font-bold cursor-pointer" type="button">&times;</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 text-right">
+                <div>
+                    <label for="editDayNameInput" class="block mb-1 text-xs font-bold">اسم اليوم / الاجتماع</label>
+                    <input type="text" id="editDayNameInput" class="form-input text-sm py-2" placeholder="مثال: اجتماع الخدام">
+                </div>
+                <div>
+                    <label for="editDateInput" class="block mb-1 text-xs font-bold">التاريخ</label>
+                    <input type="date" id="editDateInput" class="form-input text-sm py-2">
+                </div>
+            </div>
+            <div class="mb-4 text-right border-t border-gray-200 dark:border-gray-700 pt-3">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="block text-xs font-bold">تعديل حالة كل شخص لهذا اليوم:</label>
+                    <span class="text-[11px] text-gray-500">حاضر 🟢 | معتذر 🟡 | غائب بدون عذر 🔴</span>
+                </div>
+                <div id="editDayAddList" class="quick-add-list divide-y divide-gray-100 dark:divide-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-2 bg-white/5" style="max-height: 280px; overflow-y: auto;">
+                    <!-- People status options rendered dynamically -->
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
+                <button id="editDaySaveBtn" class="btn-primary">حفظ وتحديث اليوم</button>
+                <button id="editDayCancelBtn" class="btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="personHistoryModal" class="modal">
+        <div class="modal-content" style="max-width: 650px; width: 95%;">
+            <div class="flex items-center justify-between border-b pb-3 mb-4">
+                <h2 id="personHistoryTitle" class="text-xl font-bold text-right">تاريخ الحضور لـ</h2>
+                <button id="closePersonHistoryXBtn" class="text-gray-400 hover:text-gray-600 text-2xl font-bold cursor-pointer" type="button">&times;</button>
+            </div>
+            <ul id="personHistoryList" class="history-list space-y-2 text-right max-h-96 overflow-y-auto"></ul>
+            <div class="flex justify-end mt-4 pt-3 border-t">
+                <button id="closePersonHistoryBtn" class="btn-secondary">إغلاق</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="editNameModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-6">تعديل اسم الشخص</h2>
+            <input type="text" id="editNameInput" dir="auto" class="form-input mb-6" placeholder="أدخل الاسم الجديد">
+            <div class="flex justify-end gap-4">
+                <button id="editNameSaveBtn" class="btn-primary">حفظ</button>
+                <button id="editNameCancelBtn" class="btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dayDetailsModal" class="modal">
+        <div class="modal-content" style="max-width: 700px; width: 95%; max-height: 92vh;">
+            <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-3 mb-4">
+                <h2 id="dayDetailsTitle" class="text-xl font-bold text-right flex items-center gap-2">
+                    <span>📋 تفاصيل الحضور والاعتذار لليوم</span>
+                </h2>
+                <button id="closeDayDetailsXBtn" class="text-gray-400 hover:text-gray-600 text-2xl font-bold cursor-pointer" type="button">&times;</button>
+            </div>
+            <!-- Day Details Categorized Tabs & Counters -->
+            <div class="grid grid-cols-3 gap-2 mb-4 text-center">
+                <div class="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                    <span class="text-xs text-gray-500 block">حاضرون 🟢</span>
+                    <span id="dayDetailsPresentCount" class="text-lg font-bold text-emerald-600">0</span>
+                </div>
+                <div class="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                    <span class="text-xs text-gray-500 block">معتذرون 🟡</span>
+                    <span id="dayDetailsExcusedCount" class="text-lg font-bold text-amber-600">0</span>
+                </div>
+                <div class="p-2 rounded-xl bg-red-500/10 border border-red-500/20">
+                    <span class="text-xs text-gray-500 block">بدون عذر 🔴</span>
+                    <span id="dayDetailsAbsentCount" class="text-lg font-bold text-red-600">0</span>
+                </div>
+            </div>
+            <ul id="dayDetailsList" class="day-details-list space-y-2 text-right overflow-y-auto max-h-80"></ul>
+            <div class="flex justify-end mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
+                <button id="closeDayDetailsBtn" class="btn-secondary">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Person Visual Analytics Modal -->
+    <div id="personAnalyticsModal" class="modal">
+        <div class="modal-content" style="max-width: 900px; width: 95%;">
+            <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">📊</span>
+                    <div class="text-right">
+                        <h2 id="analyticsPersonName" class="text-2xl font-bold">رسوم بيانية وتحليلات الأداء</h2>
+                        <p class="text-xs text-gray-500">تحليل مفصل للالتزام العام ونزولات الأحداث والمهام</p>
+                    </div>
+                </div>
+                <button id="closeAnalyticsBtn" class="text-gray-400 hover:text-gray-700 dark:hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
+            </div>
+
+            <!-- Key Metric Stats Cards -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
+                <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center">
+                    <span class="text-[11px] text-gray-500 block font-semibold">صافي الالتزام بالعذر ⭐</span>
+                    <span id="metricCommitmentRate" class="text-xl font-bold text-emerald-600">0%</span>
+                </div>
+                <div class="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center">
+                    <span class="text-[11px] text-gray-500 block font-semibold">الحضور الفعلي</span>
+                    <span id="metricAttendanceRate" class="text-xl font-bold text-blue-600">0%</span>
+                    <span id="metricTotalSessions" class="text-[10px] text-gray-400 block mt-0.5">0 / 0</span>
+                </div>
+                <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-center">
+                    <span class="text-[11px] text-gray-500 block font-semibold">حاضر / عذر / بدون عذر</span>
+                    <div class="flex items-center justify-center gap-1.5 mt-1 font-bold text-xs">
+                        <span id="metricCountPresent" class="text-emerald-600">0 🟢</span>
+                        <span id="metricCountExcused" class="text-amber-600">0 🟡</span>
+                        <span id="metricCountAbsent" class="text-red-600">0 🔴</span>
+                    </div>
+                </div>
+                <div class="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-center">
+                    <span class="text-[11px] text-gray-500 block font-semibold">نزول Overload ⚡</span>
+                    <span id="metricTotalOverload" class="text-xl font-bold text-purple-600">+0 نزول</span>
+                </div>
+                <div class="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-center col-span-2 sm:col-span-1">
+                    <span class="text-[11px] text-gray-500 block font-semibold">إنجاز المهام</span>
+                    <span id="metricTaskRate" class="text-xl font-bold text-indigo-600">0%</span>
+                </div>
+            </div>
+
+            <!-- 4 Visual Charts Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-right mb-6">
+                <!-- Chart 1: Attendance Breakdown -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 shadow-sm flex flex-col items-center">
+                    <h3 class="text-sm font-bold mb-3 w-full text-right flex items-center gap-2">
+                        <span>🎯 توزيع الحضور والاعتذارات والغياب بدون إذن</span>
+                    </h3>
+                    <div style="height: 240px; width: 100%; position: relative;">
+                        <canvas id="attendanceDoughnutChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Events & Overload Bar Chart -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 shadow-sm flex flex-col items-center">
+                    <h3 class="text-sm font-bold mb-3 w-full text-right flex items-center gap-2">
+                        <span>🎪 الالتزام في الأحداث والمواسم (الهدف 2 + Overload)</span>
+                    </h3>
+                    <div style="height: 240px; width: 100%; position: relative;">
+                        <canvas id="eventsBarChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 3: Task Status Breakdown -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 shadow-sm flex flex-col items-center">
+                    <h3 class="text-sm font-bold mb-3 w-full text-right flex items-center gap-2">
+                        <span>📝 توزيع حالات المهام الموكلة</span>
+                    </h3>
+                    <div style="height: 240px; width: 100%; position: relative;">
+                        <canvas id="tasksStatusChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 4: Monthly Timeline -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 shadow-sm flex flex-col items-center">
+                    <h3 class="text-sm font-bold mb-3 w-full text-right flex items-center gap-2">
+                        <span>📈 التزام الحضور عبر الأشهر</span>
+                    </h3>
+                    <div style="height: 240px; width: 100%; position: relative;">
+                        <canvas id="monthlyTimelineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Specific Event Commitment & Overload Deep-Dive (التزام الشخص في حدث معين) -->
+            <div class="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-right mb-6">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-4 border-b border-amber-500/20 pb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">🎯</span>
+                        <div>
+                            <h3 class="text-base font-bold text-amber-700 dark:text-amber-300">تحليل الالتزام في حدث معين والـ Overload</h3>
+                            <p class="text-xs text-gray-500">اختر الحدث لرؤية رسم بياني وتفاصيل مرات النزول العادية والإضافية</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label for="analyticsEventSelect" class="text-xs font-semibold">اختر الحدث:</label>
+                        <select id="analyticsEventSelect" class="form-input text-xs py-1.5 px-3 min-w-[200px] bg-white dark:bg-gray-800">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+
+                <div id="specificEventContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                    <!-- Chart 5: Event Specific Polar/Doughnut Chart -->
+                    <div class="p-3 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center">
+                        <h4 class="text-xs font-bold mb-2 text-center w-full">توزيع النزول في هذا الحدث (الهدف 2 + Overload ⚡)</h4>
+                        <div style="height: 200px; width: 100%; position: relative;">
+                            <canvas id="specificEventChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Specific Event Details & Sessions Log -->
+                    <div class="flex flex-col gap-2">
+                        <div id="specificEventStatusCard" class="p-3 rounded-xl bg-white/5 border border-white/10">
+                            <!-- Populated with metrics -->
+                        </div>
+                        <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                            <h5 class="text-xs font-bold mb-2 flex items-center justify-between">
+                                <span>سجل النزول في هذا الحدث:</span>
+                                <span id="specificEventSessionCountBadge" class="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-600 font-bold">0 نزول</span>
+                            </h5>
+                            <div id="specificEventSessionsList" class="space-y-1.5 max-h-36 overflow-y-auto text-xs">
+                                <!-- Sessions listed here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center gap-3">
+                <button id="exportPersonReportBtn" class="btn-primary py-2 px-4 text-xs flex items-center gap-1.5" style="background: linear-gradient(135deg, #4f46e5, #3730a3);">
+                    <span>تصدير تقرير الشخص (PDF / CSV) 📊</span>
+                </button>
+                <button id="closeAnalyticsOkBtn" class="btn-secondary">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add New Event Modal -->
+    <div id="addEventModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-6">إضافة حدث / موسم جديد 🎪</h2>
+            <div class="mb-4 text-right">
+                <label for="eventNameInput" class="block mb-2 font-semibold">اسم الحدث أو الموسم</label>
+                <input type="text" id="eventNameInput" class="form-input" placeholder="مثال: موسم صوم العدرا، كريسماس، عيد القيامة" required>
+            </div>
+            <div class="mb-4 text-right">
+                <label for="eventDescriptionInput" class="block mb-2 font-semibold">وصف الحدث (اختياري)</label>
+                <input type="text" id="eventDescriptionInput" class="form-input" placeholder="مثال: تجهيزات المعرض وتزيين الكنيسة">
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-4 text-right">
+                <div>
+                    <label for="eventStartDateInput" class="block mb-2 font-semibold">تاريخ البداية</label>
+                    <input type="date" id="eventStartDateInput" class="form-input" required>
+                </div>
+                <div>
+                    <label for="eventEndDateInput" class="block mb-2 font-semibold">تاريخ النهاية (اختياري)</label>
+                    <input type="date" id="eventEndDateInput" class="form-input">
+                </div>
+            </div>
+            <div class="mb-6 text-right">
+                <label for="eventTargetInput" class="block mb-2 font-semibold">الحد المطلوب لكل شخص (مرات النزول العادية)</label>
+                <input type="number" id="eventTargetInput" class="form-input" value="2" min="1" max="10">
+                <p class="text-xs text-gray-500 mt-1">افتراضياً مرتين. أي حضور يزيد عن هذا الحد يُحتسب تلقائياً كـ Overload ⚡.</p>
+            </div>
+            <div class="flex justify-end gap-4">
+                <button id="saveEventBtn" class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);">حفظ الحدث</button>
+                <button id="cancelEventBtn" class="btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Details & Attendance / Overload Tracking Modal -->
+    <div id="eventAttendanceModal" class="modal">
+        <div class="modal-content" style="max-width: 850px; width: 95%;">
+            <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
+                <div class="text-right">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">🎪</span>
+                        <h2 id="eventModalTitle" class="text-2xl font-bold">تفاصيل الحدث</h2>
+                    </div>
+                    <p id="eventModalDates" class="text-xs text-gray-500 mt-1"></p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="exportEventReportBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow transition cursor-pointer flex items-center gap-1" title="تصدير تقرير هذا الحدث">
+                        <span>تصدير تقرير الحدث 📄</span>
+                    </button>
+                    <button id="deleteEventBtn" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow transition cursor-pointer" title="حذف الحدث">
+                        حذف الحدث 🗑️
+                    </button>
+                    <button id="closeEventModalBtn" class="text-gray-400 hover:text-gray-700 dark:hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
+                </div>
+            </div>
+
+            <!-- Event Stat Counters -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                <div class="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center">
+                    <span class="text-xs text-gray-500 block">إجمالي الحاضرين</span>
+                    <span id="eventAttendeesCount" class="text-xl font-bold text-blue-600">0</span>
+                </div>
+                <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center">
+                    <span class="text-xs text-gray-500 block">أكملوا المطلوب (2/2)</span>
+                    <span id="eventCompletedTargetCount" class="text-xl font-bold text-emerald-600">0</span>
+                </div>
+                <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-center">
+                    <span class="text-xs text-gray-500 block">نزول إضافي Overload ⚡</span>
+                    <span id="eventOverloadCount" class="text-xl font-bold text-amber-600">0</span>
+                </div>
+                <div class="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-center">
+                    <span class="text-xs text-gray-500 block">إجمالي مرات النزول</span>
+                    <span id="eventTotalSessionsCount" class="text-xl font-bold text-purple-600">0</span>
+                </div>
+            </div>
+
+            <!-- Tab 1: Record New Event Session -->
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 mb-6 text-right">
+                <h3 class="text-base font-bold mb-3 flex items-center gap-2 text-amber-600 dark:text-amber-400">
+                    <span>✍️ تسجيل نزول جديد لهذا الحدث (يضاف تلقائياً لحضور كل شخص مع عداد المرات والـ Overload)</span>
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">تاريخ النزول</label>
+                        <input type="date" id="eventSessionDateInput" class="form-input text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">بيان / ملاحظة (اختياري)</label>
+                        <input type="text" id="eventSessionNoteInput" class="form-input text-sm" placeholder="مثال: تجهيزات المخزن، الترتيبات">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="text-xs font-semibold">اختر الأشخاص الحاضرين في هذا النزول:</label>
+                        <button id="eventSelectAllBtn" type="button" class="text-xs text-blue-500 hover:underline">تحديد الكل</button>
+                    </div>
+                    <div id="eventPeopleChecklist" class="quick-add-list" style="max-height: 180px; overflow-y: auto;">
+                        <!-- Checkboxes rendered here with their current count -->
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <button id="confirmRecordEventSessionBtn" class="btn-primary text-sm py-2 px-5">
+                        تسجيل نزول الحاضرين ⚡
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 2: Roster Summary with Overload Tracker -->
+            <div class="text-right">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <h3 class="text-base font-bold flex items-center gap-2">
+                        <span>👥 ملخص حضور الخدام في هذا الحدث وحالات الـ Overload</span>
+                    </h3>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <input type="text" id="searchEventPersonInput" class="form-input text-xs py-1 px-3 w-36" placeholder="بحث بالاسم...">
+                        <div class="flex rounded-lg overflow-hidden border border-white/20 text-xs">
+                            <button id="filterAllEventBtn" type="button" class="px-2 py-1 bg-amber-500 text-white font-bold cursor-pointer">الكل</button>
+                            <button id="filterAttendeesEventBtn" type="button" class="px-2 py-1 bg-white/10 hover:bg-white/20 text-gray-300 cursor-pointer">حضروا</button>
+                            <button id="filterOverloadEventBtn" type="button" class="px-2 py-1 bg-white/10 hover:bg-white/20 text-gray-300 cursor-pointer">⚡ Overload</button>
+                            <button id="filterAbsentEventBtn" type="button" class="px-2 py-1 bg-white/10 hover:bg-white/20 text-gray-300 cursor-pointer">لم يحضروا</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="eventRosterList" class="space-y-2" style="max-height: 280px; overflow-y: auto;">
+                    <!-- People rows rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reports Export & Print Center Modal -->
+    <div id="exportReportsModal" class="modal">
+        <div class="modal-content" style="max-width: 950px; width: 95%; max-height: 92vh; text-align: right;">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
+                <div class="text-right">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">📊</span>
+                        <h2 class="text-2xl font-bold">مركز تقارير الحضور والأحداث للمسؤولين</h2>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">تصدير وطباعة تقارير المتابعة والالتزام بصيغ CSV (Excel) أو PDF بمستويين (ملخص للمسؤولين وتفصيلي شامل)</p>
+                </div>
+                <button id="closeExportModalBtn" class="text-gray-400 hover:text-gray-700 dark:hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
+            </div>
+
+            <!-- Configuration Controls Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5 p-4 rounded-2xl bg-white/5 border border-white/10">
+                <!-- Control 1: Report Scope -->
+                <div>
+                    <label class="block text-xs font-bold mb-2 text-amber-600 dark:text-amber-400">1. نطاق ومحتوى التقرير:</label>
+                    <select id="exportScopeSelect" class="form-input text-xs w-full bg-white dark:bg-gray-800 p-2.5 rounded-xl border border-white/20">
+                        <option value="all">🌟 تقرير شامل موحد (الجميع + الأيام + الأحداث + الـ Overload + المهام)</option>
+                        <option value="events">🎪 تقرير الأحداث والنزول والـ Overload ⚡ (تفاصيل كل حدث)</option>
+                        <option value="attendance">📃 تقرير الحضور العام وتواريخ الأيام</option>
+                        <option value="specific-event">🎯 تقرير لحدث معين محدد</option>
+                        <option value="specific-person">👤 تقرير لشخص معين محدد</option>
+                    </select>
+
+                    <!-- Sub-select for Specific Event -->
+                    <div id="exportSpecificEventRow" class="mt-2 hidden">
+                        <label class="block text-[11px] font-semibold mb-1">اختر الحدث المطلوب:</label>
+                        <select id="exportSpecificEventSelect" class="form-input text-xs w-full bg-white dark:bg-gray-800 p-2 rounded-lg"></select>
+                    </div>
+
+                    <!-- Sub-select for Specific Person -->
+                    <div id="exportSpecificPersonRow" class="mt-2 hidden">
+                        <label class="block text-[11px] font-semibold mb-1">اختر الشخص المطلوب:</label>
+                        <select id="exportSpecificPersonSelect" class="form-input text-xs w-full bg-white dark:bg-gray-800 p-2 rounded-lg"></select>
+                    </div>
+                </div>
+
+                <!-- Control 2: Report Version (Summary vs Detailed) -->
+                <div>
+                    <label class="block text-xs font-bold mb-2 text-amber-600 dark:text-amber-400">2. مستوى التفاصيل للمسؤولين:</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="report-version-card p-3 rounded-xl border-2 border-amber-500 bg-amber-500/10 cursor-pointer flex flex-col justify-between transition-all" id="labelVersionSummary">
+                            <div class="flex items-center gap-2 mb-1">
+                                <input type="radio" name="reportVersionRadio" value="summary" checked class="accent-amber-500">
+                                <span class="font-bold text-xs">📋 نسخة ملخصة</span>
+                            </div>
+                            <p class="text-[10px] text-gray-500 dark:text-gray-400">مؤشرات ونسب مئوية وجداول مركزة بدون سرد كل تاريخ منفرد - مثالية للمسؤولين وأمناء الخدمة.</p>
+                        </label>
+                        <label class="report-version-card p-3 rounded-xl border border-white/20 bg-white/5 cursor-pointer flex flex-col justify-between transition-all" id="labelVersionDetailed">
+                            <div class="flex items-center gap-2 mb-1">
+                                <input type="radio" name="reportVersionRadio" value="detailed" class="accent-amber-500">
+                                <span class="font-bold text-xs">📑 نسخة بتفاصيل</span>
+                            </div>
+                            <p class="text-[10px] text-gray-500 dark:text-gray-400">سجل زمني دقيق لكل تاريخ وجلسة، مسمى النزول (المرة رقم n)، حالات Overload ⚡، والملاحظات والمهام.</p>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Actions Toolbar -->
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-4 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="font-bold text-blue-600">⚡ الإجراءات الفورية:</span>
+                    <span class="text-gray-500">اختر الصيغة المناسبة لتصدير التقرير خارج النظام:</span>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button id="exportCsvBtn" type="button" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-3.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <span>تصدير CSV (Excel) 📗</span>
+                    </button>
+                    <button id="exportPdfBtn" type="button" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-3.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                        <span>تحميل PDF 📕</span>
+                    </button>
+                    <button id="printReportBtn" type="button" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2 px-3.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                        <span>طباعة التقرير (Print) 🖨️</span>
+                    </button>
+                    <button id="refreshReportPreviewBtn" type="button" class="bg-gray-600 hover:bg-gray-700 text-white text-xs font-bold py-2 px-3 rounded-xl shadow transition cursor-pointer" title="تحديث المعاينة">
+                        <span>تحديث 🔄</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Live Report Preview Frame -->
+            <div class="mb-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-bold text-gray-500 flex items-center gap-1">
+                        <span>👁️ معاينة مباشرة للتقرير المجهز:</span>
+                    </span>
+                    <span id="previewMetaBadge" class="text-[11px] text-gray-400"></span>
+                </div>
+                <div id="reportPreviewScrollContainer" class="p-4 rounded-2xl bg-white text-gray-900 border border-gray-200 overflow-y-auto max-h-[460px] shadow-inner text-right" style="direction: rtl;">
+                    <!-- Rendered Report Content goes here inside printableReportArea -->
+                    <div id="printableReportArea">
+                        <div class="text-center py-8 text-gray-400">جاري تجهيز التقرير...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex justify-end gap-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                <button id="closeExportBottomBtn" class="btn-secondary">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="flex flex-col items-center p-6 mb-8 text-white rounded-3xl shadow-lg" style="background: var(--header-bg)">
+            <h1 class="text-3xl font-bold mb-4 text-center">أسرة الانبا ارسانيوس والقديس نيقولاوس لوسائل الايضاح</h1>
+            <div class="flex items-center justify-between w-full max-w-2xl relative">
+                <div class="flex items-center gap-2">
+                    <div id="connectionStatus" class="connection-dot"></div>
+                    <span id="connectionText" class="text-sm">جاري الاتصال...</span>
+                </div>
+
+                <div class="logo-container">
+                    <img src="logo.png" alt="Family Logo" onerror="this.onerror=null; this.src='https://placehold.co/120x120/a770ef/ffffff?text=شعار العائلة'">
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <button id="languageToggleBtn" class="language-toggle hover:bg-white/20 transition-colors duration-200" type="button" aria-label="Switch language">🇪🇬</button>
+                    <button id="themeToggleBtn" class="p-2 rounded-full hover:bg-white/20 transition-colors duration-200" type="button" aria-label="Toggle theme">
+                        <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                        <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- User Authentication & Role Bar -->
+            <div id="authBar" class="w-full max-w-2xl mt-4 pt-4 border-t border-white/20 flex flex-wrap items-center justify-between gap-3 text-sm">
+                <!-- Logged Out State -->
+                <div id="loggedOutView" class="flex items-center justify-between w-full flex-wrap gap-2">
+                    <div class="flex items-center gap-2">
+                        <span class="text-white/90 text-xs md:text-sm">👋 لتسجيل الحضور وإدارة المهام، يرجى تسجيل الدخول:</span>
+                    </div>
+                    <button id="googleSignInBtn" type="button" class="bg-white text-gray-800 hover:bg-gray-100 font-bold py-1.5 px-3 md:py-2 md:px-4 rounded-xl shadow flex items-center gap-2 transition cursor-pointer">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+                        <span>تسجيل الدخول مع Google</span>
+                    </button>
+                </div>
+                <!-- Logged In State -->
+                <div id="loggedInView" class="hidden flex items-center justify-between w-full flex-wrap gap-2">
+                    <div class="flex items-center gap-3">
+                        <img id="userAvatar" src="" alt="Avatar" class="w-9 h-9 rounded-full border-2 border-white/60 shadow bg-white/20">
+                        <div class="flex flex-col text-right">
+                            <div class="flex items-center gap-2">
+                                <span id="userName" class="font-bold text-sm"></span>
+                                <span id="userRoleBadge" class="text-xs px-2 py-0.5 rounded-full font-semibold bg-amber-500 text-white shadow">👑 مسؤول</span>
+                            </div>
+                            <span id="userEmail" class="text-xs text-white/70"></span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button id="syncDataBtn" type="button" title="مزامنة بيانات data.json القديمة مع Firestore" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow transition cursor-pointer">
+                            مزامنة من السيرفر ☁️
+                        </button>
+                        <button id="signOutBtn" type="button" class="bg-white/20 hover:bg-white/30 text-white text-xs font-bold py-1.5 px-3 rounded-lg transition cursor-pointer">
+                            خروج 🚪
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="w-full p-6 rounded-3xl shadow-lg flex flex-col mb-8" style="background: var(--card-bg);">
+                <h2 class="text-2xl font-bold mb-6" style="color: var(--card-text-color);">الحضور والمهام وإضافة أشخاص</h2>
+                <div class="flex flex-col gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"> 
+                        <button id="quickAddBtn" class="btn-primary">
+                            الحضور السريع ⚡
+                        </button>
+                        <button id="addTaskBtn" class="btn-primary" style="background: linear-gradient(135deg, #bd9148, #89612e);">
+                             إضافة مهمة 📝
+                        </button>
+                        <button id="openAddEventModalBtn" class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);">
+                             إضافة حدث / موسم 🎪
+                        </button>
+                        <button id="openExportCenterBtn" class="btn-primary" style="background: linear-gradient(135deg, #4f46e5, #3730a3);">
+                             تصدير التقارير (CSV / PDF) 📊
+                        </button>
+                    </div>
+                    <div class="flex-grow w-full">
+                        <div class="flex gap-2 w-full">
+                            <input type="text" id="personNameInput" dir="auto" class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 text-gray-800" placeholder="أدخل اسم شخص جديد">
+                            <button id="addPersonBtn" class="btn-primary" style="background: linear-gradient(135deg, #8c6635, #5f4226);">
+                                إضافة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events & Overload Management Section -->
+            <div class="w-full p-6 rounded-3xl shadow-lg flex flex-col mb-8" style="background: var(--card-bg);">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-2xl font-bold flex items-center gap-2" style="color: var(--card-text-color);">
+                            <span>الأحداث والمواسم والمناسبات الخاصة</span>
+                            <span class="text-lg">🎪</span>
+                        </h2>
+                    </div>
+                    <button id="addEventQuickBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-4 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
+                        <span>+ إضافة حدث جديد</span>
+                    </button>
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-4 text-right">
+                    كل شخص مطلوب منه حضور مرتين (2 نزول) في كل حدث. بعد المرتين يتم احتساب أي نزول إضافي كـ <strong class="text-amber-600 font-bold">Overload ⚡</strong>.
+                </p>
+                <div id="eventsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Event cards rendered here -->
+                </div>
+                <div id="noEventsMessage" class="text-center py-6 text-gray-500 hidden">
+                    <p>لا توجد أحداث ومناسبات مضافة بعد. اضغط على "+ إضافة حدث جديد" لتنظيم حضور المواسم ومتابعة الـ Overload.</p>
+                </div>
+            </div>
+
+            <!-- Admin Executive Insights & Questions Solver Section (مركز إجابات أسئلة المسؤول والمتابعة الذكية) -->
+            <div id="adminInsightsSection" class="w-full p-6 rounded-3xl shadow-lg flex flex-col mb-8 transition-all" style="background: var(--card-bg); border: 1px solid rgba(245, 158, 11, 0.25);">
+                <!-- Section Header with Toggle & Copy Action -->
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4 border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-600 flex items-center justify-center text-xl font-bold">
+                            🎯
+                        </div>
+                        <div class="text-right">
+                            <h2 class="text-2xl font-bold flex items-center gap-2" style="color: var(--card-text-color);">
+                                <span>مركز استفسارات المسؤول والتحليل الذكي للغياب</span>
+                                <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500 text-white font-bold">إجابات فورية ⚡</span>
+                            </h2>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                                تحليل فوري لحالات الغياب بدون عذر، متابعة الاعتذارات، تنبيهات الافتقاد العاجل، ولوحة الشرف للمنضبطين
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button id="copyAdminBriefBtn" type="button" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-3.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1.5" title="نسخ تقرير رسالة موجزة جاهزة للإرسال في واتساب">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                            <span>نسخ تقرير المسؤول (WhatsApp) 📋</span>
+                        </button>
+                        <button id="toggleAdminInsightsBtn" type="button" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 text-xs font-bold py-2 px-3 rounded-xl transition cursor-pointer flex items-center gap-1">
+                            <span id="toggleAdminInsightsText">طي المركز ▴</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Collapsible Container -->
+                <div id="adminInsightsContent" class="space-y-6">
+                    <!-- Executive Summary KPI Cards -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center">
+                        <div class="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/20">
+                            <span class="text-[11px] text-gray-500 dark:text-gray-400 block font-semibold">إجمالي المخدومين</span>
+                            <span id="kpiTotalPeople" class="text-2xl font-black text-blue-600">0</span>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
+                            <span class="text-[11px] text-gray-500 dark:text-gray-400 block font-semibold">متوسط الالتزام بالعذر</span>
+                            <span id="kpiAvgCommitment" class="text-2xl font-black text-emerald-600">0%</span>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-red-500/10 border border-red-500/20">
+                            <span class="text-[11px] text-red-600 dark:text-red-400 block font-bold">افتقاد عاجل (غياب متتالي)</span>
+                            <span id="kpiUrgentFollowup" class="text-2xl font-black text-red-600">0</span>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20">
+                            <span class="text-[11px] text-gray-500 dark:text-gray-400 block font-semibold">غياب بدون عذر 🔴</span>
+                            <span id="kpiTotalUnexcused" class="text-2xl font-black text-rose-600">0</span>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+                            <span class="text-[11px] text-gray-500 dark:text-gray-400 block font-semibold">غياب باعتذار 🟡</span>
+                            <span id="kpiTotalExcused" class="text-2xl font-black text-amber-600">0</span>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-purple-500/10 border border-purple-500/20">
+                            <span class="text-[11px] text-gray-500 dark:text-gray-400 block font-semibold">100% انضباط كامل ⭐</span>
+                            <span id="kpiPerfectPeople" class="text-2xl font-black text-purple-600">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Question Pills / Tabs Selector -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-gray-600 dark:text-gray-300 flex items-center gap-1.5">
+                                <span>❓ اختر السؤال للإجابة المباشرة:</span>
+                            </span>
+                            <span class="text-[11px] text-gray-400" id="currentQuestionSubtitle">عرض الحالات الأكثر احتياجاً للمتابعة</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2" id="questionTabsContainer">
+                            <button type="button" data-q="unexcused" class="q-tab-btn active px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer bg-red-600 text-white shadow">
+                                <span>🚨 الأكثر غياباً بدون عذر</span>
+                                <span id="badgeUnexcusedCount" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px]">0</span>
+                            </button>
+                            <button type="button" data-q="followup" class="q-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-red-500/20">
+                                <span>📞 يحتاجون افتقاد فوري (غياب متتالي)</span>
+                                <span id="badgeFollowupCount" class="px-1.5 py-0.2 rounded-full bg-red-500/20 text-red-600 text-[10px]">0</span>
+                            </button>
+                            <button type="button" data-q="excused" class="q-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-amber-500/20">
+                                <span>📝 أصحاب الاعتذارات المتكررة</span>
+                                <span id="badgeExcusedCount" class="px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-600 text-[10px]">0</span>
+                            </button>
+                            <button type="button" data-q="honors" class="q-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-emerald-500/20">
+                                <span>🌟 لوحة الشرف (أعلى التزام)</span>
+                                <span id="badgeHonorsCount" class="px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-600 text-[10px]">0</span>
+                            </button>
+                            <button type="button" data-q="overload" class="q-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-purple-500/20">
+                                <span>⚡ أبطال الأحداث والـ Overload</span>
+                                <span id="badgeOverloadCount" class="px-1.5 py-0.2 rounded-full bg-purple-500/20 text-purple-600 text-[10px]">0</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Answer Feed & Search Tool -->
+                    <div class="p-4 rounded-2xl bg-white/5 border border-white/10 text-right">
+                        <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+                            <h3 id="insightsResultHeading" class="text-sm font-bold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                                <span>🚨 قائمة الأكثر غياباً بدون عذر (تحتاج إنذار وتواصل):</span>
+                            </h3>
+                            <div class="flex items-center gap-2">
+                                <input type="text" id="insightsSearchInput" class="form-input text-xs py-1.5 px-3 min-w-[200px]" placeholder="بحث بالاسم في النتائج...">
+                            </div>
+                        </div>
+
+                        <!-- Results List Container -->
+                        <div id="insightsResultsList" class="space-y-2 max-h-96 overflow-y-auto">
+                            <!-- Populated with dynamic cards -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="personCardsContainer" class="person-card-container"></div>
+            
+            <div id="loadingIndicator" class="text-center mt-8 text-lg">
+                <div class="flex justify-center items-center gap-4">
+                    <div class="spinner"></div>
+                    <p>جاري تحميل البيانات...</p>
+                </div>
+            </div>
+            <div id="noDataMessage" class="text-center mt-8 text-gray-500 hidden">
+                <p>لا يوجد أشخاص مضافة بعد. استخدم الحقل أعلاه لإضافة أول شخص.</p>
+            </div>
+            <div id="connectionError" class="text-center mt-8 text-red-500 hidden">
+                <p>فشل في الاتصال بالسيرفر. يرجى التأكد من أن السيرفر يعمل بشكل صحيح.</p>
+            </div>
+
+            <div class="w-full p-6 rounded-3xl shadow-lg flex flex-col mb-8 mt-8" style="background: var(--card-bg);">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2" style="color: var(--card-text-color);">
+                    <span>قائمة الأيام المسجلة</span>
+                    <span class="text-lg">📃</span>
+                </h2>
+                <div id="daysListContainer" class="days-list"></div>
+                <div id="daysLoadingIndicator" class="text-center mt-4 text-lg hidden">
+                    <div class="flex justify-center items-center gap-4">
+                        <div class="spinner"></div>
+                        <p>جاري تحميل قائمة الأيام...</p>
+                    </div>
+                </div>
+                <div id="noDaysMessage" class="text-center mt-4 text-gray-500 hidden">
+                    <p>لا توجد أيام مسجلة بعد.</p>
+                </div>
+            </div>
+
+            <div class="w-full p-6 rounded-3xl shadow-lg flex flex-col mb-8 mt-8" style="background: var(--card-bg);">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2" style="color: var(--card-text-color);">
+                    <span>قائمة المهام</span>
+                    <span class="text-lg">📋</span>
+                </h2>
+                <div id="tasksListContainer" class="days-list"></div>
+                <div id="tasksLoadingIndicator" class="text-center mt-4 text-lg hidden">
+                    <div class="flex justify-center items-center gap-4">
+                        <div class="spinner"></div>
+                        <p>جاري تحميل قائمة المهام...</p>
+                    </div>
+                </div>
+                <div id="noTasksMessage" class="text-center mt-4 text-gray-500 hidden">
+                    <p>لا توجد مهام مسجلة بعد.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

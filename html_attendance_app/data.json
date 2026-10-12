@@ -1,0 +1,3578 @@
+{
+    "people": [
+        {
+            "id": "1754582776112",
+            "name": "فيلوباتير امجد",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": false,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": true,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": false,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": true,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": false,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": false,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": false,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": false,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": true,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": false,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": true,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                },
+                {
+                    "date": "2026-08-08",
+                    "status": true,
+                    "dayName": "موسم صوم السيدة العذراء - المرة رقم 1 [تجهيز المعرض]",
+                    "eventId": "0a6ab81d-ff7d-41e8-a915-abf66315056f"
+                },
+                {
+                    "date": "2026-08-10",
+                    "status": true,
+                    "dayName": "موسم صوم السيدة العذراء - المرة رقم 2 [خدمة المعرض]",
+                    "eventId": "0a6ab81d-ff7d-41e8-a915-abf66315056f"
+                },
+                {
+                    "date": "2026-08-12",
+                    "status": true,
+                    "dayName": "موسم صوم السيدة العذراء - المرة رقم 3 (Overload +1 ⚡) [نزول إضافي لترتيبات العيد]",
+                    "eventId": "0a6ab81d-ff7d-41e8-a915-abf66315056f"
+                }
+            ]
+        },
+        {
+            "id": "1754582781783",
+            "name": "ماريو هانى",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": true,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": true,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": false,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": false,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": false,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": false,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": false,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": true,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": true,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": true,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": true,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": true,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": false,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": true,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": true,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582788780",
+            "name": "كيرلس صموئيل",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": false,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": true,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": false,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": false,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": false,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": false,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": false,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": false,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": true,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": false,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": true,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": true,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": true,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582794677",
+            "name": "مدحت سمير",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": false,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": false,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": true,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": false,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": false,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": false,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": false,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": true,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": false,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": true,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": true,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": true,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": true,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": true,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": true,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": true,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": true,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582800000",
+            "name": "مجدى طلعت",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": true,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": false,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": false,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": true,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": true,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": false,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": false,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": false,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": true,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": true,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": false,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": true,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": false,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": true,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582811118",
+            "name": "فيلوباتير برسوم",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": false,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": false,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": false,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": false,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": false,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": false,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": false,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": false,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": false,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": true,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": false,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": false,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": true,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582835054",
+            "name": "يوأنا برسوم",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": true,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": false,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": true,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": false,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": true,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": true,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": true,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": true,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": true,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": false,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": false,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": false,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": false,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582840733",
+            "name": "جورج ماهر",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": true,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": true,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": true,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": true,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": true,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": true,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": true,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": true,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": true,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": true,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": true,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": true,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": true,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": true,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": true,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": true,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": true,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": true,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": true,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": true,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582844940",
+            "name": "بيشوى ماهر",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": true,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": true,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": true,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": true,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": true,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": true,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": true,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": true,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": true,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": true,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": true,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": true,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": true,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": true,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": true,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": true,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": true,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": true,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": true,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": true,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": true,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": true,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": true,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582853968",
+            "name": "مايكل عزت",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": true,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": false,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": false,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": true,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": true,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": true,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": false,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": true,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": true,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": true,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": true,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": true,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": false,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582857905",
+            "name": "مارينا عزت",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": true,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": true,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": false,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": true,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": true,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": false,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": true,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": false,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": false,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": false,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": false,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582863636",
+            "name": "مينا مجدى",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": true,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": false,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": true,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": false,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": true,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": true,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": true,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": false,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": false,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": true,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": false,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": true,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": true,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582868509",
+            "name": "مارفن سمير",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": false,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": false,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": true,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": false,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": false,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": true,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": true,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": false,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": false,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": true,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": false,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": true,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582874436",
+            "name": "مريم امير",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": false,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": true,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": false,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": true,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": false,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": false,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": false,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": true,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": false,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": false,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": false,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": false,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582877889",
+            "name": "ابانوب سامر",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": false,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": false,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": false,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": false,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": false,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": false,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": false,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": false,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": false,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": false,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": false,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582881645",
+            "name": "مريم سامر",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": false,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": true,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": false,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": true,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": false,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": false,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": false,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": false,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": false,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": false,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": false,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582890852",
+            "name": "فيرونيكا رافت",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": true,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": false,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": false,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": false,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": true,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": true,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": true,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": true,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": true,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": true,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": true,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582895781",
+            "name": "ميرنا عادل",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": false,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": true,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": false,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": true,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": true,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": false,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": true,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": false,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": false,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": false,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": false,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582901873",
+            "name": "مارينا امجد",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": false,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": false,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": true,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": false,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": true,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": true,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": true,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": true,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": true,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": false,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": true,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": true,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": true,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": true,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": true,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582905927",
+            "name": "مارينا هانى",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": false,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": false,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": false,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": false,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": false,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": false,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": false,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": false,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": true,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": false,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": false,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": true,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754582974869",
+            "name": "يوستينا عاطف",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": false,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": false,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": false,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": false,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": false,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": false,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": false,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": false,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": false,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": false,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": false,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": false,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": false,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": false,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "1754767473028",
+            "name": "رمزى عريان",
+            "attendance": [
+                {
+                    "date": "2025-08-09",
+                    "status": true,
+                    "dayName": "صوم العدرا"
+                },
+                {
+                    "date": "2025-08-26",
+                    "status": false,
+                    "dayName": "ازالة زينة صوم العدرا"
+                },
+                {
+                    "date": "2025-09-04",
+                    "status": true,
+                    "dayName": "حفلة السمر سكول"
+                },
+                {
+                    "date": "2025-09-12",
+                    "status": true,
+                    "dayName": "حفلة اعدادى"
+                },
+                {
+                    "date": "2025-08-01",
+                    "status": true,
+                    "dayName": "تنظيم مخزن مرسى خليل"
+                },
+                {
+                    "date": "2025-09-13",
+                    "status": true,
+                    "dayName": "حفلة ثانوى"
+                },
+                {
+                    "date": "2025-07-31",
+                    "status": true,
+                    "dayName": "اجتماع online"
+                },
+                {
+                    "date": "2025-09-19",
+                    "status": true,
+                    "dayName": "حفلة ابتدائى"
+                },
+                {
+                    "date": "2025-09-20",
+                    "status": true,
+                    "dayName": "حفلة شباب"
+                },
+                {
+                    "date": "2025-09-28",
+                    "status": false,
+                    "dayName": "حفلة اعداد خدام"
+                },
+                {
+                    "date": "2025-10-02",
+                    "status": true,
+                    "dayName": "نقل الدولاب"
+                },
+                {
+                    "date": "2025-10-16",
+                    "status": true,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": true,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": true,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": true,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": true,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": false,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": true,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": true,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": true,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        },
+        {
+            "id": "4b92e14a-e1b1-496f-bf66-1585dcfe59e6",
+            "name": "فيولا رأفت",
+            "attendance": [
+                {
+                    "date": "2025-10-16",
+                    "status": false,
+                    "dayName": "تزيين البيت لزياره سيدنا"
+                },
+                {
+                    "date": "2025-11-16",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-08",
+                    "status": true,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2025-12-09",
+                    "status": false,
+                    "dayName": "ننقل حاجات من مرسى خليل لبيت العدرا"
+                },
+                {
+                    "date": "2025-12-16",
+                    "status": false,
+                    "dayName": "كريسماس 1"
+                },
+                {
+                    "date": "2025-12-21",
+                    "status": true,
+                    "dayName": "كريسماس2"
+                },
+                {
+                    "date": "2025-12-22",
+                    "status": false,
+                    "dayName": "كريسماس3\"مرسى خليل\""
+                },
+                {
+                    "date": "2025-12-23",
+                    "status": false,
+                    "dayName": "كريسماس4\"بيت العدرا1\""
+                },
+                {
+                    "date": "2025-12-24",
+                    "status": false,
+                    "dayName": "كريسماس5\"بيت العدرا2\""
+                },
+                {
+                    "date": "2025-12-25",
+                    "status": false,
+                    "dayName": "كريسماس6\"بيت العدرا3\""
+                },
+                {
+                    "date": "2026-04-11",
+                    "status": false,
+                    "dayName": "عيد القيامة"
+                },
+                {
+                    "date": "2026-03-14",
+                    "status": false,
+                    "dayName": "اجتماع"
+                },
+                {
+                    "date": "2026-03-10",
+                    "status": false,
+                    "dayName": "ترتيب مخزن بيت العدرا"
+                },
+                {
+                    "date": "2026-02-10",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 1"
+                },
+                {
+                    "date": "2026-02-15",
+                    "status": false,
+                    "dayName": "شيل زينه الكريماس 2"
+                },
+                {
+                    "date": "2026-04-12",
+                    "status": false,
+                    "dayName": "بلالين عيد القيامة"
+                },
+                {
+                    "date": "2026-05-01",
+                    "status": false,
+                    "dayName": "شيل القبر"
+                },
+                {
+                    "date": "2026-04-27",
+                    "status": false,
+                    "dayName": "شيل البلالين"
+                }
+            ]
+        }
+    ],
+    "tasks": [
+        {
+            "id": "e47c454f-a825-475b-b6e7-637b7b57afa3",
+            "description": "يشترى 15 شاره لمارمينا",
+            "personId": "1754582794677",
+            "date": "2025-11-04",
+            "status": "completed"
+        },
+        {
+            "id": "2d1aa83e-d738-4c03-906e-cbf4115dad2c",
+            "description": "تشترى زينه لخدمة اعدادى",
+            "personId": "1754582890852",
+            "date": "2025-11-04",
+            "status": "completed"
+        },
+        {
+            "id": "90eb73b3-c513-4de2-9e5c-54d5379b4222",
+            "description": "تزين الروف لخدمة اعدادى",
+            "personId": "1754582901873",
+            "date": "2025-11-07",
+            "status": "completed"
+        },
+        {
+            "id": "f6c8fe5f-810e-47a3-a9c3-15191119842a",
+            "description": "تشتري زينة لخدمة اعدادي",
+            "personId": "4b92e14a-e1b1-496f-bf66-1585dcfe59e6",
+            "date": "2025-11-04",
+            "status": "completed"
+        },
+        {
+            "id": "dc0ff1fe-8394-468e-9b15-0072ee972057",
+            "description": "ورد & بلالين للكريسماس",
+            "personId": "1754582890852",
+            "date": "2025-11-19",
+            "status": "completed"
+        },
+        {
+            "id": "29a1caf9-09b9-4a85-9bdb-e8722dd7b4d1",
+            "description": "ورد&بلالين للكريسماس",
+            "personId": "1754582844940",
+            "date": "2025-11-19",
+            "status": "completed"
+        },
+        {
+            "id": "ca6e4b86-bc7e-40ee-a15a-98c2b12e178f",
+            "description": "ورد & بلالين للكريسماس",
+            "personId": "1754582853968",
+            "date": "2025-11-19",
+            "status": "completed"
+        },
+        {
+            "id": "d531ec6c-77b6-43ba-a922-55087b36d633",
+            "batchId": "c0873e87-cedc-4c0d-b1e0-2470f32c08ab",
+            "description": "تزيين بيت العدرا لنهضة مارمينا",
+            "personId": "1754582840733",
+            "date": "2025-11-20",
+            "status": "completed"
+        },
+        {
+            "id": "78377942-2d5b-409c-af5b-03a1e6d138e5",
+            "batchId": "c0873e87-cedc-4c0d-b1e0-2470f32c08ab",
+            "description": "تزيين بيت العدرا لنهضة مارمينا",
+            "personId": "1754767473028",
+            "date": "2025-11-20",
+            "status": "completed"
+        },
+        {
+            "id": "3b6732ba-5f16-4d07-8f12-c51b2b043de4",
+            "batchId": "cde65f73-577e-4eda-9bd2-b7825d6f015a",
+            "description": "يشترى خامات1",
+            "personId": "1754582794677",
+            "date": "2025-12-15",
+            "status": "completed"
+        },
+        {
+            "id": "a9d17420-a1c6-4d7a-9fa0-3e7214f00929",
+            "batchId": "cde65f73-577e-4eda-9bd2-b7825d6f015a",
+            "description": "يشترى خامات1",
+            "personId": "1754582844940",
+            "date": "2025-12-15",
+            "status": "completed"
+        },
+        {
+            "id": "1bd347b7-4942-45a2-89d5-0b14956b191a",
+            "batchId": "cde65f73-577e-4eda-9bd2-b7825d6f015a",
+            "description": "يشترى خامات1",
+            "personId": "1754767473028",
+            "date": "2025-12-15",
+            "status": "completed"
+        },
+        {
+            "id": "da46254f-3eb9-489b-a9d5-0eee4a7130f8",
+            "batchId": "ee43bedb-fe3b-45a1-98e6-c11658ce63fa",
+            "description": "يشترى خامات 2",
+            "personId": "1754582901873",
+            "date": "2025-12-19",
+            "status": "completed"
+        },
+        {
+            "id": "a895e88c-316b-4ff3-9373-3e132855406f",
+            "batchId": "a4bb0708-dfb9-4d1d-a96f-073cb5044b7b",
+            "description": "يشترى خامات",
+            "personId": "1754582844940",
+            "date": "2026-05-04",
+            "status": "completed"
+        }
+    ],
+    "events": [
+        {
+            "id": "0a6ab81d-ff7d-41e8-a915-abf66315056f",
+            "name": "موسم صوم السيدة العذراء",
+            "description": "",
+            "startDate": "2026-08-07",
+            "endDate": "2026-08-22",
+            "targetCount": 2,
+            "sessions": [
+                {
+                    "date": "2026-08-08",
+                    "personId": "1754582776112",
+                    "sessionNumber": 1,
+                    "note": "تجهيز المعرض"
+                },
+                {
+                    "date": "2026-08-10",
+                    "personId": "1754582776112",
+                    "sessionNumber": 2,
+                    "note": "خدمة المعرض"
+                },
+                {
+                    "date": "2026-08-12",
+                    "personId": "1754582776112",
+                    "sessionNumber": 3,
+                    "note": "نزول إضافي لترتيبات العيد"
+                }
+            ],
+            "createdAt": "2026-10-11T16:53:06.908Z"
+        }
+    ]
+}

@@ -148,6 +148,24 @@
                     "date": "2026-04-27",
                     "status": false,
                     "dayName": "شيل البلالين"
+                },
+                {
+                    "date": "2026-08-08",
+                    "status": true,
+                    "dayName": "موسم صوم السيدة العذراء - المرة رقم 1 [تجهيز المعرض]",
+                    "eventId": "0a6ab81d-ff7d-41e8-a915-abf66315056f"
+                },
+                {
+                    "date": "2026-08-10",
+                    "status": true,
+                    "dayName": "موسم صوم السيدة العذراء - المرة رقم 2 [خدمة المعرض]",
+                    "eventId": "0a6ab81d-ff7d-41e8-a915-abf66315056f"
+                },
+                {
+                    "date": "2026-08-12",
+                    "status": true,
+                    "dayName": "موسم صوم السيدة العذراء - المرة رقم 3 (Overload +1 ⚡) [نزول إضافي لترتيبات العيد]",
+                    "eventId": "0a6ab81d-ff7d-41e8-a915-abf66315056f"
                 }
             ]
         },
@@ -3524,6 +3542,37 @@
             "personId": "1754582844940",
             "date": "2026-05-04",
             "status": "completed"
+        }
+    ],
+    "events": [
+        {
+            "id": "0a6ab81d-ff7d-41e8-a915-abf66315056f",
+            "name": "موسم صوم السيدة العذراء",
+            "description": "",
+            "startDate": "2026-08-07",
+            "endDate": "2026-08-22",
+            "targetCount": 2,
+            "sessions": [
+                {
+                    "date": "2026-08-08",
+                    "personId": "1754582776112",
+                    "sessionNumber": 1,
+                    "note": "تجهيز المعرض"
+                },
+                {
+                    "date": "2026-08-10",
+                    "personId": "1754582776112",
+                    "sessionNumber": 2,
+                    "note": "خدمة المعرض"
+                },
+                {
+                    "date": "2026-08-12",
+                    "personId": "1754582776112",
+                    "sessionNumber": 3,
+                    "note": "نزول إضافي لترتيبات العيد"
+                }
+            ],
+            "createdAt": "2026-10-11T16:53:06.908Z"
         }
     ]
 }

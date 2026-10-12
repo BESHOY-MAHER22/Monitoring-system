@@ -1,0 +1,92 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with role",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "servant", "viewer"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["email", "role"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Admin authorization record",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["email", "role"]
+    },
+    "Person": {
+      "title": "Person",
+      "description": "Person tracked in attendance system",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "attendance": { "type": "array" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["name"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "Assigned task",
+      "type": "object",
+      "properties": {
+        "batchId": { "type": "string" },
+        "description": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "personId": { "type": "string" },
+        "date": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "in-progress", "completed", "not-completed"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["description", "personId", "date", "status"]
+    },
+    "Event": {
+      "title": "Event",
+      "description": "Special event or season with required attendance and overload counter",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 500 },
+        "startDate": { "type": "string" },
+        "endDate": { "type": "string" },
+        "targetCount": { "type": "number" },
+        "sessions": { "type": "array" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["name", "startDate"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/admins/{adminId}": {
+      "schema": "Admin",
+      "description": "Admin privileges map"
+    },
+    "/people/{personId}": {
+      "schema": "Person",
+      "description": "People and attendance records"
+    },
+    "/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "Task records"
+    },
+    "/events/{eventId}": {
+      "schema": "Event",
+      "description": "Special events and seasons"
+    }
+  }
+}

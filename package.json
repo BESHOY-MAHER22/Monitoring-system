@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "echo \"Build complete\"",
+    "lint": "node --check server.js && node --check app.js && node --check html_attendance_app/app.js",
+    "test": "node --check server.js && node --check app.js"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +16,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "firebase": "^13.0.0",
     "uuid": "^13.0.0"
   }
 }

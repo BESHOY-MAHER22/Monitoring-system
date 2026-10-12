@@ -1,0 +1,7 @@
+{
+  "name": "Monitoring System - أسرة الانبا ارسانيوس والقديس نيقولاوس",
+  "description": "نظام متابعة الحضور والمهام وإضافة الأشخاص لأسرة الانبا ارسانيوس والقديس نيقولاوس لوسائل الايضاح",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
