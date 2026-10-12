@@ -93,6 +93,10 @@ const addTaskBtn = document.getElementById('addTaskBtn');
 const openAddEventModalBtn = document.getElementById('openAddEventModalBtn');
 const addEventQuickBtn = document.getElementById('addEventQuickBtn');
 const personCardsContainer = document.getElementById('personCardsContainer');
+const personCardsSearchInput = document.getElementById('personCardsSearchInput');
+const clearPersonCardsSearchBtn = document.getElementById('clearPersonCardsSearchBtn');
+const personSearchResultsCount = document.getElementById('personSearchResultsCount');
+let personCardsSearchQuery = '';
 const loadingIndicator = document.getElementById('loadingIndicator');
 const noDataMessage = document.getElementById('noDataMessage');
 const connectionError = document.getElementById('connectionError');
@@ -600,13 +604,46 @@ function renderCardsFromCache() {
     connectionError.classList.add('hidden');
     personCardsContainer.innerHTML = '';
 
-    const peopleWithStats = calculatePeopleStats(cachedPeople, cachedTasks);
+    const allPeopleWithStats = calculatePeopleStats(cachedPeople, cachedTasks);
 
-    if (peopleWithStats.length === 0) {
+    if (allPeopleWithStats.length === 0) {
         noDataMessage.classList.remove('hidden');
+        if (personSearchResultsCount) personSearchResultsCount.innerText = '0 شخص';
         return;
     }
     noDataMessage.classList.add('hidden');
+
+    // Filter people by query (name search)
+    const query = (personCardsSearchQuery || '').trim().toLowerCase();
+    const peopleWithStats = allPeopleWithStats.filter(person => {
+        if (!query) return true;
+        const rawName = (person.name || '').toLowerCase();
+        const transliterated = (transliterateArabic(person.name) || '').toLowerCase();
+        return rawName.includes(query) || transliterated.includes(query);
+    });
+
+    // Update Counter & Clear button state
+    if (personSearchResultsCount) {
+        personSearchResultsCount.innerText = `${peopleWithStats.length} من ${allPeopleWithStats.length} شخص`;
+    }
+    if (clearPersonCardsSearchBtn) {
+        clearPersonCardsSearchBtn.classList.toggle('hidden', !query);
+    }
+
+    if (peopleWithStats.length === 0) {
+        personCardsContainer.innerHTML = `
+            <div class="col-span-full text-center py-12 p-6 rounded-2xl liquid-glass">
+                <span class="text-4xl block mb-2">🔍</span>
+                <h4 class="text-base font-bold mb-1" style="color: var(--card-text-color)">لا توجد نتائج مطابقة للبحث "${escapeHTML(personCardsSearchQuery)}"</h4>
+                <p class="text-xs text-gray-500">تأكد من كتابة الاسم بصورة صحيحة أو قم بمسح البحث لعرض جميع الأشخاص.</p>
+                <button type="button" onclick="clearPersonSearchAndFocus()" class="mt-4 px-4 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white cursor-pointer hover:bg-amber-600 transition shadow">
+                    عرض جميع الأشخاص
+                </button>
+            </div>
+        `;
+        renderAdminInsights();
+        return;
+    }
 
     peopleWithStats.forEach((person) => {
         const card = document.createElement('div');
@@ -4494,6 +4531,41 @@ function initEventListeners() {
     if (exportPdfBtn) exportPdfBtn.addEventListener('click', downloadReportPDF);
     if (printReportBtn) printReportBtn.addEventListener('click', printReport);
     if (refreshReportPreviewBtn) refreshReportPreviewBtn.addEventListener('click', renderReportPreview);
+
+    // Quick Search in person-card-container
+    if (personCardsSearchInput) {
+        personCardsSearchInput.addEventListener('input', (e) => {
+            personCardsSearchQuery = e.target.value;
+            renderCardsFromCache();
+        });
+    }
+
+    if (clearPersonCardsSearchBtn) {
+        clearPersonCardsSearchBtn.addEventListener('click', () => {
+            clearPersonSearchAndFocus();
+        });
+    }
+
+    // Global helper to clear search
+    window.clearPersonSearchAndFocus = () => {
+        personCardsSearchQuery = '';
+        if (personCardsSearchInput) {
+            personCardsSearchInput.value = '';
+            personCardsSearchInput.focus();
+        }
+        renderCardsFromCache();
+    };
+
+    // Auto Collapse Logo in Header on Scroll
+    const mainHeader = document.getElementById('mainAppHeader');
+    window.addEventListener('scroll', () => {
+        if (!mainHeader) return;
+        if (window.scrollY > 40) {
+            mainHeader.classList.add('scrolled');
+        } else {
+            mainHeader.classList.remove('scrolled');
+        }
+    }, { passive: true });
 
     themeToggleBtn.addEventListener('click', toggleTheme);
     languageToggleBtn.addEventListener('click', toggleLanguage);

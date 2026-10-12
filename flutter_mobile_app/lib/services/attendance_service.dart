@@ -20,6 +20,9 @@ class AttendanceService extends ChangeNotifier {
   List<ChurchTask> _tasks = [];
   AdminQuestionTab _currentTab = AdminQuestionTab.unexcused;
   String _searchQuery = '';
+  String _personCardsSearchQuery = '';
+  bool _isDarkMode = false;
+  Locale _currentLocale = const Locale('ar', 'EG');
 
   AttendanceService() {
     loadInitialData();
@@ -37,6 +40,38 @@ class AttendanceService extends ChangeNotifier {
   List<ChurchTask> get tasks => _tasks;
   AdminQuestionTab get currentTab => _currentTab;
   String get searchQuery => _searchQuery;
+  String get personCardsSearchQuery => _personCardsSearchQuery;
+  bool get isDarkMode => _isDarkMode;
+  Locale get currentLocale => _currentLocale;
+
+  void toggleTheme() {
+    _isDarkMode = !_isDarkMode;
+    notifyListeners();
+  }
+
+  void toggleLocale() {
+    if (_currentLocale.languageCode == 'ar') {
+      _currentLocale = const Locale('en', 'US');
+    } else {
+      _currentLocale = const Locale('ar', 'EG');
+    }
+    notifyListeners();
+  }
+
+  void setPersonCardsSearchQuery(String query) {
+    _personCardsSearchQuery = query.trim().toLowerCase();
+    notifyListeners();
+  }
+
+  void clearPersonCardsSearchQuery() {
+    _personCardsSearchQuery = '';
+    notifyListeners();
+  }
+
+  List<Person> get filteredPeople {
+    if (_personCardsSearchQuery.isEmpty) return _people;
+    return _people.where((p) => p.name.toLowerCase().contains(_personCardsSearchQuery)).toList();
+  }
 
   void setAdminTab(AdminQuestionTab tab) {
     _currentTab = tab;

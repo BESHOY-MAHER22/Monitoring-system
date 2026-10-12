@@ -15,30 +15,34 @@ class PersonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final service = Provider.of<AttendanceService>(context, listen: false);
+    final service = Provider.of<AttendanceService>(context);
+    final isDark = service.isDarkMode;
     final overload = person.getTotalOverload(service.events);
     final commitment = person.commitmentRate;
 
-    Color boxColor = const Color(0xFFFAF5EE);
-    Color borderColor = Colors.amber.shade200;
+    Color boxColor = isDark ? const Color(0x33553C24) : const Color(0xFFFAF5EE);
+    Color borderColor = isDark ? const Color(0x55D7AD5C) : Colors.amber.shade200;
     if (commitment == 100.0 && person.totalSessions > 0) {
-      boxColor = Colors.green.shade50;
-      borderColor = Colors.green.shade300;
+      boxColor = isDark ? const Color(0x332E7D32) : Colors.green.shade50;
+      borderColor = isDark ? Colors.green.shade600 : Colors.green.shade300;
     } else if (person.unexcusedCount >= 3 || (person.totalSessions > 0 && commitment < 50)) {
-      boxColor = Colors.red.shade50;
-      borderColor = Colors.red.shade300;
+      boxColor = isDark ? const Color(0x33C62828) : Colors.red.shade50;
+      borderColor = isDark ? Colors.red.shade600 : Colors.red.shade300;
     }
+
+    final cardBg = isDark ? const Color(0xB32E2015) : const Color(0xE6FFFDF7);
+    final cardBorder = isDark ? const Color(0x55D7AD5C) : const Color(0x66D4B16D);
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.amber.shade200.withOpacity(0.6)),
+        color: cardBg,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: cardBorder, width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: isDark ? Colors.black45 : Colors.amber.shade900.withOpacity(0.06),
+            blurRadius: 14,
+            offset: const Offset(0, 5),
           ),
         ],
       ),
