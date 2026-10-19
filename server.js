@@ -31,11 +31,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// Serve the organized HTML app directory as primary, with root fallback
-const HTML_APP_DIR = path.join(__dirname, 'html_web_app');
-if (fs.existsSync(HTML_APP_DIR)) {
-    app.use(express.static(HTML_APP_DIR));
-}
+// Serve web application static files
 app.use(express.static(path.join(__dirname)));
 
 

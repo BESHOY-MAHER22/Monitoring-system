@@ -87,25 +87,25 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // People Collection
+    // People Collection (Public View, Restricted Edits)
     match /people/{personId} {
-      allow read: if isSignedIn();
+      allow read: if true;
       allow create: if isServant() && isValidId(personId) && isValidPerson(incoming());
       allow update: if isServant() && isValidId(personId) && isValidPerson(incoming());
       allow delete: if isServant() && isValidId(personId);
     }
 
-    // Tasks Collection
+    // Tasks Collection (Public View, Restricted Edits)
     match /tasks/{taskId} {
-      allow read: if isSignedIn();
+      allow read: if true;
       allow create: if isServant() && isValidId(taskId) && isValidTask(incoming());
       allow update: if isServant() && isValidId(taskId) && isValidTask(incoming());
       allow delete: if isServant() && isValidId(taskId);
     }
 
-    // Events Collection
+    // Events Collection (Public View, Restricted Edits)
     match /events/{eventId} {
-      allow read: if isSignedIn();
+      allow read: if true;
       allow create: if isServant() && isValidId(eventId) && isValidEvent(incoming());
       allow update: if isServant() && isValidId(eventId) && isValidEvent(incoming());
       allow delete: if isServant() && isValidId(eventId);

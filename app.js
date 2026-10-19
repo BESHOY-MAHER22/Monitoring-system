@@ -3368,15 +3368,19 @@ function setupRealtimeListeners() {
         snapshot.forEach(docSnap => {
             list.push({ id: docSnap.id, ...docSnap.data() });
         });
-        if (list.length > 0 || isUsingFirestore) {
+        if (list.length > 0) {
             cachedPeople = list;
             renderCardsFromCache();
             renderDaysListFromCache();
             renderEvents();
+        } else if (!cachedPeople || cachedPeople.length === 0) {
+            fetchPeopleFallback();
         }
     }, (error) => {
         console.warn('Firestore people onSnapshot error, falling back to local server API:', error);
-        fetchPeopleFallback();
+        if (!cachedPeople || cachedPeople.length === 0) {
+            fetchPeopleFallback();
+        }
     });
 
     // Tasks listener
@@ -3385,14 +3389,18 @@ function setupRealtimeListeners() {
         snapshot.forEach(docSnap => {
             list.push({ id: docSnap.id, ...docSnap.data() });
         });
-        if (list.length > 0 || isUsingFirestore) {
+        if (list.length > 0) {
             cachedTasks = list;
             renderTasksListFromCache();
             renderCardsFromCache();
+        } else if (!cachedTasks || cachedTasks.length === 0) {
+            fetchTasksFallback();
         }
     }, (error) => {
         console.warn('Firestore tasks onSnapshot error, falling back to local server API:', error);
-        fetchTasksFallback();
+        if (!cachedTasks || cachedTasks.length === 0) {
+            fetchTasksFallback();
+        }
     });
 
     // Events listener
@@ -3401,12 +3409,18 @@ function setupRealtimeListeners() {
         snapshot.forEach(docSnap => {
             list.push({ id: docSnap.id, ...docSnap.data() });
         });
-        cachedEvents = list;
-        renderEvents();
-        renderCardsFromCache();
+        if (list.length > 0) {
+            cachedEvents = list;
+            renderEvents();
+            renderCardsFromCache();
+        } else if (!cachedEvents || cachedEvents.length === 0) {
+            fetchEventsFallback();
+        }
     }, (error) => {
         console.warn('Firestore events onSnapshot error, falling back to local server API:', error);
-        fetchEventsFallback();
+        if (!cachedEvents || cachedEvents.length === 0) {
+            fetchEventsFallback();
+        }
     });
 }
 
@@ -4556,16 +4570,70 @@ function initEventListeners() {
         renderCardsFromCache();
     };
 
-    // Auto Collapse Logo in Header on Scroll
+    // Smart Header Auto-Hide on Scroll Down & Reveal on Scroll Up
     const mainHeader = document.getElementById('mainAppHeader');
+    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+    let lastScrollY = window.scrollY;
+    let isHeaderHidden = false;
+    const scrollThreshold = 12; // Minimum scroll delta before toggling
+
     window.addEventListener('scroll', () => {
-        if (!mainHeader) return;
-        if (window.scrollY > 40) {
-            mainHeader.classList.add('scrolled');
-        } else {
-            mainHeader.classList.remove('scrolled');
+        const currentScrollY = window.scrollY;
+
+        // 1. Control "Back to top" floating button
+        if (scrollToTopBtn) {
+            if (currentScrollY > 250) {
+                scrollToTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-6');
+                scrollToTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+            } else {
+                scrollToTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-6');
+                scrollToTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+            }
         }
+
+        if (!mainHeader) return;
+
+        // 2. If near the top, always show header fully
+        if (currentScrollY <= 40) {
+            mainHeader.classList.remove('header-hidden');
+            mainHeader.classList.remove('scrolled');
+            isHeaderHidden = false;
+            lastScrollY = currentScrollY;
+            return;
+        }
+
+        // When past top, compact logo & padding
+        mainHeader.classList.add('scrolled');
+
+        const delta = currentScrollY - lastScrollY;
+
+        // Scrolling DOWN -> HIDE HEADER completely so cards & tasks are never blocked
+        if (delta > scrollThreshold && currentScrollY > 80) {
+            if (!isHeaderHidden) {
+                mainHeader.classList.add('header-hidden');
+                isHeaderHidden = true;
+            }
+        } 
+        // Scrolling UP -> REVEAL HEADER smoothly
+        else if (delta < -scrollThreshold) {
+            if (isHeaderHidden) {
+                mainHeader.classList.remove('header-hidden');
+                isHeaderHidden = false;
+            }
+        }
+
+        lastScrollY = currentScrollY;
     }, { passive: true });
+
+    if (scrollToTopBtn) {
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (mainHeader) {
+                mainHeader.classList.remove('header-hidden');
+                isHeaderHidden = false;
+            }
+        });
+    }
 
     themeToggleBtn.addEventListener('click', toggleTheme);
     languageToggleBtn.addEventListener('click', toggleLanguage);
