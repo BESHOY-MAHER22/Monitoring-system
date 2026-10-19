@@ -840,6 +840,7 @@ async function fetchAllData() {
         renderDaysList();
         renderTasksList();
         renderEventsList();
+        updateDynamicIslandData();
 
         // Sync connection indicators on Hero and Dynamic Island
         if (connectionStatusDot) connectionStatusDot.classList.add('online');
@@ -893,6 +894,7 @@ async function saveAttendanceSession(dateStr, titleStr, recordsMap, source = 'pl
             renderCardsFromCache();
             renderDaysList();
             renderEventsList();
+            updateDynamicIslandData();
             return true;
         } else {
             const err = await res.json();
@@ -914,6 +916,7 @@ async function saveAttendanceSession(dateStr, titleStr, recordsMap, source = 'pl
         renderPlanAndNotebookHero();
         checkAndRenderMissedDays();
         renderCardsFromCache();
+        updateDynamicIslandData();
         return true;
     }
 }
@@ -931,6 +934,7 @@ async function createPersonHandler(name, role, phone, birthdate, notes) {
             cachedPeople.push(data.person);
             showToast(`تم إضافة ${data.person.name} بنجاح! 👤`);
             renderCardsFromCache();
+            updateDynamicIslandData();
             return true;
         } else {
             const err = await res.json();
@@ -951,6 +955,7 @@ async function deletePersonHandler(personId) {
             cachedPeople = cachedPeople.filter(p => p.id !== personId);
             showToast('تم حذف الشخص بنجاح');
             renderCardsFromCache();
+            updateDynamicIslandData();
         }
     } catch (e) {
         showToast('فشل حذف الشخص', true);
@@ -1442,6 +1447,7 @@ function initEventListeners() {
                 planModal.style.display = 'none';
                 renderPlanAndNotebookHero();
                 checkAndRenderMissedDays();
+                updateDynamicIslandData();
             } else {
                 showToast('حدث خطأ أثناء حفظ الخطة', true);
             }
@@ -1480,6 +1486,7 @@ function initEventListeners() {
                 showToast('تم تحديث صفحة الكشكول بنجاح! 📖');
                 notebookQuickModal.style.display = 'none';
                 renderPlanAndNotebookHero();
+                updateDynamicIslandData();
             } else {
                 showToast('فشل تحديث الكشكول', true);
             }
@@ -1644,60 +1651,6 @@ function initEventListeners() {
         });
     }
 
-    // --- THEME & LANGUAGE HELPERS ---
-    function syncThemeIcons(isDark) {
-        if (sunIcon) sunIcon.classList.toggle('hidden', !isDark);
-        if (moonIcon) moonIcon.classList.toggle('hidden', isDark);
-        const islandSun = document.getElementById('islandSunIcon');
-        const islandMoon = document.getElementById('islandMoonIcon');
-        if (islandSun) islandSun.classList.toggle('hidden', !isDark);
-        if (islandMoon) islandMoon.classList.toggle('hidden', isDark);
-    }
-
-    function toggleTheme() {
-        const isDark = document.documentElement.classList.toggle('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        syncThemeIcons(isDark);
-    }
-
-    function toggleLanguage() {
-        const newLang = currentLanguage === 'ar' ? 'en' : 'ar';
-        applyLanguage(newLang);
-    }
-
-    function applyLanguage(lang) {
-        currentLanguage = lang;
-        localStorage.setItem('language', lang);
-        const isEn = lang === 'en';
-        document.documentElement.lang = lang;
-        document.documentElement.dir = isEn ? 'ltr' : 'rtl';
-
-        if (languageToggleBtn) languageToggleBtn.innerText = isEn ? '🇬🇧 EN' : '🇪🇬 عربي';
-        const islandLang = document.getElementById('islandLangLabel');
-        if (islandLang) islandLang.innerText = isEn ? '🇬🇧 EN' : '🇪🇬 عربي';
-
-        const isOnline = connectionStatusDot && connectionStatusDot.classList.contains('online');
-        if (connectionStatusText) {
-            connectionStatusText.innerText = isOnline ? (isEn ? 'Cloud Connected ⚡' : 'متصل سحابياً ⚡') : (isEn ? 'Local Server' : 'سيرفر محلي');
-        }
-        const islandConnText = document.getElementById('islandConnectionText');
-        if (islandConnText) {
-            islandConnText.innerText = isOnline ? (isEn ? 'Connected ⚡' : 'متصل سحابياً ⚡') : (isEn ? 'Local Mode' : 'سيرفر محلي');
-        }
-
-        const islandServantLabel = document.getElementById('islandServantLabel');
-        if (islandServantLabel) {
-            islandServantLabel.innerText = currentUserRole === 'admin' ? (isEn ? 'Admin' : 'المسؤول') : (isEn ? 'Servant' : 'الخادم');
-        }
-
-        renderPlanAndNotebookHero();
-        renderCardsFromCache();
-        renderTasksList();
-        renderEventsList();
-        renderDaysList();
-        renderAdminInsights();
-    }
-
     // Theme toggle in Hero
     if (themeToggleBtn) {
         themeToggleBtn.addEventListener('click', toggleTheme);
@@ -1706,65 +1659,6 @@ function initEventListeners() {
     // Language toggle in Hero
     if (languageToggleBtn) {
         languageToggleBtn.addEventListener('click', toggleLanguage);
-    }
-
-    // --- DYNAMIC ISLAND ENGINE ---
-    function initDynamicIsland() {
-        const dynamicIsland = document.getElementById('dynamicIsland');
-        const mainAppHeader = document.getElementById('mainAppHeader');
-        const islandLogoBtn = document.getElementById('islandLogoBtn');
-        const islandThemeToggleBtn = document.getElementById('islandThemeToggleBtn');
-        const islandLanguageToggleBtn = document.getElementById('islandLanguageToggleBtn');
-        const islandPasskeyBtn = document.getElementById('islandPasskeyBtn');
-
-        if (!dynamicIsland) return;
-
-        // Smooth Scroll transformation: Hero Header <-> Dynamic Island
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            if (scrollY > 75) {
-                // Reveal Dynamic Island with smooth spring entry
-                dynamicIsland.classList.remove('opacity-0', '-translate-y-12', 'scale-90', 'pointer-events-none');
-                dynamicIsland.classList.add('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
-
-                // Fade/dim Hero Header so it never obstructs or clutters
-                if (mainAppHeader) {
-                    mainAppHeader.classList.add('opacity-20', 'pointer-events-none');
-                }
-            } else {
-                // Tuck Dynamic Island away smoothly and fully restore Hero Header
-                dynamicIsland.classList.add('opacity-0', '-translate-y-12', 'scale-90', 'pointer-events-none');
-                dynamicIsland.classList.remove('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
-
-                if (mainAppHeader) {
-                    mainAppHeader.classList.remove('opacity-20', 'pointer-events-none');
-                }
-            }
-        }, { passive: true });
-
-        // Tapping Island Logo scrolls cleanly to top
-        if (islandLogoBtn) {
-            islandLogoBtn.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        }
-
-        // Tapping Theme Switcher on Island
-        if (islandThemeToggleBtn) {
-            islandThemeToggleBtn.addEventListener('click', toggleTheme);
-        }
-
-        // Tapping Language Switcher on Island
-        if (islandLanguageToggleBtn) {
-            islandLanguageToggleBtn.addEventListener('click', toggleLanguage);
-        }
-
-        // Tapping Servant Mode button on Island
-        if (islandPasskeyBtn) {
-            islandPasskeyBtn.addEventListener('click', () => {
-                if (passkeySignInBtn) passkeySignInBtn.click();
-            });
-        }
     }
 
     // Scroll back to top
@@ -1792,8 +1686,465 @@ function initEventListeners() {
             event.target.style.display = 'none';
         }
     };
+}
 
-    initDynamicIsland();
+// --- THEME & LANGUAGE HELPERS (TOP-LEVEL MODULE SCOPE) ---
+function syncThemeIcons(isDark) {
+    if (sunIcon) sunIcon.classList.toggle('hidden', !isDark);
+    if (moonIcon) moonIcon.classList.toggle('hidden', isDark);
+    const islandSun = document.getElementById('islandSunIcon');
+    const islandMoon = document.getElementById('islandMoonIcon');
+    if (islandSun) islandSun.classList.toggle('hidden', !isDark);
+    if (islandMoon) islandMoon.classList.toggle('hidden', isDark);
+}
+
+function toggleTheme() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    syncThemeIcons(isDark);
+}
+
+function toggleLanguage() {
+    const newLang = currentLanguage === 'ar' ? 'en' : 'ar';
+    applyLanguage(newLang);
+}
+
+function applyLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem('language', lang);
+    const isEn = lang === 'en';
+    document.documentElement.lang = lang;
+    document.documentElement.dir = isEn ? 'ltr' : 'rtl';
+
+    if (languageToggleBtn) languageToggleBtn.innerText = isEn ? '🇬🇧 EN' : '🇪🇬 عربي';
+    const islandLang = document.getElementById('islandLangLabel');
+    if (islandLang) islandLang.innerText = isEn ? '🇬🇧 EN' : '🇪🇬 عربي';
+
+    const isOnline = connectionStatusDot && connectionStatusDot.classList.contains('online');
+    if (connectionStatusText) {
+        connectionStatusText.innerText = isOnline ? (isEn ? 'Cloud Connected ⚡' : 'متصل سحابياً ⚡') : (isEn ? 'Local Server' : 'سيرفر محلي');
+    }
+    const islandConnText = document.getElementById('islandConnectionText');
+    if (islandConnText) {
+        islandConnText.innerText = isOnline ? (isEn ? 'Connected ⚡' : 'متصل سحابياً ⚡') : (isEn ? 'Local Mode' : 'سيرفر محلي');
+    }
+
+    const islandServantLabel = document.getElementById('islandServantLabel');
+    if (islandServantLabel) {
+        islandServantLabel.innerText = currentUserRole === 'admin' ? (isEn ? 'Admin' : 'المسؤول') : (isEn ? 'Servant' : 'الخادم');
+    }
+
+    renderPlanAndNotebookHero();
+    renderCardsFromCache();
+    renderTasksList();
+    renderEventsList();
+    renderDaysList();
+    renderAdminInsights();
+    updateDynamicIslandData();
+}
+
+// --- DYNAMIC ISLAND ENGINE & DATA BINDING ---
+function updateDynamicIslandData() {
+    const isEn = currentLanguage === 'en';
+    const island = document.getElementById('dynamicIsland');
+    if (!island) return;
+
+    // 1. Plan Title & Current / Next Day
+    const islandPlanTitle = document.getElementById('islandPlanTitle');
+    const islandNextDayBadge = document.getElementById('islandNextDayBadge');
+    const islandWhatsAppSnippet = document.getElementById('islandWhatsAppSnippet');
+    const islandNextDaySnippet = document.getElementById('islandNextDaySnippet');
+
+    const todayStr = new Date().toISOString().slice(0, 10);
+    let nextDayObj = null;
+
+    if (cachedActivePlan && cachedActivePlan.scheduledDays && cachedActivePlan.scheduledDays.length > 0) {
+        if (islandPlanTitle) {
+            islandPlanTitle.innerText = cachedActivePlan.title || (isEn ? 'Service Plan' : 'خطة وسائل الإيضاح');
+        }
+        nextDayObj = cachedActivePlan.scheduledDays.find(d => d.date >= todayStr) || cachedActivePlan.scheduledDays[cachedActivePlan.scheduledDays.length - 1];
+        if (islandNextDayBadge) {
+            islandNextDayBadge.innerText = nextDayObj ? `${nextDayObj.date.slice(5)}: ${nextDayObj.dayTitle}` : (isEn ? 'Up to date' : 'مكتملة');
+        }
+        if (islandWhatsAppSnippet) {
+            islandWhatsAppSnippet.innerText = cachedActivePlan.rawWhatsAppText ? cachedActivePlan.rawWhatsAppText.slice(0, 180) + '...' : (isEn ? 'No text' : 'لا يوجد نص للخطة');
+        }
+        if (islandNextDaySnippet) {
+            islandNextDaySnippet.innerText = nextDayObj ? (isEn ? `Next: ${nextDayObj.date} - ${nextDayObj.dayTitle}` : `اليوم القادم: ${nextDayObj.date} - ${nextDayObj.dayTitle}`) : (isEn ? 'All days finished' : 'انتهت جميع أيام الخطة');
+        }
+    } else {
+        if (islandPlanTitle) islandPlanTitle.innerText = isEn ? 'St. Arsanius Family' : 'أسرة أرسانيوس ونيقولاوس';
+        if (islandNextDayBadge) islandNextDayBadge.innerText = isEn ? 'No active plan' : 'لا توجد خطة مسجلة';
+        if (islandWhatsAppSnippet) islandWhatsAppSnippet.innerText = isEn ? 'No plan registered yet.' : 'لا توجد خطة مسجلة حالياً.';
+        if (islandNextDaySnippet) islandNextDaySnippet.innerText = isEn ? 'Ready to add a plan' : 'جاهز لإضافة خطة جديدة';
+    }
+
+    // 2. Notebook Last Page Snippet
+    const islandNotebookSnippet = document.getElementById('islandNotebookSnippet');
+    const islandNotebookUpdated = document.getElementById('islandNotebookUpdated');
+    if (cachedActivePlan && cachedActivePlan.notebookLastPage) {
+        if (islandNotebookSnippet) {
+            islandNotebookSnippet.innerText = cachedActivePlan.notebookLastPage.content || (isEn ? 'No notes recorded yet.' : 'لا توجد ملاحظات مسجلة بعد.');
+        }
+        if (islandNotebookUpdated) {
+            islandNotebookUpdated.innerText = isEn ? 'Last Updated: Recent' : 'آخر تحديث: مؤخراً';
+        }
+    } else {
+        if (islandNotebookSnippet) islandNotebookSnippet.innerText = isEn ? 'No notes recorded yet.' : 'لا توجد ملاحظات مسجلة حالياً.';
+        if (islandNotebookUpdated) islandNotebookUpdated.innerText = isEn ? 'Last Updated: Today' : 'آخر تحديث: اليوم';
+    }
+
+    // 3. Compute Pending Missed Days
+    const missedDays = [];
+    if (cachedActivePlan && Array.isArray(cachedActivePlan.scheduledDays)) {
+        cachedActivePlan.scheduledDays.forEach(day => {
+            if (day.date <= todayStr) {
+                const session = cachedAttendanceSessions[day.date];
+                if (!session || !session.isCompleted) {
+                    missedDays.push(day);
+                }
+            }
+        });
+    }
+
+    // 4. Update Island Aura & Status Ring
+    const islandStatusRing = document.getElementById('islandStatusRing');
+    const islandMissedDaysBadge = document.getElementById('islandMissedDaysBadge');
+    const islandMissedIcon = document.getElementById('islandMissedIcon');
+    const islandMissedText = document.getElementById('islandMissedText');
+
+    if (missedDays.length > 0) {
+        island.classList.add('has-missed-days');
+        if (islandStatusRing) {
+            islandStatusRing.className = 'absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-amber-400 border-2 border-amber-950 shadow-sm animate-pulse';
+        }
+        if (islandMissedDaysBadge) {
+            islandMissedDaysBadge.className = 'px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-extrabold bg-red-500/25 text-red-300 border border-red-500/40 hover:bg-red-500/40 transition cursor-pointer flex items-center gap-1 whitespace-nowrap shadow-sm';
+        }
+        if (islandMissedIcon) islandMissedIcon.innerText = '⚠️';
+        if (islandMissedText) islandMissedText.innerText = isEn ? `${missedDays.length} Missed` : `${missedDays.length} أيام معلقة`;
+    } else {
+        island.classList.remove('has-missed-days');
+        if (islandStatusRing) {
+            islandStatusRing.className = 'absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-amber-950 shadow-sm transition-colors duration-300';
+        }
+        if (islandMissedDaysBadge) {
+            islandMissedDaysBadge.className = 'px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 transition cursor-pointer flex items-center gap-1 whitespace-nowrap';
+        }
+        if (islandMissedIcon) islandMissedIcon.innerText = '✅';
+        if (islandMissedText) islandMissedText.innerText = isEn ? 'All Recorded' : 'الغياب مكتمل';
+    }
+
+    // 5. Compute Attendance Rate & People Count
+    const peopleCount = cachedPeople.length;
+    const islandPeopleText = document.getElementById('islandPeopleText');
+    if (islandPeopleText) {
+        islandPeopleText.innerText = isEn ? `${peopleCount} people` : `${peopleCount} فرد`;
+    }
+
+    const sessionKeys = Object.keys(cachedAttendanceSessions);
+    let totalPresentMarks = 0;
+    let totalMarks = 0;
+    sessionKeys.forEach(k => {
+        const sess = cachedAttendanceSessions[k];
+        if (sess && sess.records) {
+            Object.values(sess.records).forEach(status => {
+                totalMarks++;
+                if (status === 'present' || status === 'late') totalPresentMarks++;
+            });
+        }
+    });
+    const avgRate = totalMarks > 0 ? Math.round((totalPresentMarks / totalMarks) * 100) : 0;
+    const islandRateText = document.getElementById('islandRateText');
+    if (islandRateText) {
+        islandRateText.innerText = `${avgRate}%`;
+    }
+
+    // 6. Actionable Missed Days Chips in Expanded View
+    const islandMissedDaysChips = document.getElementById('islandMissedDaysChips');
+    if (islandMissedDaysChips) {
+        if (missedDays.length === 0) {
+            islandMissedDaysChips.innerHTML = `<span class="text-[11px] text-emerald-300">${isEn ? '✅ All scheduled days are recorded! No pending attendance.' : '✅ جميع أيام الخطة مسجلة بنجاح ولا توجد أيام معلقة!'}</span>`;
+        } else {
+            islandMissedDaysChips.innerHTML = missedDays.map(d => `
+                <button type="button" class="island-record-day-chip px-2.5 py-1 rounded-xl bg-red-600/30 hover:bg-red-600/60 active:scale-95 text-red-200 border border-red-500/40 text-[10px] sm:text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shadow-sm" data-date="${d.date}" data-title="${escapeHTML(d.dayTitle)}">
+                    <span>⚡ ${d.date.slice(5)}</span>
+                    <span class="truncate max-w-[90px] sm:max-w-[130px]">${escapeHTML(d.dayTitle)}</span>
+                    <span class="bg-red-500 text-white rounded px-1 text-[9px] font-extrabold">تسجيل</span>
+                </button>
+            `).join('');
+
+            islandMissedDaysChips.querySelectorAll('.island-record-day-chip').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const targetDate = btn.getAttribute('data-date');
+                    const targetTitle = btn.getAttribute('data-title');
+                    openAttendanceModalForDate(targetDate, targetTitle);
+                });
+            });
+        }
+    }
+
+    // 7. Sync Connection Dot & Text
+    const isOnline = connectionStatusDot && connectionStatusDot.classList.contains('online');
+    const expandedDot = document.getElementById('islandExpandedConnDot');
+    const expandedText = document.getElementById('islandExpandedConnText');
+    if (expandedDot) expandedDot.className = `connection-dot ${isOnline ? 'online' : ''}`;
+    if (expandedText) expandedText.innerText = isOnline ? (isEn ? 'Connected ⚡' : 'متصل سحابياً ⚡') : (isEn ? 'Local Server' : 'سيرفر محلي');
+
+    const servantLabel = document.getElementById('islandServantLabel');
+    if (servantLabel) servantLabel.innerText = currentUserRole === 'admin' ? (isEn ? 'Admin' : 'المسؤول') : (isEn ? 'Servant' : 'الخادم');
+}
+
+// --- DYNAMIC ISLAND ENGINE (TOP-LEVEL MODULE SCOPE) ---
+function initDynamicIsland() {
+    const dynamicIsland = document.getElementById('dynamicIsland');
+    const mainAppHeader = document.getElementById('mainAppHeader');
+    const sentinel = document.getElementById('heroScrollSentinel');
+    const islandExpandedView = document.getElementById('islandExpandedView');
+    const chevron = document.getElementById('islandExpandChevron');
+
+    if (!dynamicIsland) return;
+
+    let isExpanded = false;
+    let lastScrollY = window.pageYOffset || 0;
+    let rAFScheduled = false;
+
+    // Show Island
+    function activateIsland() {
+        dynamicIsland.classList.add('island-active');
+        if (mainAppHeader) {
+            mainAppHeader.classList.add('header-scrolled-away');
+        }
+    }
+
+    // Hide Island
+    function deactivateIsland() {
+        dynamicIsland.classList.remove('island-active');
+        collapseIsland();
+        if (mainAppHeader) {
+            mainAppHeader.classList.remove('header-scrolled-away');
+        }
+    }
+
+    // Expand Island (State 2)
+    function expandIsland() {
+        if (!dynamicIsland.classList.contains('island-active')) {
+            activateIsland();
+        }
+        isExpanded = true;
+        dynamicIsland.classList.add('island-expanded');
+        if (islandExpandedView) {
+            islandExpandedView.classList.remove('hidden');
+            islandExpandedView.classList.add('flex');
+        }
+        if (chevron) {
+            chevron.classList.add('rotate-180');
+        }
+    }
+
+    // Collapse Island (State 1)
+    function collapseIsland() {
+        isExpanded = false;
+        dynamicIsland.classList.remove('island-expanded');
+        if (islandExpandedView) {
+            islandExpandedView.classList.add('hidden');
+            islandExpandedView.classList.remove('flex');
+        }
+        if (chevron) {
+            chevron.classList.remove('rotate-180');
+        }
+    }
+
+    function toggleIsland() {
+        if (isExpanded) {
+            collapseIsland();
+        } else {
+            expandIsland();
+        }
+    }
+
+    // 1. GPU 60fps Scroll Engine using IntersectionObserver on sentinel
+    if (sentinel && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            const entry = entries[0];
+            if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+                activateIsland();
+            } else if (entry.isIntersecting || entry.boundingClientRect.top >= 0) {
+                deactivateIsland();
+            }
+        }, {
+            threshold: 0,
+            rootMargin: '-20px 0px 0px 0px'
+        });
+        observer.observe(sentinel);
+    }
+
+    // 2. rAF-throttled scroll listener for 60fps smoothness and auto-collapse
+    window.addEventListener('scroll', () => {
+        if (!rAFScheduled) {
+            rAFScheduled = true;
+            window.requestAnimationFrame(() => {
+                const currentY = window.pageYOffset || document.documentElement.scrollTop || 0;
+                
+                // Fallback activation if IntersectionObserver is not fired
+                if (!sentinel && currentY > 160) {
+                    activateIsland();
+                } else if (!sentinel && currentY <= 160) {
+                    deactivateIsland();
+                }
+
+                // Auto-collapse when scrolling more than 100px while expanded
+                if (isExpanded && Math.abs(currentY - lastScrollY) > 100) {
+                    collapseIsland();
+                }
+                lastScrollY = currentY;
+                rAFScheduled = false;
+            });
+        }
+    }, { passive: true });
+
+    // 3. Auto-collapse on Outside Click
+    document.addEventListener('click', (e) => {
+        if (isExpanded && !dynamicIsland.contains(e.target)) {
+            collapseIsland();
+        }
+    });
+
+    // 4. Auto-collapse on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && isExpanded) {
+            collapseIsland();
+        }
+    });
+
+    // 5. Interactive Buttons & Triggers
+    const logoBtn = document.getElementById('islandLogoBtn');
+    const headerTitleTrigger = document.getElementById('islandHeaderTitleTrigger');
+    const expandToggleBtn = document.getElementById('islandExpandToggleBtn');
+    const collapseBtn = document.getElementById('islandCollapseBtn');
+    const missedBadge = document.getElementById('islandMissedDaysBadge');
+    const quickSearchBtn = document.getElementById('islandQuickSearchBtn');
+    const notebookPeekBtn = document.getElementById('islandNotebookPeekBtn');
+    const themeBtn = document.getElementById('islandThemeToggleBtn');
+    const langBtn = document.getElementById('islandLanguageToggleBtn');
+    const scrollTopBtn = document.getElementById('islandScrollTopBtn');
+    const passkeyBtn = document.getElementById('islandPasskeyBtn');
+
+    if (logoBtn) logoBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    if (scrollTopBtn) scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    if (headerTitleTrigger) headerTitleTrigger.addEventListener('click', toggleIsland);
+    if (expandToggleBtn) expandToggleBtn.addEventListener('click', toggleIsland);
+    if (collapseBtn) collapseBtn.addEventListener('click', collapseIsland);
+
+    // Click missed days badge to jump into recording immediately
+    if (missedBadge) {
+        missedBadge.addEventListener('click', () => {
+            const todayStr = new Date().toISOString().slice(0, 10);
+            let targetDay = null;
+            if (cachedActivePlan && Array.isArray(cachedActivePlan.scheduledDays)) {
+                targetDay = cachedActivePlan.scheduledDays.find(d => d.date <= todayStr && (!cachedAttendanceSessions[d.date] || !cachedAttendanceSessions[d.date].isCompleted));
+            }
+            if (targetDay) {
+                openAttendanceModalForDate(targetDay.date, targetDay.dayTitle);
+            } else {
+                expandIsland();
+            }
+        });
+    }
+
+    // Quick Search button: smoothly scroll to search input and focus
+    if (quickSearchBtn) {
+        quickSearchBtn.addEventListener('click', () => {
+            const searchInput = document.getElementById('personSearchInput');
+            if (searchInput) {
+                searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => searchInput.focus(), 300);
+            }
+        });
+    }
+
+    // Notebook Peek: toggle expanded drawer
+    if (notebookPeekBtn) {
+        notebookPeekBtn.addEventListener('click', () => {
+            toggleIsland();
+        });
+    }
+
+    if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
+    if (langBtn) langBtn.addEventListener('click', toggleLanguage);
+    if (passkeyBtn) passkeyBtn.addEventListener('click', () => {
+        if (passkeySignInBtn) passkeySignInBtn.click();
+    });
+
+    // Expanded view actions:
+    const copyPlanBtn = document.getElementById('islandCopyPlanBtn');
+    const editPlanBtn = document.getElementById('islandEditPlanBtn');
+    const editNotebookBtn = document.getElementById('islandEditNotebookBtn');
+    const addExtraDayBtn = document.getElementById('islandAddExtraDayBtn');
+
+    if (copyPlanBtn) {
+        copyPlanBtn.addEventListener('click', () => {
+            const copyBtnMain = document.getElementById('copyPlanWhatsAppBtn');
+            if (copyBtnMain) copyBtnMain.click();
+        });
+    }
+    if (editPlanBtn) {
+        editPlanBtn.addEventListener('click', () => {
+            const editBtnMain = document.getElementById('openEditPlanModalBtn');
+            if (editBtnMain) editBtnMain.click();
+        });
+    }
+    if (editNotebookBtn) {
+        editNotebookBtn.addEventListener('click', () => {
+            const nbBtnMain = document.getElementById('quickEditNotebookBtn');
+            if (nbBtnMain) nbBtnMain.click();
+        });
+    }
+    if (addExtraDayBtn) {
+        addExtraDayBtn.addEventListener('click', () => {
+            const extraBtnMain = document.getElementById('openExtraDayModalBtn');
+            if (extraBtnMain) extraBtnMain.click();
+        });
+    }
+
+    // Quick Navigation shortcuts
+    const navPeopleBtn = document.getElementById('islandNavPeopleBtn');
+    const navPlanBtn = document.getElementById('islandNavPlanBtn');
+    const navTasksBtn = document.getElementById('islandNavTasksBtn');
+    const navEventsBtn = document.getElementById('islandNavEventsBtn');
+
+    if (navPeopleBtn) {
+        navPeopleBtn.addEventListener('click', () => {
+            collapseIsland();
+            const el = document.getElementById('personCardsContainer');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+    if (navPlanBtn) {
+        navPlanBtn.addEventListener('click', () => {
+            collapseIsland();
+            const el = document.getElementById('heroPlanAndNotebookSection');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+    if (navTasksBtn) {
+        navTasksBtn.addEventListener('click', () => {
+            collapseIsland();
+            const el = document.getElementById('tasksSection');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+    if (navEventsBtn) {
+        navEventsBtn.addEventListener('click', () => {
+            collapseIsland();
+            const el = document.getElementById('eventsSection');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+
+    // Initial data populate
+    updateDynamicIslandData();
 }
 
 // --- BOOTSTRAP ---
@@ -1812,6 +2163,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const savedLang = localStorage.getItem('language') || 'ar';
     applyLanguage(savedLang);
 
+    // Initialize interactive event listeners & Dynamic Island
     initEventListeners();
+    initDynamicIsland();
+
+    // Fetch initial data
     await fetchAllData();
 });

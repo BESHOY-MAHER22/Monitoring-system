@@ -646,23 +646,78 @@
         .dark .progress-bar-container {
             background-color: rgba(255, 255, 255, 0.12);
         }
-        /* Dynamic Island Floating Header */
-        .dynamic-island {
-            background: rgba(30, 20, 14, 0.88);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.2);
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Zero Layout Shift GPU morphing for top header */
+        #mainAppHeader {
+            will-change: transform, opacity;
+            transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            transform-origin: top center;
         }
-        .dark .dynamic-island {
-            background: rgba(14, 9, 5, 0.94);
-            border-color: rgba(212, 175, 55, 0.35);
-            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(212, 175, 55, 0.25);
+        #mainAppHeader.header-scrolled-away {
+            opacity: 0.15;
+            transform: translate3d(0, -15px, 0) scale(0.96);
+            pointer-events: none;
         }
-        .dynamic-island:hover {
-            border-color: rgba(212, 175, 55, 0.65);
-            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.6), 0 0 30px rgba(212, 175, 55, 0.35);
+
+        /* Dynamic Island 60fps GPU-Accelerated Capsule */
+        .dynamic-island-container {
+            position: fixed;
+            top: 14px;
+            left: 50%;
+            transform: translate3d(-50%, -130%, 0) scale(0.75);
+            z-index: 9990;
+            pointer-events: none;
+            opacity: 0;
+            will-change: transform, opacity, width, max-height;
+            transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+                        opacity 0.32s ease,
+                        width 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        border-radius 0.3s ease,
+                        box-shadow 0.3s ease;
+            border-radius: 9999px;
+            background: rgba(26, 17, 11, 0.92);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(212, 175, 55, 0.45);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(212, 175, 55, 0.25);
+            width: auto;
+            max-width: 95vw;
+        }
+
+        .dark .dynamic-island-container {
+            background: rgba(15, 10, 6, 0.95);
+            border-color: rgba(212, 175, 55, 0.4);
+            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Active State on Scroll (Compact Pill) */
+        .dynamic-island-container.island-active {
+            pointer-events: auto;
+            opacity: 1;
+            transform: translate3d(-50%, 0, 0) scale(1);
+        }
+
+        /* Pending Missed Days Glowing Aura */
+        .dynamic-island-container.has-missed-days {
+            border-color: rgba(245, 158, 11, 0.75);
+            animation: islandPulseGlow 3s infinite ease-in-out;
+        }
+
+        @keyframes islandPulseGlow {
+            0%, 100% {
+                box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(212, 175, 55, 0.3);
+            }
+            50% {
+                box-shadow: 0 16px 45px rgba(0, 0, 0, 0.7), 0 0 35px rgba(239, 68, 68, 0.45);
+                border-color: rgba(239, 68, 68, 0.65);
+            }
+        }
+
+        /* Expanded Interactive Island */
+        .dynamic-island-container.island-expanded {
+            border-radius: 26px;
+            width: 720px;
+            max-width: 95vw;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 45px rgba(212, 175, 55, 0.4);
         }
         .connection-dot.online {
             background-color: #10b981;
@@ -1472,36 +1527,176 @@
         </div>
     </div>
 
-    <!-- Floating Liquid Glass Dynamic Island Header (Appears smoothly on scroll) -->
-    <aside id="dynamicIsland" class="dynamic-island fixed top-3 left-1/2 -translate-x-1/2 z-50 flex items-center justify-between gap-3 sm:gap-4 px-3 sm:px-5 py-2 rounded-full transition-all duration-300 pointer-events-none opacity-0 -translate-y-12 scale-90 text-white max-w-[94vw] sm:max-w-2xl cursor-default" aria-label="Dynamic Navigation Island">
-        <!-- 1. Right side (in RTL): Connection Status Indicator -->
-        <div class="flex items-center gap-1.5 sm:gap-2 select-none">
-            <div id="islandConnectionDot" class="connection-dot online"></div>
-            <span id="islandConnectionText" class="text-[11px] sm:text-xs font-bold text-emerald-400 whitespace-nowrap">متصل سحابياً</span>
+    <!-- Floating Liquid Glass Dynamic Island Header (60fps GPU-Accelerated Capsule) -->
+    <aside id="dynamicIsland" class="dynamic-island-container" aria-label="Dynamic Island Capsule">
+        <!-- COMPACT PILL STATE (State 1) -->
+        <div id="islandCompactView" class="flex items-center justify-between gap-1.5 sm:gap-2.5 px-2.5 sm:px-4 py-2 select-none">
+            <!-- Left (RTL Start): Logo + Status Ring + Plan Title -->
+            <div class="flex items-center gap-1.5 sm:gap-2">
+                <button id="islandLogoBtn" type="button" class="relative flex items-center justify-center p-0.5 rounded-full hover:scale-105 active:scale-95 transition cursor-pointer group" title="شعار الأسرة - اضغط للصعود للأعلى">
+                    <img src="logo.png" alt="Logo" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-amber-400/80 shadow object-cover" onerror="this.onerror=null; this.src='https://placehold.co/60x60/966c34/ffffff?text=شعار'">
+                    <!-- Glowing status ring -->
+                    <span id="islandStatusRing" class="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-amber-950 shadow-sm transition-colors duration-300"></span>
+                </button>
+                <div class="flex flex-col text-right cursor-pointer" id="islandHeaderTitleTrigger" title="اضغط لتوسيع الملخص الذكي">
+                    <span id="islandPlanTitle" class="text-xs font-black text-amber-200 truncate max-w-[100px] sm:max-w-[140px] md:max-w-[170px]">خطة وسائل الإيضاح</span>
+                    <span id="islandNextDayBadge" class="text-[9px] sm:text-[10px] font-bold text-amber-300/80 truncate max-w-[100px] sm:max-w-[140px]">الجمعة القادمة</span>
+                </div>
+            </div>
+
+            <!-- Center Badges: Live Missed Days, Attendance Rate, People Count -->
+            <div class="flex items-center gap-1 sm:gap-1.5" id="islandBadgesRow">
+                <!-- Missed Days Badge (Clickable to record) -->
+                <button type="button" id="islandMissedDaysBadge" class="px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 transition cursor-pointer flex items-center gap-1 whitespace-nowrap" title="متابعة الغياب المعلق">
+                    <span id="islandMissedIcon">✅</span>
+                    <span id="islandMissedText">الغياب مكتمل</span>
+                </button>
+
+                <!-- Attendance Rate Badge -->
+                <div id="islandRateBadge" class="hidden md:flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold bg-amber-500/20 text-amber-200 border border-amber-500/30 whitespace-nowrap" title="متوسط نسبة الحضور">
+                    <span>📊</span>
+                    <span id="islandRateText">--%</span>
+                </div>
+
+                <!-- People Count Badge -->
+                <div id="islandPeopleBadge" class="hidden sm:flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold bg-white/10 text-white/90 border border-white/20 whitespace-nowrap" title="إجمالي الأفراد">
+                    <span>👥</span>
+                    <span id="islandPeopleText">0 فرد</span>
+                </div>
+            </div>
+
+            <!-- Right Controls: Quick Search, Notebook Peek, Theme, Language, Expand Toggle -->
+            <div class="flex items-center gap-1 sm:gap-1.5">
+                <!-- Quick Search Focus -->
+                <button type="button" id="islandQuickSearchBtn" class="p-1 sm:p-1.5 rounded-full hover:bg-white/15 active:scale-95 text-amber-200 hover:text-white transition cursor-pointer" title="بحث سريع في الأفراد">
+                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </button>
+
+                <!-- Notebook Peek -->
+                <button type="button" id="islandNotebookPeekBtn" class="p-1 sm:p-1.5 rounded-full hover:bg-white/15 active:scale-95 text-amber-200 hover:text-white transition cursor-pointer" title="ملاحظات آخر صفحة في الكشكول">
+                    <span class="text-xs sm:text-sm">📖</span>
+                </button>
+
+                <!-- Language Toggle -->
+                <button id="islandLanguageToggleBtn" type="button" class="px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-[11px] rounded-full hover:bg-white/20 active:scale-95 transition cursor-pointer font-bold text-white border border-white/20" title="تحويل اللغة">
+                    <span id="islandLangLabel">🇪🇬 عربي</span>
+                </button>
+
+                <!-- Theme (Sun / Moon) -->
+                <button id="islandThemeToggleBtn" type="button" class="p-1 sm:p-1.5 rounded-full hover:bg-white/20 active:scale-95 transition cursor-pointer text-amber-200 border border-white/20" title="الوضع النهاري / الليلي">
+                    <svg id="islandSunIcon" xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                    <svg id="islandMoonIcon" xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                </button>
+
+                <!-- Scroll to Top -->
+                <button id="islandScrollTopBtn" type="button" class="p-1 sm:p-1.5 rounded-full hover:bg-white/20 active:scale-95 text-amber-200 hover:text-white transition cursor-pointer border border-white/20" title="الصعود لأعلى الصفحة">
+                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+                </button>
+
+                <!-- Expand / Collapse Toggle -->
+                <button id="islandExpandToggleBtn" type="button" class="p-1 sm:p-1.5 rounded-full bg-amber-500/20 hover:bg-amber-500/35 active:scale-95 text-amber-300 transition cursor-pointer border border-amber-500/30" title="توسيع ملخص الخطة والكشكول">
+                    <svg id="islandExpandChevron" class="w-3.5 h-3.5 sm:w-4 sm:h-4 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+            </div>
         </div>
 
-        <!-- 2. Center: Official Family Logo (Tap to scroll to top) -->
-        <button id="islandLogoBtn" type="button" class="flex items-center gap-2 px-2.5 py-1 rounded-full hover:bg-white/10 active:scale-95 transition cursor-pointer group" title="شعار الأسرة - اضغط للصعود للأعلى">
-            <img src="logo.png" alt="Family Logo" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-amber-400/60 shadow-md group-hover:scale-110 transition duration-200 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/60x60/966c34/ffffff?text=شعار'">
-            <span class="text-xs font-black text-amber-200 hidden md:inline truncate max-w-[140px] drop-shadow-sm">أسرة أرسانيوس ونيقولاوس</span>
-        </button>
+        <!-- EXPANDED INTERACTIVE DRAWER (State 2) -->
+        <div id="islandExpandedView" class="hidden flex-col p-4 sm:p-5 border-t border-amber-400/25 text-white max-h-[75vh] overflow-y-auto">
+            <!-- Header row of expanded island -->
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
+                <div class="flex items-center gap-2">
+                    <img src="logo.png" alt="Logo" class="w-6 h-6 rounded-full border border-amber-400" onerror="this.onerror=null; this.src='https://placehold.co/60x60/966c34/ffffff?text=شعار'">
+                    <span class="text-xs sm:text-sm font-black text-amber-300">الملخص التفاعلي الذكي (Dynamic Island)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/30 border border-white/10 text-[10px]">
+                        <span id="islandExpandedConnDot" class="connection-dot online"></span>
+                        <span id="islandExpandedConnText" class="text-emerald-400 font-bold">متصل سحابياً ⚡</span>
+                    </div>
+                    <button type="button" id="islandCollapseBtn" class="p-1 rounded-full hover:bg-white/20 active:scale-95 text-white/80 transition cursor-pointer" title="تصغير الجزيرة">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+                    </button>
+                </div>
+            </div>
 
-        <!-- 3. Left side (in RTL): Language Toggle, Theme Toggle (Sun/Moon), and Servant Status -->
-        <div class="flex items-center gap-1.5 sm:gap-2">
-            <!-- Language Toggle Button -->
-            <button id="islandLanguageToggleBtn" type="button" class="px-2.5 py-1 text-[11px] sm:text-xs rounded-full hover:bg-white/20 active:scale-95 transition cursor-pointer font-bold text-white shadow-sm flex items-center gap-1 border border-white/20" title="تحويل اللغة (عربي / English)">
-                <span id="islandLangLabel">🇪🇬 عربي</span>
-            </button>
-            <!-- Day / Night Theme Toggle -->
-            <button id="islandThemeToggleBtn" type="button" class="p-1.5 rounded-full hover:bg-white/20 active:scale-95 transition cursor-pointer text-amber-200 border border-white/20" title="الوضع النهاري / الليلي">
-                <svg id="islandSunIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-                <svg id="islandMoonIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-            </button>
-            <!-- Servant Passkey / Mode Button -->
-            <button id="islandPasskeyBtn" type="button" class="px-2.5 py-1 rounded-full bg-amber-600 hover:bg-amber-700 active:scale-95 text-white text-[10px] sm:text-[11px] font-bold transition cursor-pointer flex items-center gap-1 shadow-sm" title="دخول وضع الخادم">
-                <span>🔑</span>
-                <span id="islandServantLabel" class="hidden sm:inline">الخادم</span>
-            </button>
+            <!-- Content Grid inside Expanded Island -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-right mb-3">
+                <!-- Box 1: Mini WhatsApp Plan -->
+                <div class="p-3 rounded-2xl bg-black/30 border border-emerald-500/30 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-xs font-bold text-emerald-300 flex items-center gap-1">
+                                <span>📱 خطة الواتساب:</span>
+                            </span>
+                            <div class="flex items-center gap-1">
+                                <button type="button" id="islandCopyPlanBtn" class="px-2 py-0.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold transition flex items-center gap-1 cursor-pointer">
+                                    <span>نسخ 📋</span>
+                                </button>
+                                <button type="button" id="islandEditPlanBtn" class="px-2 py-0.5 rounded-lg bg-white/15 hover:bg-white/25 text-white text-[10px] font-bold transition cursor-pointer">
+                                    <span>تعديل ✏️</span>
+                                </button>
+                            </div>
+                        </div>
+                        <p id="islandWhatsAppSnippet" class="text-[11px] text-gray-200 line-clamp-3 leading-relaxed whitespace-pre-line">
+                            لا توجد خطة مسجلة حالياً.
+                        </p>
+                    </div>
+                    <div id="islandNextDaySnippet" class="mt-2 pt-2 border-t border-emerald-500/20 text-[10px] text-emerald-200 font-semibold">
+                        اليوم القادم: جاري التحديد...
+                    </div>
+                </div>
+
+                <!-- Box 2: Notebook Last Page -->
+                <div class="p-3 rounded-2xl bg-black/30 border border-amber-500/30 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-xs font-bold text-amber-300 flex items-center gap-1">
+                                <span>📖 آخر صفحة في الكشكول:</span>
+                            </span>
+                            <button type="button" id="islandEditNotebookBtn" class="px-2 py-0.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-[10px] font-bold transition cursor-pointer">
+                                <span>تعديل سريع ✏️</span>
+                            </button>
+                        </div>
+                        <p id="islandNotebookSnippet" class="text-[11px] text-gray-200 line-clamp-3 leading-relaxed whitespace-pre-line">
+                            لا توجد ملاحظات مسجلة حالياً.
+                        </p>
+                    </div>
+                    <div id="islandNotebookUpdated" class="mt-2 pt-2 border-t border-amber-500/20 text-[10px] text-amber-200 font-semibold">
+                        آخر تحديث: اليوم
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actionable Missed Days Chips & Extra Day Button -->
+            <div class="p-3 rounded-2xl bg-black/30 border border-amber-500/25 mb-3 text-right">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-bold text-amber-200 flex items-center gap-1">
+                        <span>⚠️ استدراك الغياب الفائت (اضغط للتسجيل الفوري):</span>
+                    </span>
+                    <button type="button" id="islandAddExtraDayBtn" class="px-2 py-0.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-[10px] font-bold transition flex items-center gap-1 cursor-pointer">
+                        <span>+ يوم إضافي ⚡</span>
+                    </button>
+                </div>
+                <div id="islandMissedDaysChips" class="flex flex-wrap gap-1.5">
+                    <span class="text-[11px] text-emerald-300">✅ جميع أيام الخطة مسجلة بنجاح ولا توجد أيام معلقة!</span>
+                </div>
+            </div>
+
+            <!-- Quick Navigation Footer inside Island -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/10 text-xs">
+                <div class="flex items-center gap-1">
+                    <button type="button" id="islandNavPeopleBtn" class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-semibold transition cursor-pointer">👥 الأفراد</button>
+                    <button type="button" id="islandNavPlanBtn" class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-semibold transition cursor-pointer">📅 الخطة</button>
+                    <button type="button" id="islandNavTasksBtn" class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-semibold transition cursor-pointer">📝 المهام</button>
+                    <button type="button" id="islandNavEventsBtn" class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-semibold transition cursor-pointer">🎉 الفعاليات</button>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <button type="button" id="islandPasskeyBtn" class="px-2.5 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 active:scale-95 text-white text-[10px] font-bold transition cursor-pointer flex items-center gap-1">
+                        <span>🔑</span>
+                        <span id="islandServantLabel">وضع الخادم</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </aside>
 
@@ -1696,8 +1891,10 @@
                             <span>+ إضافة يوم إضافي (خارج الخطة) ⚡</span>
                         </button>
                     </div>
-                </div>
             </div>
+
+            <!-- Sentinel element for 60fps GPU IntersectionObserver -->
+            <div id="heroScrollSentinel" class="w-full h-1 pointer-events-none opacity-0 select-none"></div>
 
             <!-- 3. Actions Toolbar & Add Person -->
             <div class="w-full p-6 rounded-3xl shadow-lg flex flex-col mb-8" style="background: var(--card-bg);">
