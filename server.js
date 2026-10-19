@@ -1,4 +1,4 @@
-// server.js
+// server.js - Express 5 Backend with Normalized Attendance Architecture & Smart Plan
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -8,15 +8,26 @@ const { v4: uuidv4 } = require('uuid');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const DATA_FILE = path.join(__dirname, 'data.json');
+const DATA_TEMP_FILE = path.join(__dirname, 'data.json.tmp');
+
+// Security Headers Middleware
+app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    next();
+});
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 // Block direct access to sensitive files
 app.use((req, res, next) => {
     const sensitive = [
         '/data.json',
+        '/data.json.tmp',
         '/server.js',
         '/package.json',
         '/package-lock.json',
@@ -34,6 +45,266 @@ app.use((req, res, next) => {
 // Serve web application static files
 app.use(express.static(path.join(__dirname)));
 
+// Helper: Rich initial seed data if file is missing or corrupted
+function getInitialSeedData() {
+    return {
+        activePlan: {
+            id: 'plan-oct-nov-2026',
+            title: 'خطة خدمة وسائل الإيضاح - أكتوبر ونوفمبر 2026 🎨⛪',
+            rawWhatsAppText: '✝️ سلام ونعمة خدام ومخدومي أسرة الأنبا أرسانيوس والقديس نيقولاوس ✝️\n\n📌 *خطة وتكليفات خدمة وسائل الإيضاح لشهر أكتوبر ونوفمبر 2026*\n\n1️⃣ *الجمعة 10/16*: ورشة عمل مجسمات سفر الخروج وتجهيز لوحات درس الكتاب ✂️\n2️⃣ *الأحد 10/18*: قداس إلهي وتوزيع جوائز مسابقة الابتكار في وسائل الإيضاح 🏆\n3️⃣ *الجمعة 10/23*: لقاء تدريبي تقني: استخدام العروض التفاعلية والشاشات الذكية 💻\n4️⃣ *الأحد 10/25*: خدمة معرض الوسائل السنوي بمبنى الخدمات 🎪\n5️⃣ *الجمعة 10/30*: فرز وتجليد وسائل الإيضاح وتجهيز مخزن مرسى خليل 📦\n\nصلوا من أجل الخدمة ودمتم بركة وسلام ❤️',
+            startDate: '2026-10-16',
+            endDate: '2026-10-31',
+            notebookLastPage: {
+                title: 'خلاصة آخر صفحة في الكشكول | توصيات وتكليفات الختام',
+                content: '• ميزانية الورشة: شراء 20 لوح كرتون ناصبيان + أقلام تحديد فوسفورية + مسدسات شمع.\n• مسؤول الاستلام من مطبعة السلام: فيلوباتير أمجد (هاتف: 01223456789).\n• متابعة الغائبين في ورشة الجمعة والتواصل هاتفياً مع المعتذرين.\n• التجهيز المبكر لمعرض وسائل الإيضاح السنوي والتنسيق مع أمين الخدمة.',
+                updatedAt: new Date().toISOString()
+            },
+            scheduledDays: [
+                {
+                    date: '2026-10-16',
+                    dayTitle: 'ورشة عمل مجسمات سفر الخروج وتجهيز لوحات درس الكتاب',
+                    details: 'ورشة تفاعلية لتصميم مجسمات العهد القديم وتلوين الخرائط التوضيحية',
+                    linkedEventId: null
+                },
+                {
+                    date: '2026-10-18',
+                    dayTitle: 'قداس إلهي وتوزيع جوائز مسابقة الابتكار',
+                    details: 'حضور القداس المشترك وتكريم المتميزين في إنتاج وسائل الإيضاح',
+                    linkedEventId: null
+                },
+                {
+                    date: '2026-10-23',
+                    dayTitle: 'لقاء تدريبي: العروض التفاعلية والشاشات الذكية',
+                    details: 'تدريب الخدام على إعداد دروس تفاعلية باستخدام التكنولوجيا',
+                    linkedEventId: null
+                },
+                {
+                    date: '2026-10-25',
+                    dayTitle: 'خدمة معرض الوسائل السنوي بمبنى الخدمات',
+                    details: 'عرض إنتاج الأسرة وتوزيع النماذج التعليمية على فصول مدارس الأحد',
+                    linkedEventId: '0a6ab81d-ff7d-41e8-a915-abf66315056f'
+                },
+                {
+                    date: '2026-10-30',
+                    dayTitle: 'فرز وتجليد وسائل الإيضاح وتجهيز المخزن',
+                    details: 'تنظيم أدوات الخدمة وتخزين المواد المسترجعة',
+                    linkedEventId: null
+                }
+            ]
+        },
+        attendanceSessions: {
+            '2025-08-01': {
+                date: '2025-08-01',
+                source: 'plan',
+                planId: null,
+                linkedEventId: null,
+                title: 'تنظيم مخزن مرسى خليل',
+                isCompleted: true,
+                records: {
+                    '1754582776112': 'present',
+                    '1754582844940': 'present',
+                    '1754582901873': 'present',
+                    '1754767473028': 'present'
+                }
+            }
+        },
+        people: [
+            {
+                id: '1754582776112',
+                name: 'فيلوباتير امجد',
+                role: 'servant',
+                phone: '01223456789',
+                birthdate: '2000-05-15',
+                notes: 'أمين مساعد خدمة وسائل الإيضاح'
+            },
+            {
+                id: '1754582844940',
+                name: 'مينا سمير',
+                role: 'servant',
+                phone: '01012345678',
+                birthdate: '1998-11-20',
+                notes: 'مسؤول المشتريات وتجهيزات الورش'
+            },
+            {
+                id: '1754582901873',
+                name: 'كيرلس عماد',
+                role: 'member',
+                phone: '01123456780',
+                birthdate: '2004-03-10',
+                notes: 'مشارك نشط في ورش الوسائل التفاعلية'
+            },
+            {
+                id: '1754767473028',
+                name: 'مارينا ماجد',
+                role: 'servant',
+                phone: '01234567891',
+                birthdate: '2001-08-25',
+                notes: 'مسؤولة التصميم واللوحات التوضيحية'
+            }
+        ],
+        tasks: [
+            {
+                id: 'task-seed-1',
+                batchId: 'batch-seed-1',
+                description: 'شراء خامات ورشة وسائل الإيضاح لموسم كريسماس',
+                personId: '1754582844940',
+                date: '2026-11-15',
+                priority: 'high',
+                status: 'completed'
+            }
+        ],
+        events: [
+            {
+                id: '0a6ab81d-ff7d-41e8-a915-abf66315056f',
+                name: 'معرض وسائل الإيضاح السنوي والأنشطة الخريفية',
+                description: 'تجهيز معارض وسائل الإيضاح وتزيين الكنائس التابعة والورش التفاعلية',
+                startDate: '2026-10-20',
+                endDate: '2026-10-31',
+                targetCount: 2,
+                createdAt: new Date().toISOString()
+            }
+        ]
+    };
+}
+
+// Helper function to read data safely
+function readData() {
+    if (!fs.existsSync(DATA_FILE)) {
+        console.log('data.json not found, initializing with seed data.');
+        const seed = getInitialSeedData();
+        writeData(seed);
+        return seed;
+    }
+    try {
+        const rawData = fs.readFileSync(DATA_FILE, 'utf8');
+        const data = JSON.parse(rawData);
+        data.people = Array.isArray(data.people) ? data.people : [];
+        data.tasks = Array.isArray(data.tasks) ? data.tasks : [];
+        data.events = Array.isArray(data.events) ? data.events : [];
+        data.attendanceSessions = data.attendanceSessions && typeof data.attendanceSessions === 'object' ? data.attendanceSessions : {};
+        data.activePlan = data.activePlan && typeof data.activePlan === 'object' ? data.activePlan : null;
+
+        if (data.people.length === 0) {
+            const seed = getInitialSeedData();
+            writeData(seed);
+            return seed;
+        }
+        return data;
+    } catch (e) {
+        console.error('Error parsing data.json, re-seeding safely:', e);
+        const seed = getInitialSeedData();
+        writeData(seed);
+        return seed;
+    }
+}
+
+// Atomic file write to avoid corrupted JSON
+function writeData(data) {
+    try {
+        const payload = JSON.stringify(data, null, 4);
+        fs.writeFileSync(DATA_TEMP_FILE, payload, 'utf8');
+        fs.renameSync(DATA_TEMP_FILE, DATA_FILE);
+    } catch (err) {
+        console.error('Atomic write failed, falling back to direct write:', err);
+        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 4), 'utf8');
+    }
+}
+
+// Helper: Auto-find matching event for a given date
+function findMatchingEventId(dateStr, events) {
+    if (!dateStr || !Array.isArray(events)) return null;
+    const targetDate = new Date(dateStr).getTime();
+    for (const ev of events) {
+        if (!ev.startDate) continue;
+        const start = new Date(ev.startDate).getTime();
+        const end = ev.endDate ? new Date(ev.endDate).getTime() : start;
+        if (targetDate >= start && targetDate <= end) {
+            return ev.id;
+        }
+    }
+    return null;
+}
+
+// Helper: Compute dynamic person attendance stats directly from normalized attendanceSessions
+function computePersonStats(person, attendanceSessions, tasks, events) {
+    const sessions = Object.values(attendanceSessions);
+    const virtualAttendance = [];
+
+    let attendedSessions = 0;
+    let excusedSessions = 0;
+    let unexcusedSessions = 0;
+    let totalSessions = 0;
+
+    sessions.forEach(session => {
+        if (!session.records) return;
+        const status = session.records[person.id];
+        if (status !== undefined) {
+            totalSessions++;
+            const isPresent = status === 'present' || status === 'late';
+            const isExcused = status === 'excused';
+            const isAbsent = status === 'absent';
+
+            if (isPresent) attendedSessions++;
+            if (isExcused) excusedSessions++;
+            if (isAbsent) unexcusedSessions++;
+
+            virtualAttendance.push({
+                date: session.date,
+                status: isPresent,
+                excused: isExcused,
+                isLate: status === 'late',
+                dayName: session.title || '',
+                eventId: session.linkedEventId || null
+            });
+        }
+    });
+
+    // Sort virtual attendance by date descending
+    virtualAttendance.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // Commitment ratio according to user rule: attended out of (total - excused)
+    const requiredSessions = totalSessions - excusedSessions;
+    const commitmentRatio = requiredSessions > 0
+        ? Math.min(1, attendedSessions / requiredSessions)
+        : (attendedSessions > 0 || excusedSessions > 0 ? 1 : 0);
+    const attendanceRatio = totalSessions === 0 ? 0 : attendedSessions / totalSessions;
+
+    // Task Stats Calculation
+    const personTasks = tasks.filter(t => t.personId === person.id);
+    const totalTasks = personTasks.length;
+    const completedTasks = personTasks.filter(t => t.status === 'completed').length;
+    const taskRatio = totalTasks === 0 ? 0 : completedTasks / totalTasks;
+
+    // Overload Calculation across events
+    let totalOverload = 0;
+    (events || []).forEach(ev => {
+        const target = ev.targetCount || 2;
+        const count = virtualAttendance.filter(s => s.status && (s.eventId === ev.id || (s.dayName && s.dayName.includes(ev.name)))).length;
+        if (count > target) {
+            totalOverload += (count - target);
+        }
+    });
+
+    return {
+        ...person,
+        role: person.role || 'member',
+        phone: person.phone || '',
+        birthdate: person.birthdate || '',
+        notes: person.notes || '',
+        attendance: virtualAttendance, // Virtual synthesized for UI charts and backward compatibility
+        attendedSessions,
+        excusedSessions,
+        unexcusedSessions,
+        totalSessions,
+        requiredSessions,
+        commitmentRatio,
+        attendanceRatio,
+        totalTasks,
+        completedTasks,
+        taskRatio,
+        totalOverload
+    };
+}
 
 // Endpoint for Firebase client configuration
 app.get('/api/config', (req, res) => {
@@ -49,127 +320,247 @@ app.get('/api/config', (req, res) => {
     res.status(500).json({ error: 'Firebase configuration not found' });
 });
 
-// Helper function to read data from the JSON file
-function readData() {
-    if (!fs.existsSync(DATA_FILE)) {
-        console.log('data.json not found, creating a new file.');
-        return { people: [], tasks: [] };
-    }
-    const rawData = fs.readFileSync(DATA_FILE);
-    try {
-        const data = JSON.parse(rawData);
-        data.people = data.people && Array.isArray(data.people) ? data.people : [];
-        data.tasks = data.tasks && Array.isArray(data.tasks) ? data.tasks : [];
-        data.events = data.events && Array.isArray(data.events) ? data.events : [];
-        return data;
-    } catch (e) {
-        console.error("Error parsing data.json. Returning an empty structure.");
-        return { people: [], tasks: [], events: [] };
-    }
-}
-
-// Helper function to write data to the JSON file
-function writeData(data) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 4));
-}
-
-// Initial endpoint to check server status
+// --- STATUS & HEALTHCHECK ---
 app.get('/api/status', (req, res) => {
-    res.status(200).json({ status: 'online' });
+    const data = readData();
+    res.status(200).json({
+        status: 'online',
+        mode: 'express-5-normalized-dataflow',
+        version: '4.0',
+        peopleCount: data.people.length,
+        tasksCount: data.tasks.length,
+        eventsCount: data.events.length,
+        planDaysCount: data.activePlan?.scheduledDays?.length || 0,
+        sessionsCount: Object.keys(data.attendanceSessions || {}).length,
+        timestamp: new Date().toISOString()
+    });
 });
 
-// --- PEOPLE Endpoints ---
-// Get all people with calculated attendance and task stats
-app.get('/api/people', (req, res) => {
+// --- PLAN & NOTEBOOK LAST PAGE ENDPOINTS ---
+// GET /api/plan: Retrieve active plan and notebook last page
+app.get('/api/plan', (req, res) => {
     const data = readData();
-    const tasks = data.tasks;
-    const peopleWithStats = data.people.map(person => {
-        const attendance = Array.isArray(person.attendance) ? person.attendance : [];
-        const attendedSessions = attendance.filter(s => s.status === true || s.status === 'present').length;
-        const excusedSessions = attendance.filter(s => s.excused === true || s.status === 'excused').length;
-        const unexcusedSessions = attendance.filter(s => !s.status && !s.excused && s.status !== 'excused' && s.status !== 'present').length;
-        const totalSessions = attendance.length;
-        
-        // Commitment ratio: attended out of required non-excused meetings (User Rule)
-        const requiredSessions = totalSessions - excusedSessions;
-        const commitmentRatio = requiredSessions > 0 
-            ? Math.min(1, attendedSessions / requiredSessions) 
-            : (attendedSessions > 0 || excusedSessions > 0 ? 1 : 0);
-        const attendanceRatio = totalSessions === 0 ? 0 : attendedSessions / totalSessions;
-        
-        // Task Stats Calculation
-        const personTasks = tasks.filter(t => t.personId === person.id);
-        const totalTasks = personTasks.length;
-        const completedTasks = personTasks.filter(t => t.status === 'completed').length;
-        const taskRatio = totalTasks === 0 ? 0 : completedTasks / totalTasks;
+    res.json({
+        activePlan: data.activePlan,
+        notebookLastPage: data.activePlan?.notebookLastPage || null
+    });
+});
 
+// POST & PUT /api/plan: Save/update entire active plan
+app.post('/api/plan', (req, res) => {
+    savePlanHandler(req, res);
+});
+app.put('/api/plan', (req, res) => {
+    savePlanHandler(req, res);
+});
+
+function savePlanHandler(req, res) {
+    const { title, rawWhatsAppText, startDate, endDate, notebookLastPage, scheduledDays } = req.body;
+    const data = readData();
+
+    // Auto-link matching events for each scheduled day
+    const linkedScheduledDays = (scheduledDays || []).map(day => {
+        const autoEventId = findMatchingEventId(day.date, data.events);
         return {
-            ...person,
-            attendedSessions,
-            excusedSessions,
-            unexcusedSessions,
-            totalSessions,
-            requiredSessions,
-            commitmentRatio,
-            attendanceRatio,
-            totalTasks,
-            completedTasks,
-            taskRatio
+            date: day.date,
+            dayTitle: day.dayTitle || '',
+            details: day.details || '',
+            linkedEventId: day.linkedEventId || autoEventId || null
         };
     });
+
+    const updatedPlan = {
+        id: data.activePlan?.id || uuidv4(),
+        title: title ? title.trim() : (data.activePlan?.title || 'الخطة الأسبوعية لخدمة وسائل الإيضاح'),
+        rawWhatsAppText: rawWhatsAppText || data.activePlan?.rawWhatsAppText || '',
+        startDate: startDate || data.activePlan?.startDate || '',
+        endDate: endDate || data.activePlan?.endDate || '',
+        notebookLastPage: notebookLastPage || data.activePlan?.notebookLastPage || {
+            title: 'خلاصة آخر صفحة في الكشكول',
+            content: '',
+            updatedAt: new Date().toISOString()
+        },
+        scheduledDays: linkedScheduledDays,
+        updatedAt: new Date().toISOString()
+    };
+
+    data.activePlan = updatedPlan;
+    writeData(data);
+    res.status(200).json({ message: 'تم حفظ الخطة بنجاح', activePlan: updatedPlan });
+}
+
+// PUT /api/plan/notebook: Quick inline update of notebook last page
+app.put('/api/plan/notebook', (req, res) => {
+    const { title, content } = req.body;
+    const data = readData();
+    if (!data.activePlan) {
+        data.activePlan = getInitialSeedData().activePlan;
+    }
+    data.activePlan.notebookLastPage = {
+        title: title ? title.trim() : (data.activePlan.notebookLastPage?.title || 'خلاصة آخر صفحة في الكشكول'),
+        content: content !== undefined ? content : (data.activePlan.notebookLastPage?.content || ''),
+        updatedAt: new Date().toISOString()
+    };
+    writeData(data);
+    res.status(200).json({
+        message: 'تم تحديث صفحة الكشكول بنجاح',
+        notebookLastPage: data.activePlan.notebookLastPage
+    });
+});
+
+// --- NORMALIZED ATTENDANCE SESSIONS ENDPOINTS ---
+// GET /api/attendance-sessions: Get all sessions dictionary
+app.get('/api/attendance-sessions', (req, res) => {
+    const data = readData();
+    res.json({ attendanceSessions: data.attendanceSessions || {} });
+});
+
+// POST /api/attendance-session: Unified session recording (from Plan Day, Extra Day, or Event)
+app.post('/api/attendance-session', (req, res) => {
+    const { date, source, planId, linkedEventId, title, isCompleted, records } = req.body;
+    if (!date) {
+        return res.status(400).json({ message: 'تاريخ الجلسة مطلوب' });
+    }
+
+    const data = readData();
+    data.attendanceSessions = data.attendanceSessions || {};
+
+    // Auto-detect matching event if not explicitly provided
+    const detectedEventId = linkedEventId || findMatchingEventId(date, data.events);
+
+    const existingSession = data.attendanceSessions[date] || {};
+
+    data.attendanceSessions[date] = {
+        date,
+        source: source || existingSession.source || 'plan',
+        planId: planId || existingSession.planId || data.activePlan?.id || null,
+        linkedEventId: detectedEventId,
+        title: title || existingSession.title || `جلسة حضور ${date}`,
+        isCompleted: isCompleted !== undefined ? Boolean(isCompleted) : true,
+        records: records && typeof records === 'object' ? records : (existingSession.records || {})
+    };
+
+    // Bidirectional Event sync: If linked to event, update event session count if applicable
+    if (detectedEventId && data.events) {
+        const ev = data.events.find(e => e.id === detectedEventId);
+        if (ev) {
+            ev.lastSessionDate = date;
+        }
+    }
+
+    writeData(data);
+    res.status(200).json({
+        message: 'تم تسجيل جلسة الحضور بنجاح',
+        session: data.attendanceSessions[date]
+    });
+});
+
+// DELETE /api/attendance-session/:date: Delete an attendance session
+app.delete('/api/attendance-session/:date', (req, res) => {
+    const { date } = req.params;
+    const data = readData();
+    if (!data.attendanceSessions || !data.attendanceSessions[date]) {
+        return res.status(404).json({ message: 'الجلسة غير موجودة' });
+    }
+    delete data.attendanceSessions[date];
+    writeData(data);
+    res.status(200).json({ message: 'تم حذف جلسة الحضور بنجاح', date });
+});
+
+// --- PEOPLE ENDPOINTS (Dynamic Stats from normalized attendanceSessions) ---
+app.get('/api/people', (req, res) => {
+    const data = readData();
+    const tasks = data.tasks || [];
+    const events = data.events || [];
+    const attendanceSessions = data.attendanceSessions || {};
+
+    const peopleWithStats = data.people.map(person => 
+        computePersonStats(person, attendanceSessions, tasks, events)
+    );
     res.json({ people: peopleWithStats });
 });
 
-// Add new person
 app.post('/api/people', (req, res) => {
-    const { name } = req.body;
-    if (!name) {
+    const { name, role, phone, birthdate, notes } = req.body;
+    if (!name || typeof name !== 'string' || !name.trim()) {
         return res.status(400).json({ message: 'الاسم مطلوب' });
     }
 
+    const trimmedName = name.trim();
     const data = readData();
-    const existingPerson = data.people.find(p => p.name === name);
+    const existingPerson = data.people.find(p => p.name.trim().toLowerCase() === trimmedName.toLowerCase());
     if (existingPerson) {
         return res.status(409).json({ message: 'هذا الشخص مضاف بالفعل' });
     }
 
     const newPerson = {
         id: uuidv4(),
-        name,
-        attendance: []
+        name: trimmedName,
+        role: role === 'servant' ? 'servant' : 'member',
+        phone: phone ? String(phone).trim() : '',
+        birthdate: birthdate ? String(birthdate).trim() : '',
+        notes: notes ? String(notes).trim() : ''
     };
     data.people.push(newPerson);
     writeData(data);
-    res.status(201).json({ person: newPerson });
+
+    const personWithStats = computePersonStats(newPerson, data.attendanceSessions || {}, data.tasks || [], data.events || []);
+    res.status(201).json({ person: personWithStats, message: 'تم إضافة الشخص بنجاح' });
 });
 
-// Update person name
+app.put('/api/people/:id', (req, res) => {
+    const { id } = req.params;
+    const { name, role, phone, birthdate, notes } = req.body;
+
+    const data = readData();
+    const index = data.people.findIndex(p => p.id === id);
+    if (index === -1) {
+        return res.status(404).json({ message: 'الشخص غير موجود' });
+    }
+
+    if (name) {
+        const trimmed = name.trim();
+        const duplicate = data.people.find((p, i) => i !== index && p.name.trim().toLowerCase() === trimmed.toLowerCase());
+        if (duplicate) {
+            return res.status(409).json({ message: 'الاسم موجود بالفعل لشخص آخر' });
+        }
+        data.people[index].name = trimmed;
+    }
+
+    if (role !== undefined) data.people[index].role = role;
+    if (phone !== undefined) data.people[index].phone = String(phone).trim();
+    if (birthdate !== undefined) data.people[index].birthdate = String(birthdate).trim();
+    if (notes !== undefined) data.people[index].notes = String(notes).trim();
+
+    writeData(data);
+    const updatedWithStats = computePersonStats(data.people[index], data.attendanceSessions || {}, data.tasks || [], data.events || []);
+    res.status(200).json({ message: 'تم تحديث بيانات الشخص بنجاح', person: updatedWithStats });
+});
+
 app.put('/api/people/:id/name', (req, res) => {
     const { id } = req.params;
     const { name } = req.body;
-    if (!name) {
+    if (!name || !name.trim()) {
         return res.status(400).json({ message: 'الاسم مطلوب' });
     }
 
     const data = readData();
     const personIndex = data.people.findIndex(p => p.id === id);
-
     if (personIndex === -1) {
         return res.status(404).json({ message: 'الشخص غير موجود' });
     }
     
-    // Check for duplicate name
-    const existingPerson = data.people.find((p, index) => p.name === name && index !== personIndex);
+    const trimmed = name.trim();
+    const existingPerson = data.people.find((p, index) => p.name.trim().toLowerCase() === trimmed.toLowerCase() && index !== personIndex);
     if (existingPerson) {
         return res.status(409).json({ message: 'الاسم موجود بالفعل لشخص آخر.' });
     }
 
-    data.people[personIndex].name = name;
+    data.people[personIndex].name = trimmed;
     writeData(data);
     res.status(200).json({ message: 'تم تحديث الاسم بنجاح', person: data.people[personIndex] });
 });
 
-// Delete person
 app.delete('/api/people/:id', (req, res) => {
     const { id } = req.params;
     const data = readData();
@@ -182,233 +573,73 @@ app.delete('/api/people/:id', (req, res) => {
     }
     
     // Remove tasks assigned to the deleted person
-    data.tasks = data.tasks.filter(t => t.personId !== id);
+    data.tasks = (data.tasks || []).filter(t => t.personId !== id);
+
+    // Remove from attendanceSessions records
+    if (data.attendanceSessions) {
+        Object.values(data.attendanceSessions).forEach(session => {
+            if (session.records && session.records[id]) {
+                delete session.records[id];
+            }
+        });
+    }
 
     writeData(data);
     res.status(200).json({ message: 'تم حذف الشخص بنجاح' });
 });
 
-// --- SESSIONS/DAYS Endpoints ---
-
-// Quick Add Session for all people
-app.post('/api/quick-session-all', (req, res) => {
-    const { presentIds = [], attendanceMap = {}, date, dayName } = req.body;
-    
-    if (!date) {
-        return res.status(400).json({ message: 'التاريخ مطلوب.' });
-    }
-
-    const data = readData();
-    
-    // Check if a session already exists for this date
-    const sessionExists = data.people.some(p => p.attendance.some(s => s.date === date));
-    if (sessionExists) {
-        return res.status(409).json({ message: 'يوم مسجل بالفعل في هذا التاريخ.' });
-    }
-
-    data.people.forEach(person => {
-        let isPresent = false;
-        let isExcused = false;
-        let excuseReason = '';
-
-        if (attendanceMap && attendanceMap[person.id]) {
-            const entry = attendanceMap[person.id];
-            isPresent = entry.status === 'present' || entry.status === true;
-            isExcused = entry.status === 'excused' || entry.excused === true;
-            excuseReason = entry.excuseReason || '';
-        } else if (Array.isArray(presentIds)) {
-            isPresent = presentIds.includes(person.id);
-        }
-
-        person.attendance.push({
-            date,
-            status: isPresent, 
-            excused: isExcused,
-            excuseReason: excuseReason,
-            dayName: dayName || ''
-        });
-    });
-
-    writeData(data);
-    res.status(201).json({ message: 'تم تسجيل الحضور بنجاح ليوم جديد.' });
-});
-
-// Get a list of all unique days
+// Backward compatible endpoints
 app.get('/api/days', (req, res) => {
     const data = readData();
-    const daysMap = new Map();
-
-    data.people.forEach(person => {
-        person.attendance.forEach(session => {
-            if (!daysMap.has(session.date)) {
-                daysMap.set(session.date, {
-                    date: session.date,
-                    dayName: session.dayName || ''
-                });
-            }
-        });
-    });
-
-    const days = Array.from(daysMap.values());
+    const sessions = Object.values(data.attendanceSessions || {});
+    const days = sessions.map(s => ({
+        date: s.date,
+        dayName: s.title || ''
+    }));
     days.sort((a, b) => new Date(b.date) - new Date(a.date));
-
     res.json(days);
 });
 
-// Get attendance for a specific day for all people
 app.get('/api/days/:date/attendance', (req, res) => {
     const { date } = req.params;
     const data = readData();
-    let dayName = '';
+    const session = (data.attendanceSessions || {})[date];
+    const dayName = session ? session.title : '';
     
     const attendanceData = data.people.map(person => {
-        const session = person.attendance.find(s => s.date === date);
-        if (session && session.dayName) {
-            dayName = session.dayName;
-        }
+        const status = session?.records ? session.records[person.id] : undefined;
         return {
             id: person.id,
             name: person.name,
-            status: session ? (session.status === true || session.status === 'present') : false,
-            excused: session ? (session.excused === true || session.status === 'excused') : false,
-            excuseReason: session ? (session.excuseReason || '') : ''
+            role: person.role || 'member',
+            phone: person.phone || '',
+            status: status === 'present' || status === 'late',
+            excused: status === 'excused',
+            isLate: status === 'late',
+            excuseReason: ''
         };
     });
 
-    res.json({ dayName, attendance: attendanceData.filter(a => a.name) });
+    res.json({ dayName, attendance: attendanceData });
 });
 
-// Delete a session/day
-app.delete('/api/days/:date', (req, res) => {
-    const { date } = req.params;
-    const data = readData();
-    
-    let dayFound = false;
-    data.people.forEach(person => {
-        const initialAttendanceCount = person.attendance.length;
-        person.attendance = person.attendance.filter(s => s.date !== date);
-        if (person.attendance.length < initialAttendanceCount) {
-            dayFound = true;
-        }
-    });
-
-    if (!dayFound) {
-        return res.status(404).json({ message: 'اليوم غير موجود في سجلات الحضور' });
-    }
-
-    writeData(data);
-    res.status(200).json({ message: 'تم حذف اليوم من سجلات الجميع بنجاح' });
-});
-
-// Update day (name and date) AND add additional attendees
-app.put('/api/days/:originalDate', (req, res) => {
-    const { originalDate } = req.params;
-    const { newDate, newDayName, additionalAttendees } = req.body;
-
-    if (!newDate) {
-        return res.status(400).json({ message: 'التاريخ الجديد مطلوب.' });
-    }
-
-    const data = readData();
-
-    // Check if the new date already exists (and is not the same as the original)
-    if (originalDate !== newDate) {
-        const dayExists = data.people.some(p => p.attendance.some(s => s.date === newDate));
-        if (dayExists) {
-            return res.status(409).json({ message: 'التاريخ الجديد موجود بالفعل. يرجى اختيار تاريخ آخر.' });
-        }
-    }
-
-    let dayFound = false;
-    
-    // 1. Update existing records (Date and Name)
-    data.people.forEach(person => {
-        person.attendance.forEach(session => {
-            if (session.date === originalDate) {
-                session.date = newDate;
-                session.dayName = newDayName || '';
-                dayFound = true;
-            }
-        });
-    });
-    
-    // 2. Add Additional Attendees or status updates
-    if (req.body.statusUpdates && typeof req.body.statusUpdates === 'object') {
-        Object.entries(req.body.statusUpdates).forEach(([personId, update]) => {
-            const person = data.people.find(p => p.id === personId);
-            if (person) {
-                const session = person.attendance.find(s => s.date === newDate);
-                const isPresent = update.status === 'present' || update.status === true;
-                const isExcused = update.status === 'excused' || update.excused === true;
-                const reason = update.excuseReason || '';
-                if (session) {
-                    session.status = isPresent;
-                    session.excused = isExcused;
-                    session.excuseReason = reason;
-                    session.dayName = newDayName || session.dayName || '';
-                } else {
-                    person.attendance.push({
-                        date: newDate,
-                        status: isPresent,
-                        excused: isExcused,
-                        excuseReason: reason,
-                        dayName: newDayName || ''
-                    });
-                }
-                dayFound = true;
-            }
-        });
-    } else if (additionalAttendees && Array.isArray(additionalAttendees) && additionalAttendees.length > 0) {
-        additionalAttendees.forEach(personId => {
-            const person = data.people.find(p => p.id === personId);
-            if (person) {
-                const session = person.attendance.find(s => s.date === newDate);
-                if (session) {
-                    session.status = true; // Mark as present
-                    session.excused = false;
-                    session.dayName = newDayName || session.dayName || '';
-                } else {
-                    person.attendance.push({
-                        date: newDate,
-                        status: true,
-                        excused: false,
-                        excuseReason: '',
-                        dayName: newDayName || ''
-                    });
-                }
-                dayFound = true;
-            }
-        });
-    }
-
-    if (!dayFound) {
-        return res.status(404).json({ message: 'اليوم الأصلي غير موجود.' });
-    }
-
-    writeData(data);
-    res.status(200).json({ message: 'تم تحديث اليوم والحضور بنجاح' });
-});
-
-// --- TASKS Endpoints ---
-
-// Get all tasks
+// --- TASKS ENDPOINTS ---
 app.get('/api/tasks', (req, res) => {
     const data = readData();
     const peopleMap = new Map(data.people.map(p => [p.id, p.name]));
 
-    const tasksWithNames = data.tasks.map(task => ({
+    const tasksWithNames = (data.tasks || []).map(task => ({
         ...task,
+        priority: task.priority || 'normal',
+        status: task.status || 'pending',
         personName: peopleMap.get(task.personId) || 'شخص محذوف 🗑️'
     }));
 
     res.json(tasksWithNames);
 });
 
-// Add new task (Updated to handle multiple people)
 app.post('/api/tasks', (req, res) => {
-    const { description, personIds, date, status } = req.body;
-    
-    // Accept array of personIds or single personId (legacy support, though UI sends array now)
+    const { description, personIds, date, status, priority } = req.body;
     const targets = Array.isArray(personIds) ? personIds : (req.body.personId ? [req.body.personId] : []);
 
     if (!description || !date) {
@@ -420,28 +651,28 @@ app.post('/api/tasks', (req, res) => {
     }
 
     const data = readData();
-    
-    // Generate a batchId to link these tasks together
     const batchId = uuidv4();
 
     const newTasks = targets.map(pid => ({
         id: uuidv4(),
-        batchId: batchId, // Link them
-        description,
+        batchId: batchId,
+        description: description.trim(),
         personId: pid,
         date,
-        status: status || 'pending'
+        priority: priority || 'normal',
+        status: status || 'pending',
+        createdAt: new Date().toISOString()
     }));
     
+    data.tasks = data.tasks || [];
     data.tasks.push(...newTasks);
     writeData(data);
-    res.status(201).json({ message: 'تم إضافة المهام بنجاح', count: newTasks.length });
+    res.status(201).json({ message: 'تم إضافة المهام بنجاح', count: newTasks.length, tasks: newTasks });
 });
 
-// Update task (Updated to sync status across batch)
 app.put('/api/tasks/:id', (req, res) => {
     const { id } = req.params;
-    const { description, personId, date, status } = req.body;
+    const { description, personId, date, status, priority } = req.body;
     
     if (!description || !date || !status) {
         return res.status(400).json({ message: 'الوصف والتاريخ والحالة مطلوبان.' });
@@ -457,7 +688,6 @@ app.put('/api/tasks/:id', (req, res) => {
     const targetTask = data.tasks[taskIndex];
     const batchId = targetTask.batchId;
 
-    // If this task is part of a batch, update ALL tasks in that batch
     if (batchId) {
         let count = 0;
         data.tasks = data.tasks.map(t => {
@@ -465,37 +695,35 @@ app.put('/api/tasks/:id', (req, res) => {
                 count++;
                 return {
                     ...t,
-                    description, // Update description for all
-                    date,        // Update date for all
-                    status       // Update status for all
-                    // Note: We do NOT update personId for the whole batch, 
-                    // as each task in the batch belongs to a different person.
+                    description: description.trim(),
+                    date,
+                    status,
+                    priority: priority !== undefined ? priority : (t.priority || 'normal')
                 };
             }
             return t;
         });
         writeData(data);
-        return res.status(200).json({ message: `تم تحديث المهمة لـ ${count} اشخاص بنجاح`, task: data.tasks[taskIndex] });
+        return res.status(200).json({ message: `تم تحديث المهمة لـ ${count} أشخاص بنجاح`, task: data.tasks[taskIndex] });
     } else {
-        // Legacy or single task update
         data.tasks[taskIndex] = {
             ...data.tasks[taskIndex],
-            description,
-            personId: personId || targetTask.personId, // Only allow person change for single tasks
+            description: description.trim(),
+            personId: personId || targetTask.personId,
             date,
-            status
+            status,
+            priority: priority !== undefined ? priority : (targetTask.priority || 'normal')
         };
         writeData(data);
         return res.status(200).json({ message: 'تم تحديث المهمة بنجاح', task: data.tasks[taskIndex] });
     }
 });
 
-// Delete task (Updated to delete entire batch if applicable)
 app.delete('/api/tasks/:id', (req, res) => {
     const { id } = req.params;
     const data = readData();
     
-    const taskToDelete = data.tasks.find(t => t.id === id);
+    const taskToDelete = (data.tasks || []).find(t => t.id === id);
     if (!taskToDelete) {
         return res.status(404).json({ message: 'المهمة غير موجودة' });
     }
@@ -504,25 +732,57 @@ app.delete('/api/tasks/:id', (req, res) => {
     const initialTaskCount = data.tasks.length;
 
     if (batchId) {
-        // Delete all tasks in the batch
         data.tasks = data.tasks.filter(t => t.batchId !== batchId);
     } else {
-        // Delete single task
         data.tasks = data.tasks.filter(t => t.id !== id);
     }
 
     if (data.tasks.length === initialTaskCount) {
-        return res.status(404).json({ message: 'لم يتم حذف أي مهمة (خطأ غير متوقع)' });
+        return res.status(404).json({ message: 'لم يتم حذف أي مهمة' });
     }
 
     writeData(data);
     res.status(200).json({ message: 'تم حذف المهمة (والمهام المرتبطة بها) بنجاح' });
 });
 
-// --- EVENTS Endpoints ---
+// --- EVENTS ENDPOINTS ---
 app.get('/api/events', (req, res) => {
     const data = readData();
-    res.json(data.events || []);
+    const events = data.events || [];
+    const sessions = Object.values(data.attendanceSessions || {});
+
+    // Compute dynamic live attendance stats for each event directly from attendanceSessions
+    const eventsWithLiveStats = events.map(ev => {
+        const target = ev.targetCount || 2;
+        const matchingSessions = sessions.filter(s => s.linkedEventId === ev.id || (s.title && s.title.includes(ev.name)));
+
+        // Count attendances per person for this event
+        const personAttendanceMap = {};
+        matchingSessions.forEach(session => {
+            if (!session.records) return;
+            Object.entries(session.records).forEach(([personId, status]) => {
+                if (status === 'present' || status === 'late') {
+                    personAttendanceMap[personId] = (personAttendanceMap[personId] || 0) + 1;
+                }
+            });
+        });
+
+        const attendeesCount = Object.keys(personAttendanceMap).length;
+        const completedTargetCount = Object.values(personAttendanceMap).filter(c => c >= target).length;
+        const totalOverloadCount = Object.values(personAttendanceMap).reduce((sum, c) => sum + Math.max(0, c - target), 0);
+        const totalSessionsCount = matchingSessions.length;
+
+        return {
+            ...ev,
+            attendeesCount,
+            completedTargetCount,
+            totalOverloadCount,
+            totalSessionsCount,
+            matchingSessionDates: matchingSessions.map(s => s.date)
+        };
+    });
+
+    res.json(eventsWithLiveStats);
 });
 
 app.post('/api/events', (req, res) => {
@@ -533,23 +793,32 @@ app.post('/api/events', (req, res) => {
     const data = readData();
     const newEvent = {
         id: uuidv4(),
-        name,
-        description: description || '',
+        name: name.trim(),
+        description: description ? description.trim() : '',
         startDate,
         endDate: endDate || '',
         targetCount: Number(targetCount) || 2,
-        sessions: [],
         createdAt: new Date().toISOString()
     };
     data.events = data.events || [];
     data.events.push(newEvent);
+
+    // Auto-link existing sessions or plan days that fall in this range
+    if (data.attendanceSessions) {
+        Object.values(data.attendanceSessions).forEach(session => {
+            if (!session.linkedEventId && findMatchingEventId(session.date, [newEvent])) {
+                session.linkedEventId = newEvent.id;
+            }
+        });
+    }
+
     writeData(data);
-    res.status(201).json({ event: newEvent });
+    res.status(201).json({ event: newEvent, message: 'تم إضافة الحدث بنجاح' });
 });
 
 app.put('/api/events/:id', (req, res) => {
     const { id } = req.params;
-    const { name, description, startDate, endDate, targetCount, sessions } = req.body;
+    const { name, description, startDate, endDate, targetCount } = req.body;
     const data = readData();
     data.events = data.events || [];
     const idx = data.events.findIndex(e => e.id === id);
@@ -558,15 +827,14 @@ app.put('/api/events/:id', (req, res) => {
     }
     data.events[idx] = {
         ...data.events[idx],
-        name: name !== undefined ? name : data.events[idx].name,
-        description: description !== undefined ? description : data.events[idx].description,
+        name: name !== undefined ? name.trim() : data.events[idx].name,
+        description: description !== undefined ? description.trim() : data.events[idx].description,
         startDate: startDate !== undefined ? startDate : data.events[idx].startDate,
         endDate: endDate !== undefined ? endDate : data.events[idx].endDate,
-        targetCount: targetCount !== undefined ? Number(targetCount) : data.events[idx].targetCount,
-        sessions: sessions !== undefined ? sessions : data.events[idx].sessions
+        targetCount: targetCount !== undefined ? Number(targetCount) : data.events[idx].targetCount
     };
     writeData(data);
-    res.json({ event: data.events[idx] });
+    res.json({ event: data.events[idx], message: 'تم تحديث الحدث بنجاح' });
 });
 
 app.delete('/api/events/:id', (req, res) => {
@@ -582,105 +850,95 @@ app.delete('/api/events/:id', (req, res) => {
     res.json({ message: 'تم حذف الحدث بنجاح' });
 });
 
-// Record attendance for one or more people in an event (auto-calculates nth session and overload)
-app.post('/api/events/:id/sessions', (req, res) => {
-    const { id } = req.params;
-    const { date, personIds, note } = req.body;
-    
-    if (!date) {
-        return res.status(400).json({ message: 'تاريخ النزول مطلوب' });
-    }
-    const targets = Array.isArray(personIds) ? personIds : (req.body.personId ? [req.body.personId] : []);
-    if (targets.length === 0) {
-        return res.status(400).json({ message: 'يجب تحديد شخص واحد على الأقل' });
-    }
-
+// --- EXPORT & IMPORT BACKUP ENDPOINTS ---
+app.get('/api/export', (req, res) => {
     const data = readData();
-    data.events = data.events || [];
-    const eventIndex = data.events.findIndex(e => e.id === id);
-    if (eventIndex === -1) {
-        return res.status(404).json({ message: 'الحدث غير موجود' });
+    const format = (req.query.format || 'json').toLowerCase();
+
+    if (format === 'csv') {
+        let csv = '\uFEFF';
+        csv += 'الاسم,الدور,رقم الهاتف,تاريخ الميلاد,ملاحظات,نسبة الالتزام بالعذر,مرات الحضور,الغياب بعذر,الغياب بدون عذر,المهام المنجزة,إجمالي المهام\n';
+        const peopleWithStats = data.people.map(p => computePersonStats(p, data.attendanceSessions || {}, data.tasks || [], data.events || []));
+
+        peopleWithStats.forEach(p => {
+            const escapeCsv = (val) => `"${String(val || '').replace(/"/g, '""')}"`;
+            const roleArabic = p.role === 'servant' ? 'خادم' : 'مخدوم';
+            const commitment = `${(p.commitmentRatio * 100).toFixed(0)}%`;
+
+            csv += [
+                escapeCsv(p.name),
+                escapeCsv(roleArabic),
+                escapeCsv(p.phone || ''),
+                escapeCsv(p.birthdate || ''),
+                escapeCsv(p.notes || ''),
+                escapeCsv(commitment),
+                p.attendedSessions,
+                p.excusedSessions,
+                p.unexcusedSessions,
+                p.completedTasks,
+                p.totalTasks
+            ].join(',') + '\n';
+        });
+
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+        res.setHeader('Content-Disposition', `attachment; filename="family-system-export-${new Date().toISOString().slice(0, 10)}.csv"`);
+        return res.send(csv);
     }
 
-    const event = data.events[eventIndex];
-    const target = event.targetCount || 2;
-    event.sessions = event.sessions || [];
-
-    const recorded = [];
-
-    targets.forEach(pid => {
-        const person = data.people.find(p => p.id === pid);
-        if (!person) return;
-        person.attendance = person.attendance || [];
-
-        // Count previous attendances in this event
-        const previousCount = person.attendance.filter(s => {
-            if (!s.status) return false;
-            return s.eventId === id || (s.dayName && s.dayName.includes(event.name));
-        }).length;
-
-        const currentCount = previousCount + 1;
-        let sessionName = `${event.name} - المرة رقم ${currentCount}`;
-        if (currentCount > target) {
-            sessionName += ` (Overload +${currentCount - target} ⚡)`;
-        }
-        if (note) {
-            sessionName += ` [${note}]`;
-        }
-
-        const newSession = {
-            date,
-            status: true,
-            dayName: sessionName,
-            eventId: id
-        };
-
-        person.attendance.push(newSession);
-        event.sessions.push({
-            date,
-            personId: pid,
-            sessionNumber: currentCount,
-            note: note || ''
-        });
-
-        recorded.push({
-            personId: pid,
-            personName: person.name,
-            sessionNumber: currentCount,
-            isOverload: currentCount > target,
-            overloadCount: Math.max(0, currentCount - target)
-        });
-    });
-
-    writeData(data);
-    res.status(201).json({
-        message: `تم تسجيل النزول لـ ${recorded.length} أشخاص بنجاح`,
-        recorded,
-        event: data.events[eventIndex]
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', `attachment; filename="family-system-backup-${new Date().toISOString().slice(0, 10)}.json"`);
+    res.json({
+        system: 'أسرة الأنبا أرسانيوس والقديس نيقولاوس - خدمة وسائل الإيضاح',
+        version: '4.0',
+        exportedAt: new Date().toISOString(),
+        data
     });
 });
 
-// Update full person attendance (for edits or syncs)
-app.put('/api/people/:id/attendance', (req, res) => {
-    const { id } = req.params;
-    const { attendance } = req.body;
-    if (!Array.isArray(attendance)) {
-        return res.status(400).json({ message: 'سجل الحضور غير صحيح' });
+app.post('/api/import', (req, res) => {
+    try {
+        const payload = req.body.data || req.body;
+        if (!payload || typeof payload !== 'object') {
+            return res.status(400).json({ message: 'صيغة النسخة الاحتياطية غير صالحة' });
+        }
+
+        if (!Array.isArray(payload.people)) {
+            return res.status(400).json({ message: 'حقل الأشخاص (people) غير متوفر في النسخة' });
+        }
+
+        const cleanData = {
+            activePlan: payload.activePlan || null,
+            attendanceSessions: payload.attendanceSessions && typeof payload.attendanceSessions === 'object' ? payload.attendanceSessions : {},
+            people: payload.people.map(p => ({
+                id: p.id || uuidv4(),
+                name: String(p.name || '').trim(),
+                role: p.role === 'servant' ? 'servant' : 'member',
+                phone: String(p.phone || '').trim(),
+                birthdate: String(p.birthdate || '').trim(),
+                notes: String(p.notes || '').trim()
+            })).filter(p => p.name),
+            tasks: Array.isArray(payload.tasks) ? payload.tasks : [],
+            events: Array.isArray(payload.events) ? payload.events : []
+        };
+
+        writeData(cleanData);
+        res.status(200).json({
+            message: 'تم استعادة النسخة الاحتياطية بنجاح',
+            restoredPeople: cleanData.people.length,
+            restoredTasks: cleanData.tasks.length,
+            restoredEvents: cleanData.events.length,
+            restoredSessions: Object.keys(cleanData.attendanceSessions).length
+        });
+    } catch (err) {
+        console.error('Import error:', err);
+        res.status(500).json({ message: 'حدث خطأ أثناء معالجة ملف النسخة الاحتياطية', error: err.message });
     }
-    const data = readData();
-    const person = data.people.find(p => p.id === id);
-    if (!person) {
-        return res.status(404).json({ message: 'الشخص غير موجود' });
-    }
-    person.attendance = attendance;
-    writeData(data);
-    res.json({ message: 'تم تحديث سجل الحضور بنجاح', person });
 });
 
 // --- SERVER START ---
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server is running on port ${PORT}`);
-    console.log(`API URL: http://0.0.0.0:${PORT}/api`);
+    console.log(`Church Service Monitoring System running on port ${PORT}`);
+    console.log(`Live Preview ready at: http://0.0.0.0:${PORT}`);
 });
 
 module.exports = { readData, writeData, app };

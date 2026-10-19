@@ -599,6 +599,58 @@
                 break-before: page !important;
             }
         }
+
+        /* Royal Notebook Last Page Styling */
+        .notebook-page {
+            background: linear-gradient(135deg, rgba(255, 252, 240, 0.8) 0%, rgba(247, 237, 212, 0.65) 100%);
+            border: 1px solid rgba(212, 177, 109, 0.45);
+            box-shadow: 0 10px 30px rgba(111, 75, 39, 0.12), inset 0 0 40px rgba(212, 177, 109, 0.08);
+            position: relative;
+            border-radius: 1.5rem;
+        }
+        .dark .notebook-page {
+            background: linear-gradient(135deg, rgba(42, 30, 20, 0.8) 0%, rgba(26, 18, 12, 0.85) 100%);
+            border-color: rgba(215, 173, 92, 0.35);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+        }
+
+        /* WhatsApp Chat Showcase Card */
+        .whatsapp-chat-box {
+            background: linear-gradient(135deg, rgba(240, 248, 241, 0.85) 0%, rgba(225, 245, 230, 0.65) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            border-radius: 1.5rem;
+        }
+        .dark .whatsapp-chat-box {
+            background: linear-gradient(135deg, rgba(16, 32, 22, 0.85) 0%, rgba(10, 22, 16, 0.85) 100%);
+            border-color: rgba(16, 185, 129, 0.35);
+        }
+
+        /* Plan Day Interactive Pill */
+        .plan-day-pill {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .plan-day-pill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Progress Bar for Attendance & Commitment */
+        .progress-bar-container {
+            width: 100%;
+            height: 7px;
+            background-color: rgba(0, 0, 0, 0.08);
+            border-radius: 9999px;
+            overflow: hidden;
+            position: relative;
+        }
+        .dark .progress-bar-container {
+            background-color: rgba(255, 255, 255, 0.12);
+        }
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.6s ease;
+        }
     </style>
 </head>
 <body class="transition-colors duration-300">
@@ -1196,6 +1248,208 @@
         </div>
     </div>
 
+    <!-- Smart WhatsApp Plan & Notebook Editor Modal -->
+    <div id="planModal" class="modal">
+        <div class="modal-content" style="max-width: 860px; width: 95%; max-height: 92vh; text-align: right;">
+            <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-3 mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🎨</span>
+                    <h2 class="text-xl font-bold">تعديل ولصق الخطة الذكية ومحتوى الكشكول</h2>
+                </div>
+                <button id="closePlanModalXBtn" class="text-gray-400 hover:text-gray-600 text-2xl font-bold cursor-pointer" type="button">&times;</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                <div>
+                    <label for="planTitleInput" class="block mb-1 text-xs font-bold text-gray-700 dark:text-gray-300">عنوان الخطة (للعرض والتوثيق):</label>
+                    <input type="text" id="planTitleInput" class="form-input text-sm py-2" placeholder="مثال: خطة شهر أكتوبر ونوفمبر 2026">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label for="planStartDateInput" class="block mb-1 text-xs font-bold text-gray-700 dark:text-gray-300">تاريخ البداية:</label>
+                        <input type="date" id="planStartDateInput" class="form-input text-sm py-2">
+                    </div>
+                    <div>
+                        <label for="planEndDateInput" class="block mb-1 text-xs font-bold text-gray-700 dark:text-gray-300">تاريخ النهاية:</label>
+                        <input type="date" id="planEndDateInput" class="form-input text-sm py-2">
+                    </div>
+                </div>
+            </div>
+
+            <!-- WhatsApp Message Raw Textarea with Auto-Parser -->
+            <div class="mb-4">
+                <div class="flex items-center justify-between mb-1">
+                    <label for="planRawTextInput" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.187-2.59-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.303c-.087.087-.177.182-.076.355.101.173.449.741.964 1.2.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.086s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z"/></svg>
+                        <span>نص رسالة الواتساب (الصق الرسالة هنا مع الإيموجي والتواريخ):</span>
+                    </label>
+                    <button type="button" id="parseWhatsAppPlanBtn" class="px-3 py-1 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition cursor-pointer shadow-sm flex items-center gap-1">
+                        <span>⚡ استخراج الأيام تلقائياً من الرسالة</span>
+                    </button>
+                </div>
+                <textarea id="planRawTextInput" rows="6" class="form-input text-xs font-mono w-full p-2.5 rounded-xl border border-emerald-500/30 bg-emerald-50/20 dark:bg-emerald-950/20" placeholder="الصق رسالة الواتساب الخاصة بالخطة هنا..."></textarea>
+            </div>
+
+            <!-- Dynamic Scheduled Days Manager -->
+            <div class="mb-5 p-3 rounded-2xl bg-white/5 border border-white/10">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-bold text-gray-700 dark:text-gray-300">
+                        📅 الأيام المجدولة بالخطة (<span id="scheduledDaysCount">0</span> أيام):
+                    </span>
+                    <button type="button" id="addNewScheduledDayBtn" class="text-xs px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition cursor-pointer">
+                        + إضافة يوم يدوي
+                    </button>
+                </div>
+                <p class="text-[11px] text-gray-400 mb-2">الأيام المستخرجة تظهر كأزرار وحالات لمتابعة تسجيل الغياب الفائت تلقائياً.</p>
+                <div id="scheduledDaysListContainer" class="space-y-2 max-h-48 overflow-y-auto">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Notebook Last Page Summary Section -->
+            <div class="p-4 rounded-2xl notebook-page mb-5 text-right">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xl">📖</span>
+                    <h3 class="text-sm font-bold text-amber-800 dark:text-amber-200">خلاصة آخر صفحة في الكشكول:</h3>
+                </div>
+                <div class="mb-2">
+                    <label for="notebookTitleInput" class="block text-[11px] font-semibold mb-1">عنوان الملاحظات / الخلاصة:</label>
+                    <input type="text" id="notebookTitleInput" class="form-input text-xs py-1.5" placeholder="مثال: خلاصة آخر صفحة في الكشكول | توصيات وميزانية الخدمة">
+                </div>
+                <div>
+                    <label for="notebookContentInput" class="block text-[11px] font-semibold mb-1">النقاط المهمة والتوصيات الختامية:</label>
+                    <textarea id="notebookContentInput" rows="3" class="form-input text-xs w-full" placeholder="اكتب الملاحظات والتوصيات الختامية هنا..."></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                <button type="button" id="savePlanModalBtn" class="btn-primary">حفظ واعتماد الخطة 💾</button>
+                <button type="button" id="cancelPlanModalBtn" class="btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notebook Quick Inline Editor Modal -->
+    <div id="notebookQuickModal" class="modal">
+        <div class="modal-content" style="max-width: 600px; width: 95%; text-align: right;">
+            <div class="flex items-center justify-between border-b pb-3 mb-4">
+                <h3 class="text-lg font-bold flex items-center gap-2">
+                    <span>📖 تعديل خلاصة آخر صفحة في الكشكول</span>
+                </h3>
+                <button id="closeNotebookQuickXBtn" class="text-gray-400 hover:text-gray-600 text-2xl font-bold cursor-pointer" type="button">&times;</button>
+            </div>
+            <div class="mb-3">
+                <label for="quickNotebookTitleInput" class="block text-xs font-bold mb-1">العنوان:</label>
+                <input type="text" id="quickNotebookTitleInput" class="form-input text-sm">
+            </div>
+            <div class="mb-4">
+                <label for="quickNotebookContentInput" class="block text-xs font-bold mb-1">الملاحظات والتوصيات:</label>
+                <textarea id="quickNotebookContentInput" rows="5" class="form-input text-xs"></textarea>
+            </div>
+            <div class="flex justify-end gap-3 pt-3 border-t">
+                <button type="button" id="saveQuickNotebookBtn" class="btn-primary">حفظ الملاحظات 💾</button>
+                <button type="button" id="cancelQuickNotebookBtn" class="btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Extra Day (Outside Plan) Attendance Modal -->
+    <div id="extraDayModal" class="modal">
+        <div class="modal-content" style="max-width: 580px; width: 95%; text-align: right;">
+            <div class="flex items-center justify-between border-b pb-3 mb-4">
+                <h3 class="text-lg font-bold flex items-center gap-2 text-amber-600 dark:text-amber-400">
+                    <span>⚡ إضافة يوم إضافي (خارج الخطة)</span>
+                </h3>
+                <button id="closeExtraDayXBtn" class="text-gray-400 hover:text-gray-600 text-2xl font-bold cursor-pointer" type="button">&times;</button>
+            </div>
+            <p class="text-xs text-gray-500 mb-3">سجل حضور يوم استثنائي أو طارئ (نزول للمخزن، اجتماع تحضيري، نشاط مفاجئ). سيتم ربطه تلقائياً بالأحداث إن توافق التاريخ.</p>
+            <div class="mb-3">
+                <label for="extraDayDateInput" class="block text-xs font-bold mb-1">تاريخ اليوم:</label>
+                <input type="date" id="extraDayDateInput" class="form-input text-sm" required>
+            </div>
+            <div class="mb-4">
+                <label for="extraDayTitleInput" class="block text-xs font-bold mb-1">عنوان اليوم / المناسبة:</label>
+                <input type="text" id="extraDayTitleInput" class="form-input text-sm" placeholder="مثال: نزول طارئ لفرز خامات المعرض" required>
+            </div>
+            <div class="flex justify-end gap-3 pt-3 border-t">
+                <button type="button" id="confirmExtraDayBtn" class="btn-primary">متابعة لتسجيل الغياب 🟢</button>
+                <button type="button" id="cancelExtraDayBtn" class="btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Passkey / Servant Fast Login Modal (Zero-Terminal Auth) -->
+    <div id="passkeyLoginModal" class="modal">
+        <div class="modal-content" style="max-width: 480px; width: 95%; text-align: center;">
+            <div class="flex items-center justify-between border-b pb-3 mb-4">
+                <h3 class="text-lg font-bold flex items-center gap-2 text-center w-full justify-center">
+                    <span>🔑 دخول الخدام والمسؤولين</span>
+                </h3>
+                <button id="closePasskeyLoginXBtn" class="text-gray-400 hover:text-gray-600 text-2xl font-bold cursor-pointer" type="button">&times;</button>
+            </div>
+            <p class="text-xs text-gray-500 mb-4">لتعديل البيانات وأخذ الغياب، يمكنك تسجيل الدخول بـ Google أو إدخال الرمز المعتمد لخدام الأسرة:</p>
+            <div class="mb-4 text-right">
+                <label for="passkeyInput" class="block text-xs font-bold mb-1">رمز المرور المعتمد (Passkey):</label>
+                <input type="password" id="passkeyInput" class="form-input text-center text-lg tracking-widest font-bold" placeholder="••••">
+                <p class="text-[11px] text-gray-400 mt-1 text-center">رمز خادم الأسرة: <strong>arsany</strong> أو <strong>777</strong></p>
+            </div>
+            <div class="flex flex-col gap-2">
+                <button type="button" id="confirmPasskeyBtn" class="btn-primary w-full py-2.5">
+                    تأكيد الدخول المباشر 🔓
+                </button>
+                <div class="relative my-2">
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-300 dark:border-gray-700"></div></div>
+                    <div class="relative flex justify-center text-xs uppercase"><span class="bg-white dark:bg-gray-800 px-2 text-gray-400">أو</span></div>
+                </div>
+                <button type="button" id="modalGoogleSignInBtn" class="w-full py-2.5 px-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white font-bold text-xs flex items-center justify-center gap-2 hover:bg-gray-50 transition cursor-pointer">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+                    <span>تسجيل الدخول بحساب Google</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Complete Add Person Modal with Role, Phone, Birthdate, Notes -->
+    <div id="addPersonModal" class="modal">
+        <div class="modal-content" style="max-width: 580px; width: 95%; text-align: right;">
+            <div class="flex items-center justify-between border-b pb-3 mb-4">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <span>👤 إضافة فرد جديد (خادم / مخدوم)</span>
+                </h3>
+                <button id="closeAddPersonModalXBtn" class="text-gray-400 hover:text-gray-600 text-2xl font-bold cursor-pointer" type="button">&times;</button>
+            </div>
+            <div class="mb-3">
+                <label for="newPersonFullNameInput" class="block text-xs font-bold mb-1">الاسم الكامل:</label>
+                <input type="text" id="newPersonFullNameInput" class="form-input text-sm" placeholder="مثال: يوحنا ملاك" required>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                    <label for="newPersonRoleSelect" class="block text-xs font-bold mb-1">الصفة / الدور:</label>
+                    <select id="newPersonRoleSelect" class="form-input text-sm py-2">
+                        <option value="member">مخدوم / شاب 🎒</option>
+                        <option value="servant">خادم بالأسرة ✝️</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="newPersonPhoneInput" class="block text-xs font-bold mb-1">رقم الهاتف (واتساب):</label>
+                    <input type="tel" id="newPersonPhoneInput" class="form-input text-sm py-2" placeholder="012xxxxxxxx">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="newPersonBirthdateInput" class="block text-xs font-bold mb-1">تاريخ الميلاد (اختياري):</label>
+                <input type="date" id="newPersonBirthdateInput" class="form-input text-sm py-2">
+            </div>
+            <div class="mb-4">
+                <label for="newPersonNotesInput" class="block text-xs font-bold mb-1">ملاحظات وافتقاد (اختياري):</label>
+                <input type="text" id="newPersonNotesInput" class="form-input text-sm py-2" placeholder="مثال: مسؤول الورشة، متفوق، يحتاج تواصل...">
+            </div>
+            <div class="flex justify-end gap-3 pt-3 border-t">
+                <button type="button" id="confirmAddPersonBtn" class="btn-primary">إضافة وحفظ 👤</button>
+                <button type="button" id="cancelAddPersonBtn" class="btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container mx-auto p-3 sm:p-6 md:p-8">
 
         <!-- Top Liquid Glass Sticky Header with Collapsible Logo on Scroll -->
@@ -1240,12 +1494,17 @@
                 <!-- Logged Out State -->
                 <div id="loggedOutView" class="flex items-center justify-between w-full flex-wrap gap-2">
                     <div class="flex items-center gap-2">
-                        <span class="text-white/90 text-xs md:text-sm">👋 لتسجيل الحضور وإدارة المهام، يرجى تسجيل الدخول:</span>
+                        <span class="text-white/90 text-xs md:text-sm">👋 لتسجيل الحضور والتعديل، يرجى تفعيل وضع الخادم:</span>
                     </div>
-                    <button id="googleSignInBtn" type="button" class="bg-white/95 text-gray-800 hover:bg-white font-bold py-1.5 px-3 md:py-2 md:px-4 rounded-xl shadow-md flex items-center gap-2 transition cursor-pointer backdrop-blur-md">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-                        <span>تسجيل الدخول مع Google</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button id="passkeySignInBtn" type="button" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-1.5 px-3 md:py-2 md:px-3.5 rounded-xl shadow-md flex items-center gap-1.5 transition cursor-pointer backdrop-blur-md text-xs">
+                            <span>🔑 دخول برمز الخادم</span>
+                        </button>
+                        <button id="googleSignInBtn" type="button" class="bg-white/95 text-gray-800 hover:bg-white font-bold py-1.5 px-3 md:py-2 md:px-3.5 rounded-xl shadow-md flex items-center gap-1.5 transition cursor-pointer backdrop-blur-md text-xs">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+                            <span>حساب Google</span>
+                        </button>
+                    </div>
                 </div>
                 <!-- Logged In State (Account Name, Role Badge, Email, Avatar) -->
                 <div id="loggedInView" class="hidden flex items-center justify-between w-full flex-wrap gap-2">
@@ -1272,8 +1531,127 @@
         </header>
 
         <main>
+            <!-- 1. Hero Plan & Notebook Last Page Showcase (Directly at top of view) -->
+            <div id="heroPlanAndNotebookSection" class="w-full mb-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Card A: WhatsApp Plan Viewer (7 Cols) -->
+                    <div class="lg:col-span-7 flex flex-col p-6 rounded-3xl shadow-lg whatsapp-chat-box transition-all text-right">
+                        <!-- Card Header & Actions -->
+                        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-500/20 pb-3 mb-4">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-9 h-9 rounded-2xl bg-emerald-500/20 text-emerald-600 flex items-center justify-center text-xl font-bold shadow-sm">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.187-2.59-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.303c-.087.087-.177.182-.076.355.101.173.449.741.964 1.2.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.086s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z"/></svg>
+                                </div>
+                                <div>
+                                    <h2 id="planHeroTitle" class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">خطة خدمة وسائل الإيضاح</h2>
+                                    <span id="planHeroDates" class="text-[11px] font-semibold text-emerald-700 dark:text-emerald-300">أكتوبر ونوفمبر 2026</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button type="button" id="copyPlanWhatsAppBtn" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm flex items-center gap-1 cursor-pointer">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                    <span>نسخ كرسالة واتساب 📋</span>
+                                </button>
+                                <button type="button" id="openEditPlanModalBtn" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition shadow-sm flex items-center gap-1 cursor-pointer">
+                                    <span>تعديل الخطة ✏️</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Formatted WhatsApp Message Preview -->
+                        <div class="p-3.5 rounded-2xl bg-white/70 dark:bg-black/30 backdrop-blur-md border border-emerald-500/20 mb-4 max-h-52 overflow-y-auto">
+                            <div id="planWhatsAppFormattedText" class="text-xs text-gray-800 dark:text-gray-100 whitespace-pre-line leading-relaxed font-sans">
+                                <!-- Formatted WhatsApp text rendered here -->
+                            </div>
+                        </div>
+
+                        <!-- Scheduled Days Interactive Status Pills -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                                    <span>📅 متابعة أيام الخطة (اضغط على أي يوم لأخذ الغياب):</span>
+                                </span>
+                                <span class="text-[10px] text-gray-400">✅ مسجل | ⏳ لم يسجل | 📅 قادم</span>
+                            </div>
+                            <div id="planScheduledDaysPillsContainer" class="flex flex-wrap gap-2">
+                                <!-- Days rendered here dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card B: Notebook Last Page ("آخر صفحة في الكشكول") (5 Cols) -->
+                    <div class="lg:col-span-5 flex flex-col justify-between p-6 rounded-3xl shadow-lg notebook-page transition-all text-right">
+                        <div>
+                            <div class="flex items-center justify-between border-b border-amber-500/30 pb-3 mb-3">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-700 dark:text-amber-300 flex items-center justify-center text-lg font-bold">
+                                        📖
+                                    </div>
+                                    <div>
+                                        <h3 class="text-base font-extrabold text-amber-900 dark:text-amber-100">آخر صفحة في الكشكول</h3>
+                                        <span class="text-[10px] text-amber-700/80 dark:text-amber-300/80">خلاصة الملاحظات والتوصيات الختامية</span>
+                                    </div>
+                                </div>
+                                <button type="button" id="quickEditNotebookBtn" class="px-2.5 py-1 rounded-lg bg-amber-700/20 hover:bg-amber-700/30 text-amber-900 dark:text-amber-200 text-xs font-bold transition cursor-pointer">
+                                    تعديل سريع ✏️
+                                </button>
+                            </div>
+
+                            <h4 id="notebookHeroTitle" class="text-xs font-bold text-amber-800 dark:text-amber-300 mb-2">
+                                خلاصة وتوصيات الخدمة
+                            </h4>
+                            <div id="notebookHeroContent" class="text-xs text-gray-800 dark:text-gray-200 whitespace-pre-line leading-relaxed max-h-56 overflow-y-auto p-2 rounded-xl bg-white/40 dark:bg-black/20 border border-amber-500/15">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-amber-500/20 text-[10px] text-amber-800/70 dark:text-amber-300/70">
+                            <span>✝️ أسرة وسائل الإيضاح</span>
+                            <span id="notebookHeroUpdated">آخر تحديث: اليوم</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Pending Missed-Days Banner (Auto-Detector) -->
+            <div id="pendingMissedDaysBanner" class="hidden w-full mb-8 p-4 sm:p-5 rounded-3xl border border-red-500/30 bg-gradient-to-r from-red-500/15 via-amber-500/15 to-transparent backdrop-blur-md shadow-lg text-right transition-all">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-red-500/20 text-red-600 flex items-center justify-center text-xl font-bold flex-shrink-0 animate-pulse">
+                            ⚠️
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-sm sm:text-base font-bold text-red-700 dark:text-red-300">
+                                    استدراك الغياب الفائت للأيام السابقة
+                                </h3>
+                                <span id="missedDaysCountBadge" class="text-[11px] px-2 py-0.5 rounded-full font-bold bg-red-600 text-white">2 أيام فائتة</span>
+                            </div>
+                            <p class="text-xs text-gray-600 dark:text-gray-300 mt-0.5">
+                                انقضت مواعيد الأيام المجدولة التالية دون اعتماد الغياب. اضغط على اليوم لفتح كشف الحضور فوراً:
+                            </p>
+                            <!-- Missed days clickable chips -->
+                            <div id="missedDaysChipsContainer" class="flex flex-wrap gap-2 mt-2.5">
+                                <!-- Rendered dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <button type="button" id="openExtraDayModalBtn" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2 px-3.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap">
+                            <span>+ إضافة يوم إضافي (خارج الخطة) ⚡</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Actions Toolbar & Add Person -->
             <div class="w-full p-6 rounded-3xl shadow-lg flex flex-col mb-8" style="background: var(--card-bg);">
-                <h2 class="text-2xl font-bold mb-6" style="color: var(--card-text-color);">الحضور والمهام وإضافة أشخاص</h2>
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                    <h2 class="text-2xl font-bold" style="color: var(--card-text-color);">الحضور والمهام وإدارة الأفراد</h2>
+                    <button type="button" id="openAddPersonModalBtn" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2 px-3.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1.5">
+                        <span>+ إضافة خادم / مخدوم 👤</span>
+                    </button>
+                </div>
                 <div class="flex flex-col gap-4">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"> 
                         <button id="quickAddBtn" class="btn-primary">
@@ -1291,7 +1669,7 @@
                     </div>
                     <div class="flex-grow w-full">
                         <div class="flex gap-2 w-full">
-                            <input type="text" id="personNameInput" dir="auto" class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 text-gray-800" placeholder="أدخل اسم شخص جديد">
+                            <input type="text" id="personNameInput" dir="auto" class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 text-gray-800" placeholder="أدخل اسم شخص جديد للإضافة السريعة...">
                             <button id="addPersonBtn" class="btn-primary" style="background: linear-gradient(135deg, #8c6635, #5f4226);">
                                 إضافة
                             </button>
@@ -1434,44 +1812,60 @@
                 </div>
             </div>
 
-            <!-- Quick Search Bar to Filter People in person-card-container (Liquid Glass with Counter and Clear) -->
+            <!-- Quick Search Bar to Filter People in person-card-container (Name, Phone, and Role Filters) -->
             <div class="w-full p-4 sm:p-5 rounded-3xl liquid-glass mb-6 transition-all duration-300">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     <div class="flex items-center gap-2.5">
                         <div class="w-9 h-9 rounded-2xl bg-amber-500/20 text-amber-700 dark:text-amber-300 flex items-center justify-center font-bold text-lg shadow-inner">
                             🔍
                         </div>
                         <div>
                             <h3 class="text-base sm:text-lg font-bold" style="color: var(--card-text-color);">
-                                البحث السريع في بطاقات الأشخاص
+                                البحث والتصفية الفورية للأفراد
                             </h3>
                             <p class="text-xs text-gray-500 dark:text-gray-400">
-                                تصفية فورية لكشف الخدام والمخدومين بالاسم
+                                تصفية فورية بالاسم أو الهاتف وتصنيف الخدام والمخدومين
                             </p>
                         </div>
                     </div>
-                    
-                    <div class="flex items-center gap-2 flex-grow max-w-md">
+
+                    <!-- Role Filters & Search Input Combined -->
+                    <div class="flex flex-col sm:flex-row items-center gap-3 flex-grow max-w-xl">
+                        <!-- Role Filter Chips -->
+                        <div class="flex items-center p-1 rounded-2xl bg-black/10 dark:bg-white/10 border border-white/20 text-xs font-bold w-full sm:w-auto justify-center">
+                            <button type="button" class="role-filter-btn active px-3 py-1.5 rounded-xl transition cursor-pointer bg-amber-600 text-white shadow-sm" data-role="all">
+                                الكل
+                            </button>
+                            <button type="button" class="role-filter-btn px-3 py-1.5 rounded-xl transition cursor-pointer text-gray-700 dark:text-gray-200 hover:text-amber-600" data-role="servants">
+                                الخدام ✝️
+                            </button>
+                            <button type="button" class="role-filter-btn px-3 py-1.5 rounded-xl transition cursor-pointer text-gray-700 dark:text-gray-200 hover:text-amber-600" data-role="members">
+                                المخدومين 🎒
+                            </button>
+                        </div>
+
+                        <!-- Real-time Search Input -->
                         <div class="relative w-full">
                             <input 
                                 type="text" 
                                 id="personCardsSearchInput" 
                                 dir="auto"
-                                class="form-input text-sm py-2.5 pr-10 pl-9 rounded-2xl w-full border border-amber-500/30 bg-white/70 dark:bg-black/40 backdrop-blur-md shadow-sm focus:ring-2 focus:ring-amber-500/50 transition-all" 
-                                placeholder="ابحث باسم الشخص للتصفية الفورية..."
+                                class="form-input text-xs sm:text-sm py-2 pr-9 pl-9 rounded-2xl w-full border border-amber-500/30 bg-white/70 dark:bg-black/40 backdrop-blur-md shadow-sm focus:ring-2 focus:ring-amber-500/50 transition-all" 
+                                placeholder="ابحث بالاسم أو رقم الهاتف..."
                             >
-                            <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none">
                                 🔎
                             </span>
                             <button 
                                 id="clearPersonCardsSearchBtn" 
                                 type="button" 
-                                class="hidden absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-sm font-bold cursor-pointer"
+                                class="hidden absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-xs font-bold cursor-pointer"
                                 title="مسح البحث"
                             >
                                 ✕
                             </button>
                         </div>
+
                         <span id="personSearchResultsCount" class="text-xs px-3 py-1.5 rounded-xl font-bold bg-amber-500/15 border border-amber-500/30 text-amber-800 dark:text-amber-200 whitespace-nowrap">
                             0 شخص
                         </span>
