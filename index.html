@@ -646,10 +646,32 @@
         .dark .progress-bar-container {
             background-color: rgba(255, 255, 255, 0.12);
         }
-        .progress-bar-fill {
-            height: 100%;
-            border-radius: 9999px;
-            transition: width 0.6s ease;
+        /* Dynamic Island Floating Header */
+        .dynamic-island {
+            background: rgba(30, 20, 14, 0.88);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.2);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .dark .dynamic-island {
+            background: rgba(14, 9, 5, 0.94);
+            border-color: rgba(212, 175, 55, 0.35);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(212, 175, 55, 0.25);
+        }
+        .dynamic-island:hover {
+            border-color: rgba(212, 175, 55, 0.65);
+            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.6), 0 0 30px rgba(212, 175, 55, 0.35);
+        }
+        .connection-dot.online {
+            background-color: #10b981;
+            box-shadow: 0 0 10px #10b981;
+            animation: pulseDot 2s infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.75; }
         }
     </style>
 </head>
@@ -1449,6 +1471,39 @@
             </div>
         </div>
     </div>
+
+    <!-- Floating Liquid Glass Dynamic Island Header (Appears smoothly on scroll) -->
+    <aside id="dynamicIsland" class="dynamic-island fixed top-3 left-1/2 -translate-x-1/2 z-50 flex items-center justify-between gap-3 sm:gap-4 px-3 sm:px-5 py-2 rounded-full transition-all duration-300 pointer-events-none opacity-0 -translate-y-12 scale-90 text-white max-w-[94vw] sm:max-w-2xl cursor-default" aria-label="Dynamic Navigation Island">
+        <!-- 1. Right side (in RTL): Connection Status Indicator -->
+        <div class="flex items-center gap-1.5 sm:gap-2 select-none">
+            <div id="islandConnectionDot" class="connection-dot online"></div>
+            <span id="islandConnectionText" class="text-[11px] sm:text-xs font-bold text-emerald-400 whitespace-nowrap">متصل سحابياً</span>
+        </div>
+
+        <!-- 2. Center: Official Family Logo (Tap to scroll to top) -->
+        <button id="islandLogoBtn" type="button" class="flex items-center gap-2 px-2.5 py-1 rounded-full hover:bg-white/10 active:scale-95 transition cursor-pointer group" title="شعار الأسرة - اضغط للصعود للأعلى">
+            <img src="logo.png" alt="Family Logo" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-amber-400/60 shadow-md group-hover:scale-110 transition duration-200 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/60x60/966c34/ffffff?text=شعار'">
+            <span class="text-xs font-black text-amber-200 hidden md:inline truncate max-w-[140px] drop-shadow-sm">أسرة أرسانيوس ونيقولاوس</span>
+        </button>
+
+        <!-- 3. Left side (in RTL): Language Toggle, Theme Toggle (Sun/Moon), and Servant Status -->
+        <div class="flex items-center gap-1.5 sm:gap-2">
+            <!-- Language Toggle Button -->
+            <button id="islandLanguageToggleBtn" type="button" class="px-2.5 py-1 text-[11px] sm:text-xs rounded-full hover:bg-white/20 active:scale-95 transition cursor-pointer font-bold text-white shadow-sm flex items-center gap-1 border border-white/20" title="تحويل اللغة (عربي / English)">
+                <span id="islandLangLabel">🇪🇬 عربي</span>
+            </button>
+            <!-- Day / Night Theme Toggle -->
+            <button id="islandThemeToggleBtn" type="button" class="p-1.5 rounded-full hover:bg-white/20 active:scale-95 transition cursor-pointer text-amber-200 border border-white/20" title="الوضع النهاري / الليلي">
+                <svg id="islandSunIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                <svg id="islandMoonIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            </button>
+            <!-- Servant Passkey / Mode Button -->
+            <button id="islandPasskeyBtn" type="button" class="px-2.5 py-1 rounded-full bg-amber-600 hover:bg-amber-700 active:scale-95 text-white text-[10px] sm:text-[11px] font-bold transition cursor-pointer flex items-center gap-1 shadow-sm" title="دخول وضع الخادم">
+                <span>🔑</span>
+                <span id="islandServantLabel" class="hidden sm:inline">الخادم</span>
+            </button>
+        </div>
+    </aside>
 
     <div class="container mx-auto p-3 sm:p-6 md:p-8">
 

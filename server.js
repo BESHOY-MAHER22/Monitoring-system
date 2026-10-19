@@ -45,132 +45,21 @@ app.use((req, res, next) => {
 // Serve web application static files
 app.use(express.static(path.join(__dirname)));
 
-// Helper: Rich initial seed data if file is missing or corrupted
+// Helper: Initial clean data structure if file is missing or corrupted
 function getInitialSeedData() {
     return {
-        activePlan: {
-            id: 'plan-oct-nov-2026',
-            title: 'خطة خدمة وسائل الإيضاح - أكتوبر ونوفمبر 2026 🎨⛪',
-            rawWhatsAppText: '✝️ سلام ونعمة خدام ومخدومي أسرة الأنبا أرسانيوس والقديس نيقولاوس ✝️\n\n📌 *خطة وتكليفات خدمة وسائل الإيضاح لشهر أكتوبر ونوفمبر 2026*\n\n1️⃣ *الجمعة 10/16*: ورشة عمل مجسمات سفر الخروج وتجهيز لوحات درس الكتاب ✂️\n2️⃣ *الأحد 10/18*: قداس إلهي وتوزيع جوائز مسابقة الابتكار في وسائل الإيضاح 🏆\n3️⃣ *الجمعة 10/23*: لقاء تدريبي تقني: استخدام العروض التفاعلية والشاشات الذكية 💻\n4️⃣ *الأحد 10/25*: خدمة معرض الوسائل السنوي بمبنى الخدمات 🎪\n5️⃣ *الجمعة 10/30*: فرز وتجليد وسائل الإيضاح وتجهيز مخزن مرسى خليل 📦\n\nصلوا من أجل الخدمة ودمتم بركة وسلام ❤️',
-            startDate: '2026-10-16',
-            endDate: '2026-10-31',
-            notebookLastPage: {
-                title: 'خلاصة آخر صفحة في الكشكول | توصيات وتكليفات الختام',
-                content: '• ميزانية الورشة: شراء 20 لوح كرتون ناصبيان + أقلام تحديد فوسفورية + مسدسات شمع.\n• مسؤول الاستلام من مطبعة السلام: فيلوباتير أمجد (هاتف: 01223456789).\n• متابعة الغائبين في ورشة الجمعة والتواصل هاتفياً مع المعتذرين.\n• التجهيز المبكر لمعرض وسائل الإيضاح السنوي والتنسيق مع أمين الخدمة.',
-                updatedAt: new Date().toISOString()
-            },
-            scheduledDays: [
-                {
-                    date: '2026-10-16',
-                    dayTitle: 'ورشة عمل مجسمات سفر الخروج وتجهيز لوحات درس الكتاب',
-                    details: 'ورشة تفاعلية لتصميم مجسمات العهد القديم وتلوين الخرائط التوضيحية',
-                    linkedEventId: null
-                },
-                {
-                    date: '2026-10-18',
-                    dayTitle: 'قداس إلهي وتوزيع جوائز مسابقة الابتكار',
-                    details: 'حضور القداس المشترك وتكريم المتميزين في إنتاج وسائل الإيضاح',
-                    linkedEventId: null
-                },
-                {
-                    date: '2026-10-23',
-                    dayTitle: 'لقاء تدريبي: العروض التفاعلية والشاشات الذكية',
-                    details: 'تدريب الخدام على إعداد دروس تفاعلية باستخدام التكنولوجيا',
-                    linkedEventId: null
-                },
-                {
-                    date: '2026-10-25',
-                    dayTitle: 'خدمة معرض الوسائل السنوي بمبنى الخدمات',
-                    details: 'عرض إنتاج الأسرة وتوزيع النماذج التعليمية على فصول مدارس الأحد',
-                    linkedEventId: '0a6ab81d-ff7d-41e8-a915-abf66315056f'
-                },
-                {
-                    date: '2026-10-30',
-                    dayTitle: 'فرز وتجليد وسائل الإيضاح وتجهيز المخزن',
-                    details: 'تنظيم أدوات الخدمة وتخزين المواد المسترجعة',
-                    linkedEventId: null
-                }
-            ]
-        },
-        attendanceSessions: {
-            '2025-08-01': {
-                date: '2025-08-01',
-                source: 'plan',
-                planId: null,
-                linkedEventId: null,
-                title: 'تنظيم مخزن مرسى خليل',
-                isCompleted: true,
-                records: {
-                    '1754582776112': 'present',
-                    '1754582844940': 'present',
-                    '1754582901873': 'present',
-                    '1754767473028': 'present'
-                }
-            }
-        },
-        people: [
-            {
-                id: '1754582776112',
-                name: 'فيلوباتير امجد',
-                role: 'servant',
-                phone: '01223456789',
-                birthdate: '2000-05-15',
-                notes: 'أمين مساعد خدمة وسائل الإيضاح'
-            },
-            {
-                id: '1754582844940',
-                name: 'مينا سمير',
-                role: 'servant',
-                phone: '01012345678',
-                birthdate: '1998-11-20',
-                notes: 'مسؤول المشتريات وتجهيزات الورش'
-            },
-            {
-                id: '1754582901873',
-                name: 'كيرلس عماد',
-                role: 'member',
-                phone: '01123456780',
-                birthdate: '2004-03-10',
-                notes: 'مشارك نشط في ورش الوسائل التفاعلية'
-            },
-            {
-                id: '1754767473028',
-                name: 'مارينا ماجد',
-                role: 'servant',
-                phone: '01234567891',
-                birthdate: '2001-08-25',
-                notes: 'مسؤولة التصميم واللوحات التوضيحية'
-            }
-        ],
-        tasks: [
-            {
-                id: 'task-seed-1',
-                batchId: 'batch-seed-1',
-                description: 'شراء خامات ورشة وسائل الإيضاح لموسم كريسماس',
-                personId: '1754582844940',
-                date: '2026-11-15',
-                priority: 'high',
-                status: 'completed'
-            }
-        ],
-        events: [
-            {
-                id: '0a6ab81d-ff7d-41e8-a915-abf66315056f',
-                name: 'معرض وسائل الإيضاح السنوي والأنشطة الخريفية',
-                description: 'تجهيز معارض وسائل الإيضاح وتزيين الكنائس التابعة والورش التفاعلية',
-                startDate: '2026-10-20',
-                endDate: '2026-10-31',
-                targetCount: 2,
-                createdAt: new Date().toISOString()
-            }
-        ]
+        activePlan: null,
+        attendanceSessions: {},
+        people: [],
+        tasks: [],
+        events: []
     };
 }
 
 // Helper function to read data safely
 function readData() {
     if (!fs.existsSync(DATA_FILE)) {
-        console.log('data.json not found, initializing with seed data.');
+        console.log('data.json not found, initializing with clean empty data.');
         const seed = getInitialSeedData();
         writeData(seed);
         return seed;
@@ -184,11 +73,6 @@ function readData() {
         data.attendanceSessions = data.attendanceSessions && typeof data.attendanceSessions === 'object' ? data.attendanceSessions : {};
         data.activePlan = data.activePlan && typeof data.activePlan === 'object' ? data.activePlan : null;
 
-        if (data.people.length === 0) {
-            const seed = getInitialSeedData();
-            writeData(seed);
-            return seed;
-        }
         return data;
     } catch (e) {
         console.error('Error parsing data.json, re-seeding safely:', e);

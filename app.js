@@ -367,14 +367,44 @@ function calculatePeopleStats(people, attendanceSessions, tasks, events) {
 
 // --- 1. HERO PLAN & NOTEBOOK SHOWCASE ---
 function renderPlanAndNotebookHero() {
-    if (!cachedActivePlan) return;
+    const isEn = currentLanguage === 'en';
 
-    if (planHeroTitle) planHeroTitle.innerText = cachedActivePlan.title || 'خطة خدمة وسائل الإيضاح';
+    if (!cachedActivePlan) {
+        if (planHeroTitle) planHeroTitle.innerText = isEn ? 'Service Plan (WhatsApp)' : 'خطة الخدمة (رسائل واتساب)';
+        if (planHeroDates) planHeroDates.innerText = isEn ? 'No active plan' : 'لا توجد خطة نشطة حالياً';
+        if (planWhatsAppFormattedText) {
+            planWhatsAppFormattedText.innerHTML = `
+                <div class="text-center py-6 px-4">
+                    <span class="text-3xl block mb-2">📋</span>
+                    <p class="text-xs text-gray-600 dark:text-gray-300 mb-3 font-semibold">
+                        ${isEn ? 'No active plan recorded yet. Paste your WhatsApp message to auto-parse scheduled days!' : 'لا توجد خطة مسجلة حالياً. الصق رسالة الواتساب الخاصة بالخطة لاستخراج الأيام وجلسات الحضور تلقائياً.'}
+                    </p>
+                    <button type="button" onclick="document.getElementById('openEditPlanModalBtn').click()" class="btn-primary text-xs py-2 px-4 cursor-pointer shadow-md inline-flex items-center gap-1.5">
+                        <span>🎨</span>
+                        <span>${isEn ? 'Paste & Setup Plan' : 'لصق وإعداد الخطة'}</span>
+                    </button>
+                </div>
+            `;
+        }
+        if (planScheduledDaysPillsContainer) planScheduledDaysPillsContainer.innerHTML = '';
+        if (notebookHeroTitle) notebookHeroTitle.innerText = isEn ? 'Notebook Summary' : 'خلاصة آخر صفحة في الكشكول';
+        if (notebookHeroContent) {
+            notebookHeroContent.innerText = isEn 
+                ? 'No notebook summary saved yet. Click "Quick Edit" to record closing recommendations.' 
+                : 'لا توجد ملاحظات بالكشكول مسجلة حتى الآن. اضغط على "تعديل سريع" لكتابة التوصيات والملاحظات.';
+        }
+        if (notebookHeroUpdated) notebookHeroUpdated.innerText = '';
+        return;
+    }
+
+    if (planHeroTitle) planHeroTitle.innerText = cachedActivePlan.title || (isEn ? 'Service Plan' : 'خطة خدمة وسائل الإيضاح');
     if (planHeroDates) {
         if (cachedActivePlan.startDate && cachedActivePlan.endDate) {
-            planHeroDates.innerText = `من ${cachedActivePlan.startDate} إلى ${cachedActivePlan.endDate}`;
+            planHeroDates.innerText = isEn 
+                ? `From ${cachedActivePlan.startDate} to ${cachedActivePlan.endDate}`
+                : `من ${cachedActivePlan.startDate} إلى ${cachedActivePlan.endDate}`;
         } else {
-            planHeroDates.innerText = 'أكتوبر ونوفمبر 2026';
+            planHeroDates.innerText = '';
         }
     }
 
@@ -400,24 +430,24 @@ function renderPlanAndNotebookHero() {
             if (isCompleted) {
                 pillStyle = 'bg-emerald-500/20 text-emerald-800 dark:text-emerald-200 border-emerald-500/40 hover:bg-emerald-500/30';
                 statusIcon = '✅';
-                statusLabel = 'تم تسجيل الحضور';
+                statusLabel = isEn ? 'Attendance recorded' : 'تم تسجيل الحضور';
             } else if (isPastOrToday) {
                 pillStyle = 'bg-rose-500/20 text-rose-800 dark:text-rose-200 border-rose-500/40 hover:bg-rose-500/30 animate-pulse';
                 statusIcon = '⏳';
-                statusLabel = 'لم يُسجل الغياب (اضغط للتسجيل)';
+                statusLabel = isEn ? 'Attendance pending (click)' : 'لم يُسجل الغياب (اضغط للتسجيل)';
             } else {
                 pillStyle = 'bg-blue-500/15 text-blue-800 dark:text-blue-200 border-blue-500/30 hover:bg-blue-500/25';
                 statusIcon = '📅';
-                statusLabel = 'يوم قادم';
+                statusLabel = isEn ? 'Upcoming day' : 'يوم قادم';
             }
 
             const pill = document.createElement('button');
             pill.type = 'button';
             pill.className = `plan-day-pill px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-sm ${pillStyle}`;
-            pill.setAttribute('title', `${day.dayTitle || 'يوم بالخطة'} - ${statusLabel}`);
+            pill.setAttribute('title', `${day.dayTitle || (isEn ? 'Scheduled Day' : 'يوم بالخطة')} - ${statusLabel}`);
             pill.innerHTML = `
                 <span>${statusIcon}</span>
-                <span>${escapeHTML(day.date)}: ${escapeHTML(day.dayTitle || 'يوم بالخطة')}</span>
+                <span>${escapeHTML(day.date)}: ${escapeHTML(day.dayTitle || (isEn ? 'Plan Day' : 'يوم بالخطة'))}</span>
             `;
 
             pill.addEventListener('click', () => {
@@ -431,20 +461,22 @@ function renderPlanAndNotebookHero() {
     // Render Notebook Last Page
     const notebook = cachedActivePlan.notebookLastPage;
     if (notebook) {
-        if (notebookHeroTitle) notebookHeroTitle.innerText = notebook.title || 'خلاصة وتوصيات الخدمة';
+        if (notebookHeroTitle) notebookHeroTitle.innerText = notebook.title || (isEn ? 'Notebook Summary' : 'خلاصة وتوصيات الخدمة');
         if (notebookHeroContent) {
-            notebookHeroContent.innerText = notebook.content || 'لا توجد ملاحظات مسجلة حتى الآن. اضغط على "تعديل سريع" لإضافة خلاصة الكشكول والتوصيات.';
+            notebookHeroContent.innerText = notebook.content || (isEn ? 'No notes recorded.' : 'لا توجد ملاحظات مسجلة حتى الآن.');
         }
         if (notebookHeroUpdated && notebook.updatedAt) {
             const dateObj = new Date(notebook.updatedAt);
-            notebookHeroUpdated.innerText = `آخر تحديث: ${dateObj.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' })}`;
+            notebookHeroUpdated.innerText = isEn 
+                ? `Updated: ${dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}`
+                : `آخر تحديث: ${dateObj.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' })}`;
         }
     }
 }
 
 // --- 2. MISSED-DAYS AUTO DETECTOR ---
 function checkAndRenderMissedDays() {
-    if (!cachedActivePlan || !Array.isArray(cachedActivePlan.scheduledDays)) {
+    if (!cachedActivePlan || !Array.isArray(cachedActivePlan.scheduledDays) || cachedActivePlan.scheduledDays.length === 0) {
         if (pendingMissedDaysBanner) pendingMissedDaysBanner.classList.add('hidden');
         return;
     }
@@ -545,11 +577,33 @@ function renderCardsFromCache() {
     if (connectionError) connectionError.classList.add('hidden');
     personCardsContainer.innerHTML = '';
 
+    const isEn = currentLanguage === 'en';
     const allPeopleWithStats = calculatePeopleStats(cachedPeople, cachedAttendanceSessions, cachedTasks, cachedEvents);
 
     if (allPeopleWithStats.length === 0) {
-        if (noDataMessage) noDataMessage.classList.remove('hidden');
-        if (personSearchResultsCount) personSearchResultsCount.innerText = '0 شخص';
+        if (noDataMessage) noDataMessage.classList.add('hidden');
+        if (personSearchResultsCount) personSearchResultsCount.innerText = isEn ? '0 People' : '0 شخص';
+        personCardsContainer.innerHTML = `
+            <div class="col-span-full p-8 sm:p-12 text-center rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md shadow-lg">
+                <span class="text-4xl sm:text-5xl block mb-3 animate-bounce">👤✨</span>
+                <h3 class="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100 mb-1">
+                    ${isEn ? 'No people registered yet' : 'لا توجد بيانات مسجلة حالياً'}
+                </h3>
+                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-5 max-w-md mx-auto">
+                    ${isEn ? 'All old and test data has been cleared successfully. Start fresh by adding your first servants and members!' : 'تم مسح كافة البيانات القديمة والتجريبية بنجاح. يمكنك الآن البدء بإضافة الخدام والمخدومين الجدد.'}
+                </p>
+                <div class="flex justify-center gap-3">
+                    <button type="button" id="emptyStateAddPersonBtn" class="btn-primary text-xs sm:text-sm py-2.5 px-5 cursor-pointer shadow-lg inline-flex items-center gap-2">
+                        <span>➕</span>
+                        <span>${isEn ? 'Add New Person' : 'إضافة فرد جديد'}</span>
+                    </button>
+                </div>
+            </div>
+        `;
+        const emptyBtn = document.getElementById('emptyStateAddPersonBtn');
+        if (emptyBtn) emptyBtn.addEventListener('click', () => {
+            if (openAddPersonModalBtn) openAddPersonModalBtn.click();
+        });
         return;
     }
     if (noDataMessage) noDataMessage.classList.add('hidden');
@@ -787,12 +841,29 @@ async function fetchAllData() {
         renderTasksList();
         renderEventsList();
 
+        // Sync connection indicators on Hero and Dynamic Island
         if (connectionStatusDot) connectionStatusDot.classList.add('online');
-        if (connectionStatusText) connectionStatusText.innerText = 'متصل سحابياً ⚡';
+        if (connectionStatusText) {
+            connectionStatusText.innerText = currentLanguage === 'en' ? 'Cloud Connected ⚡' : 'متصل سحابياً ⚡';
+        }
+        const islandDot = document.getElementById('islandConnectionDot');
+        const islandText = document.getElementById('islandConnectionText');
+        if (islandDot) islandDot.classList.add('online');
+        if (islandText) {
+            islandText.innerText = currentLanguage === 'en' ? 'Connected ⚡' : 'متصل سحابياً ⚡';
+        }
     } catch (err) {
         console.error('Error fetching data from API:', err);
         if (connectionStatusDot) connectionStatusDot.classList.remove('online');
-        if (connectionStatusText) connectionStatusText.innerText = 'سيرفر محلي';
+        if (connectionStatusText) {
+            connectionStatusText.innerText = currentLanguage === 'en' ? 'Local Server' : 'سيرفر محلي';
+        }
+        const islandDot = document.getElementById('islandConnectionDot');
+        const islandText = document.getElementById('islandConnectionText');
+        if (islandDot) islandDot.classList.remove('online');
+        if (islandText) {
+            islandText.innerText = currentLanguage === 'en' ? 'Local Mode' : 'سيرفر محلي';
+        }
     }
 }
 
@@ -1143,7 +1214,27 @@ function renderEventsList() {
 // --- ADMIN INSIGHTS (EXECUTIVE SUMMARY) ---
 function renderAdminInsights() {
     const people = calculatePeopleStats(cachedPeople, cachedAttendanceSessions, cachedTasks, cachedEvents);
-    if (people.length === 0) return;
+    const kpiTotalPeople = document.getElementById('kpiTotalPeople');
+    const kpiAvgCommitment = document.getElementById('kpiAvgCommitment');
+    const kpiUrgentFollowup = document.getElementById('kpiUrgentFollowup');
+    const kpiTotalUnexcused = document.getElementById('kpiTotalUnexcused');
+    const kpiTotalExcused = document.getElementById('kpiTotalExcused');
+    const kpiPerfectPeople = document.getElementById('kpiPerfectPeople');
+
+    if (people.length === 0) {
+        if (kpiTotalPeople) kpiTotalPeople.innerText = '0';
+        if (kpiAvgCommitment) kpiAvgCommitment.innerText = '0%';
+        if (kpiUrgentFollowup) kpiUrgentFollowup.innerText = '0';
+        if (kpiTotalUnexcused) kpiTotalUnexcused.innerText = '0';
+        if (kpiTotalExcused) kpiTotalExcused.innerText = '0';
+        if (kpiPerfectPeople) kpiPerfectPeople.innerText = '0';
+
+        const list = document.getElementById('insightsResultsList');
+        if (list) {
+            list.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">${currentLanguage === 'en' ? 'Awaiting members to calculate statistics.' : 'في انتظار تسجيل الأفراد لبدء التحليل الإحصائي.'}</p>`;
+        }
+        return;
+    }
 
     const totalPeople = people.length;
     const avgCommitment = people.reduce((acc, p) => acc + p.commitmentRatio, 0) / (totalPeople || 1);
@@ -1151,13 +1242,6 @@ function renderAdminInsights() {
     const totalUnexcused = people.reduce((acc, p) => acc + p.unexcusedSessions, 0);
     const totalExcused = people.reduce((acc, p) => acc + p.excusedSessions, 0);
     const perfectCount = people.filter(p => p.commitmentRatio === 1 && p.totalSessions > 0).length;
-
-    const kpiTotalPeople = document.getElementById('kpiTotalPeople');
-    const kpiAvgCommitment = document.getElementById('kpiAvgCommitment');
-    const kpiUrgentFollowup = document.getElementById('kpiUrgentFollowup');
-    const kpiTotalUnexcused = document.getElementById('kpiTotalUnexcused');
-    const kpiTotalExcused = document.getElementById('kpiTotalExcused');
-    const kpiPerfectPeople = document.getElementById('kpiPerfectPeople');
 
     if (kpiTotalPeople) kpiTotalPeople.innerText = totalPeople;
     if (kpiAvgCommitment) kpiAvgCommitment.innerText = `${(avgCommitment * 100).toFixed(0)}%`;
@@ -1560,16 +1644,127 @@ function initEventListeners() {
         });
     }
 
-    // Theme toggle
+    // --- THEME & LANGUAGE HELPERS ---
+    function syncThemeIcons(isDark) {
+        if (sunIcon) sunIcon.classList.toggle('hidden', !isDark);
+        if (moonIcon) moonIcon.classList.toggle('hidden', isDark);
+        const islandSun = document.getElementById('islandSunIcon');
+        const islandMoon = document.getElementById('islandMoonIcon');
+        if (islandSun) islandSun.classList.toggle('hidden', !isDark);
+        if (islandMoon) islandMoon.classList.toggle('hidden', isDark);
+    }
+
+    function toggleTheme() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        syncThemeIcons(isDark);
+    }
+
+    function toggleLanguage() {
+        const newLang = currentLanguage === 'ar' ? 'en' : 'ar';
+        applyLanguage(newLang);
+    }
+
+    function applyLanguage(lang) {
+        currentLanguage = lang;
+        localStorage.setItem('language', lang);
+        const isEn = lang === 'en';
+        document.documentElement.lang = lang;
+        document.documentElement.dir = isEn ? 'ltr' : 'rtl';
+
+        if (languageToggleBtn) languageToggleBtn.innerText = isEn ? '🇬🇧 EN' : '🇪🇬 عربي';
+        const islandLang = document.getElementById('islandLangLabel');
+        if (islandLang) islandLang.innerText = isEn ? '🇬🇧 EN' : '🇪🇬 عربي';
+
+        const isOnline = connectionStatusDot && connectionStatusDot.classList.contains('online');
+        if (connectionStatusText) {
+            connectionStatusText.innerText = isOnline ? (isEn ? 'Cloud Connected ⚡' : 'متصل سحابياً ⚡') : (isEn ? 'Local Server' : 'سيرفر محلي');
+        }
+        const islandConnText = document.getElementById('islandConnectionText');
+        if (islandConnText) {
+            islandConnText.innerText = isOnline ? (isEn ? 'Connected ⚡' : 'متصل سحابياً ⚡') : (isEn ? 'Local Mode' : 'سيرفر محلي');
+        }
+
+        const islandServantLabel = document.getElementById('islandServantLabel');
+        if (islandServantLabel) {
+            islandServantLabel.innerText = currentUserRole === 'admin' ? (isEn ? 'Admin' : 'المسؤول') : (isEn ? 'Servant' : 'الخادم');
+        }
+
+        renderPlanAndNotebookHero();
+        renderCardsFromCache();
+        renderTasksList();
+        renderEventsList();
+        renderDaysList();
+        renderAdminInsights();
+    }
+
+    // Theme toggle in Hero
     if (themeToggleBtn) {
-        themeToggleBtn.addEventListener('click', () => {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            if (sunIcon && moonIcon) {
-                sunIcon.classList.toggle('hidden', !isDark);
-                moonIcon.classList.toggle('hidden', isDark);
+        themeToggleBtn.addEventListener('click', toggleTheme);
+    }
+
+    // Language toggle in Hero
+    if (languageToggleBtn) {
+        languageToggleBtn.addEventListener('click', toggleLanguage);
+    }
+
+    // --- DYNAMIC ISLAND ENGINE ---
+    function initDynamicIsland() {
+        const dynamicIsland = document.getElementById('dynamicIsland');
+        const mainAppHeader = document.getElementById('mainAppHeader');
+        const islandLogoBtn = document.getElementById('islandLogoBtn');
+        const islandThemeToggleBtn = document.getElementById('islandThemeToggleBtn');
+        const islandLanguageToggleBtn = document.getElementById('islandLanguageToggleBtn');
+        const islandPasskeyBtn = document.getElementById('islandPasskeyBtn');
+
+        if (!dynamicIsland) return;
+
+        // Smooth Scroll transformation: Hero Header <-> Dynamic Island
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            if (scrollY > 75) {
+                // Reveal Dynamic Island with smooth spring entry
+                dynamicIsland.classList.remove('opacity-0', '-translate-y-12', 'scale-90', 'pointer-events-none');
+                dynamicIsland.classList.add('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
+
+                // Fade/dim Hero Header so it never obstructs or clutters
+                if (mainAppHeader) {
+                    mainAppHeader.classList.add('opacity-20', 'pointer-events-none');
+                }
+            } else {
+                // Tuck Dynamic Island away smoothly and fully restore Hero Header
+                dynamicIsland.classList.add('opacity-0', '-translate-y-12', 'scale-90', 'pointer-events-none');
+                dynamicIsland.classList.remove('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
+
+                if (mainAppHeader) {
+                    mainAppHeader.classList.remove('opacity-20', 'pointer-events-none');
+                }
             }
-        });
+        }, { passive: true });
+
+        // Tapping Island Logo scrolls cleanly to top
+        if (islandLogoBtn) {
+            islandLogoBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        // Tapping Theme Switcher on Island
+        if (islandThemeToggleBtn) {
+            islandThemeToggleBtn.addEventListener('click', toggleTheme);
+        }
+
+        // Tapping Language Switcher on Island
+        if (islandLanguageToggleBtn) {
+            islandLanguageToggleBtn.addEventListener('click', toggleLanguage);
+        }
+
+        // Tapping Servant Mode button on Island
+        if (islandPasskeyBtn) {
+            islandPasskeyBtn.addEventListener('click', () => {
+                if (passkeySignInBtn) passkeySignInBtn.click();
+            });
+        }
     }
 
     // Scroll back to top
@@ -1597,19 +1792,25 @@ function initEventListeners() {
             event.target.style.display = 'none';
         }
     };
+
+    initDynamicIsland();
 }
 
 // --- BOOTSTRAP ---
 document.addEventListener('DOMContentLoaded', async () => {
     // Theme setup
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    const isDark = savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (isDark) {
         document.documentElement.classList.add('dark');
-        if (sunIcon && moonIcon) {
-            sunIcon.classList.remove('hidden');
-            moonIcon.classList.add('hidden');
-        }
+    } else {
+        document.documentElement.classList.remove('dark');
     }
+    syncThemeIcons(isDark);
+
+    // Language setup
+    const savedLang = localStorage.getItem('language') || 'ar';
+    applyLanguage(savedLang);
 
     initEventListeners();
     await fetchAllData();
