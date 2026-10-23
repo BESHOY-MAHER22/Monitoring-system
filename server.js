@@ -76,35 +76,7 @@ function getInitialSeedData() {
                 { date: '2026-11-20', dayTitle: 'الاحتفال الختامي وتكريم المنضبطين', details: 'تسليم الجوائز والشهادات', linkedEventId: null }
             ]
         },
-        attendanceSessions: {
-            '2026-10-02': {
-                date: '2026-10-02',
-                title: 'ورشة افتتاحية وتوزيع الأدوار',
-                dayType: 'meeting_work',
-                source: 'plan',
-                linkedEventId: 'ev-mahrajan',
-                isCompleted: true,
-                records: { p1: 'present', p2: 'present', p3: 'present', p4: 'present', p5: 'present', p6: 'absent', p7: 'present', p8: 'present', p9: 'present', p10: 'excused' }
-            },
-            '2026-10-09': {
-                date: '2026-10-09',
-                title: 'تجهيز مجسمات العهد القديم',
-                dayType: 'work',
-                source: 'plan',
-                linkedEventId: 'ev-mahrajan',
-                isCompleted: true,
-                records: { p1: 'present', p2: 'present', p3: 'present', p4: 'present', p5: 'excused', p6: 'absent', p7: 'present', p8: 'present', p9: 'present', p10: 'present' }
-            },
-            '2026-10-16': {
-                date: '2026-10-16',
-                title: 'اللقاء الروحي الشهري',
-                dayType: 'meeting',
-                source: 'plan',
-                linkedEventId: null,
-                isCompleted: true,
-                records: { p1: 'present', p2: 'present', p3: 'late', p4: 'present', p5: 'present', p6: 'absent', p7: 'excused', p8: 'present', p9: 'present', p10: 'present' }
-            }
-        },
+        attendanceSessions: {},
         people: [
             { id: 'p1', name: 'أرساني ملاك', role: 'servant', birthdate: '1994-05-12', notes: 'مسؤول الأسرة وورشة وسائل الإيضاح' },
             { id: 'p2', name: 'نيقولاوس شحاتة', role: 'servant', birthdate: '1996-08-20', notes: 'أمين الصندوق ومتابعة الخامات والماليات' },
@@ -117,13 +89,7 @@ function getInitialSeedData() {
             { id: 'p9', name: 'بيشوي رأفت زكي', role: 'servant', birthdate: '2005-04-15', notes: 'التزام كامل 100% في جميع الأنشطة واللقاءات' },
             { id: 'p10', name: 'ديفيد مرقس لبيب', role: 'servant', birthdate: '2007-06-10', notes: 'محب للخدمة ويشارك في مواسم الكنيسة' }
         ],
-        tasks: [
-            { id: 't1', title: 'تصميم مجسم سفينة نوح بالخشب والألوان', personId: 'p4', personName: 'كيرلس عماد شوقي', status: 'completed', dueDate: '2026-10-15', priority: 'high' },
-            { id: 't2', title: 'طباعة بنرات أسبوع الصلاة والافتتاح', personId: 'p3', personName: 'مينا عادل فايز', status: 'completed', dueDate: '2026-10-18', priority: 'medium' },
-            { id: 't3', title: 'تجهيز هدايا المتفوقين في المسابقة الكتابية', personId: 'p2', personName: 'نيقولاوس شحاتة', status: 'pending', dueDate: '2026-10-25', priority: 'high' },
-            { id: 't4', title: 'متابعة وافتقاد الخدام الغائبين أسبوعين متتاليين', personId: 'p1', personName: 'أرساني ملاك', status: 'pending', dueDate: '2026-10-22', priority: 'high' },
-            { id: 't5', title: 'تنسيق معرض وسائل الإيضاح السنوي واللوحات', personId: 'p8', personName: 'ماركوس وجيه عزمي', status: 'completed', dueDate: '2026-10-16', priority: 'medium' }
-        ],
+        tasks: [],
         events: [
             { id: 'ev-mahrajan', name: 'مهرجان الكرازة المرقسية - ورشة الوسائل', startDate: '2026-10-01', endDate: '2026-10-31', targetCount: 2, notes: 'مطلوب حضور مرتين لكل خادم - أي نزول إضافي يحسب Overload' },
             { id: 'ev-pascha', name: 'أسبوع الآلام وعيد القيامة 2026', startDate: '2026-04-10', endDate: '2026-04-20', targetCount: 2, notes: 'تنظيم مجسمات القبر المقدس والجلجثة' },

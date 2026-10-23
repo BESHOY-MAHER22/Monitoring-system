@@ -127,6 +127,11 @@ class Store {
 
     _hydrateFromLocalStorage() {
         try {
+            if (localStorage.getItem('app_cache_version') !== '2026_10_clean_records') {
+                localStorage.removeItem('app_state_backup');
+                localStorage.setItem('app_cache_version', '2026_10_clean_records');
+                return;
+            }
             const raw = localStorage.getItem('app_state_backup');
             if (!raw) return;
             const backup = JSON.parse(raw);
