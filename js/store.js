@@ -365,6 +365,49 @@ class Store {
         }
     }
 
+    async bulkCreatePeople(namesList) {
+        if (!Array.isArray(namesList) || namesList.length === 0) return 0;
+        const validNames = namesList.map(n => String(n).trim()).filter(n => n.length > 0);
+        if (validNames.length === 0) return 0;
+
+        try {
+            const res = await fetch(`${API_URL}/people/bulk`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ names: validNames })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                if (Array.isArray(data.people)) {
+                    this.people = data.people.map(p => ({ ...p, role: 'servant' }));
+                }
+                this.notify();
+                this._persistToLocalStorage();
+                return data.addedCount || validNames.length;
+            }
+        } catch (e) {
+            console.warn('Bulk create fallback:', e);
+        }
+
+        let addedCount = 0;
+        validNames.forEach(name => {
+            const exists = this.people.some(p => p.name.trim().toLowerCase() === name.toLowerCase());
+            if (!exists) {
+                this.people.push({
+                    id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                    name,
+                    role: 'servant',
+                    birthdate: '',
+                    notes: ''
+                });
+                addedCount++;
+            }
+        });
+        this.notify();
+        this._persistToLocalStorage();
+        return addedCount;
+    }
+
     async updatePersonName(personId, newName) {
         const person = this.people.find(p => p.id === personId);
         if (!person) return false;

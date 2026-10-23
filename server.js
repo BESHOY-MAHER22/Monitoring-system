@@ -77,24 +77,9 @@ function getInitialSeedData() {
             ]
         },
         attendanceSessions: {},
-        people: [
-            { id: 'p1', name: 'أرساني ملاك', role: 'servant', birthdate: '1994-05-12', notes: 'مسؤول الأسرة وورشة وسائل الإيضاح' },
-            { id: 'p2', name: 'نيقولاوس شحاتة', role: 'servant', birthdate: '1996-08-20', notes: 'أمين الصندوق ومتابعة الخامات والماليات' },
-            { id: 'p3', name: 'مينا عادل فايز', role: 'servant', birthdate: '1998-11-03', notes: 'مسؤول الوسائط الرقمية والطباعة والتصميم' },
-            { id: 'p4', name: 'كيرلس عماد شوقي', role: 'servant', birthdate: '2005-03-14', notes: 'مبدع في أعمال المجسمات والرسم بالألوان' },
-            { id: 'p5', name: 'يوسف إبراهيم جورج', role: 'servant', birthdate: '2006-07-22', notes: 'ملتزم جداً، يحتاج تشجيع ومشاركة بالورش' },
-            { id: 'p6', name: 'فادي رزق بشاي', role: 'servant', birthdate: '2005-09-18', notes: 'غياب متكرر بسبب ظروف العمل - يحتاج افتقاد فوري' },
-            { id: 'p7', name: 'أندرو سمير نظير', role: 'servant', birthdate: '2004-12-05', notes: 'مسؤول الصوتيات والتجهيز الفني بالقاعات' },
-            { id: 'p8', name: 'ماركوس وجيه عزمي', role: 'servant', birthdate: '2006-01-30', notes: 'متميز في الابتكار والوسائل التفاعلية' },
-            { id: 'p9', name: 'بيشوي رأفت زكي', role: 'servant', birthdate: '2005-04-15', notes: 'التزام كامل 100% في جميع الأنشطة واللقاءات' },
-            { id: 'p10', name: 'ديفيد مرقس لبيب', role: 'servant', birthdate: '2007-06-10', notes: 'محب للخدمة ويشارك في مواسم الكنيسة' }
-        ],
+        people: [],
         tasks: [],
-        events: [
-            { id: 'ev-mahrajan', name: 'مهرجان الكرازة المرقسية - ورشة الوسائل', startDate: '2026-10-01', endDate: '2026-10-31', targetCount: 2, notes: 'مطلوب حضور مرتين لكل خادم - أي نزول إضافي يحسب Overload' },
-            { id: 'ev-pascha', name: 'أسبوع الآلام وعيد القيامة 2026', startDate: '2026-04-10', endDate: '2026-04-20', targetCount: 2, notes: 'تنظيم مجسمات القبر المقدس والجلجثة' },
-            { id: 'ev-nahda', name: 'نهضة صوم السيدة العذراء مريم', startDate: '2026-08-07', endDate: '2026-08-22', targetCount: 2, notes: 'معرض الصور والأيقونات القبطية والمجسمات' }
-        ]
+        events: []
     };
 }
 
@@ -433,6 +418,48 @@ app.post('/api/people', (req, res) => {
 
     const personWithStats = computePersonStats(newPerson, data.attendanceSessions || {}, data.tasks || [], data.events || []);
     res.status(201).json({ person: personWithStats, message: 'تم إضافة الخادم بنجاح' });
+});
+
+app.post('/api/people/bulk', (req, res) => {
+    const { names, peopleList } = req.body;
+    const data = readData();
+    data.people = data.people || [];
+
+    let namesToAdd = [];
+    if (Array.isArray(names)) {
+        namesToAdd = names;
+    } else if (Array.isArray(peopleList)) {
+        namesToAdd = peopleList.map(p => (typeof p === 'string' ? p : p.name));
+    }
+
+    const added = [];
+    namesToAdd.forEach(rawName => {
+        if (!rawName || typeof rawName !== 'string') return;
+        const trimmed = rawName.trim();
+        if (!trimmed) return;
+        const exists = data.people.some(p => p.name.trim().toLowerCase() === trimmed.toLowerCase());
+        if (!exists) {
+            const newPerson = {
+                id: uuidv4(),
+                name: trimmed,
+                role: 'servant',
+                birthdate: '',
+                notes: ''
+            };
+            data.people.push(newPerson);
+            added.push(newPerson);
+        }
+    });
+
+    writeData(data);
+    const peopleWithStats = data.people.map(person => 
+        computePersonStats(person, data.attendanceSessions || {}, data.tasks || [], data.events || [])
+    );
+    res.status(200).json({
+        message: `تمت إضافة ${added.length} خادم بنجاح`,
+        addedCount: added.length,
+        people: peopleWithStats
+    });
 });
 
 app.put('/api/people/:id', (req, res) => {
