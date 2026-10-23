@@ -62,21 +62,39 @@ function escapeHTML(str) {
         .replace(/'/g, '&#039;');
 }
 
-// Format Phone for Direct WhatsApp Link with Egypt Code (+20)
-function formatWhatsAppUrl(rawPhone) {
-    if (!rawPhone) return null;
-    let clean = String(rawPhone).replace(/\D/g, '');
-    if (clean.startsWith('0')) {
-        clean = '2' + clean;
-    } else if (!clean.startsWith('20') && clean.length === 10) {
-        clean = '20' + clean;
+// Day Type Info & Badges: 1. اجتماع 2. شغل 3. اجتماع وشغل
+function getDayTypeInfo(dayType) {
+    switch (dayType) {
+        case 'work':
+            return {
+                label: 'شغل',
+                fullLabel: '2. شغل 🛠️',
+                badgeClass: 'bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/30'
+            };
+        case 'meeting_work':
+            return {
+                label: 'اجتماع وشغل',
+                fullLabel: '3. اجتماع وشغل 📖🛠️',
+                badgeClass: 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30'
+            };
+        case 'meeting':
+        default:
+            return {
+                label: 'اجتماع',
+                fullLabel: '1. اجتماع 📖',
+                badgeClass: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30'
+            };
     }
-    return `https://wa.me/${clean}`;
 }
 
-// Format WhatsApp Raw Text to HTML with Bold & Emojis preserved
+function getDayTypeBadge(dayType) {
+    const info = getDayTypeInfo(dayType);
+    return `<span class="inline-flex items-center gap-1 text-[11px] px-2.5 py-0.5 rounded-full border font-bold ${info.badgeClass}">${info.fullLabel}</span>`;
+}
+
+// Format Plan Text to HTML with Bold & Text formatting preserved
 function formatWhatsAppToHTML(text) {
-    if (!text) return '<span class="text-gray-400">لا يوجد نص للخطة حتى الآن. اضغط على "تعديل الخطة" للصق رسالة الواتساب.</span>';
+    if (!text) return '<span class="text-gray-400">لا يوجد نص تفصيلي للخطة حتى الآن. اضغط على "تعديل الخطة" لإضافة جدول الخطة.</span>';
     let formatted = escapeHTML(text);
     // Replace *text* with <strong>text</strong>
     formatted = formatted.replace(/\*([^*]+)\*/g, '<strong class="text-amber-800 dark:text-amber-300 font-bold">$1</strong>');
@@ -196,7 +214,6 @@ const addPersonModal = document.getElementById('addPersonModal');
 const closeAddPersonModalXBtn = document.getElementById('closeAddPersonModalXBtn');
 const newPersonFullNameInput = document.getElementById('newPersonFullNameInput');
 const newPersonRoleSelect = document.getElementById('newPersonRoleSelect');
-const newPersonPhoneInput = document.getElementById('newPersonPhoneInput');
 const newPersonBirthdateInput = document.getElementById('newPersonBirthdateInput');
 const newPersonNotesInput = document.getElementById('newPersonNotesInput');
 const confirmAddPersonBtn = document.getElementById('confirmAddPersonBtn');
@@ -208,6 +225,7 @@ const quickAddCloseXBtn = document.getElementById('quickAddCloseXBtn');
 const quickAddList = document.getElementById('quickAddList');
 const dayNameInput = document.getElementById('dayNameInput');
 const quickAddDateInput = document.getElementById('quickAddDateInput');
+const quickAddDayTypeSelect = document.getElementById('quickAddDayTypeSelect');
 const markAllPresentBtn = document.getElementById('markAllPresentBtn');
 const markAllAbsentBtn = document.getElementById('markAllAbsentBtn');
 const quickAddSearchInput = document.getElementById('quickAddSearchInput');
@@ -296,6 +314,7 @@ function calculatePeopleStats(people, attendanceSessions, tasks, events) {
                     excused: isExcused,
                     isLate: status === 'late',
                     dayName: session.title || '',
+                    dayType: session.dayType || 'meeting',
                     eventId: session.linkedEventId || null
                 });
             }
@@ -343,8 +362,7 @@ function calculatePeopleStats(people, attendanceSessions, tasks, events) {
 
         return {
             ...person,
-            role: person.role || 'member',
-            phone: person.phone || '',
+            role: 'servant',
             birthdate: person.birthdate || '',
             notes: person.notes || '',
             attendance: virtualAttendance,
@@ -367,44 +385,14 @@ function calculatePeopleStats(people, attendanceSessions, tasks, events) {
 
 // --- 1. HERO PLAN & NOTEBOOK SHOWCASE ---
 function renderPlanAndNotebookHero() {
-    const isEn = currentLanguage === 'en';
+    if (!cachedActivePlan) return;
 
-    if (!cachedActivePlan) {
-        if (planHeroTitle) planHeroTitle.innerText = isEn ? 'Service Plan (WhatsApp)' : 'خطة الخدمة (رسائل واتساب)';
-        if (planHeroDates) planHeroDates.innerText = isEn ? 'No active plan' : 'لا توجد خطة نشطة حالياً';
-        if (planWhatsAppFormattedText) {
-            planWhatsAppFormattedText.innerHTML = `
-                <div class="text-center py-6 px-4">
-                    <span class="text-3xl block mb-2">📋</span>
-                    <p class="text-xs text-gray-600 dark:text-gray-300 mb-3 font-semibold">
-                        ${isEn ? 'No active plan recorded yet. Paste your WhatsApp message to auto-parse scheduled days!' : 'لا توجد خطة مسجلة حالياً. الصق رسالة الواتساب الخاصة بالخطة لاستخراج الأيام وجلسات الحضور تلقائياً.'}
-                    </p>
-                    <button type="button" onclick="document.getElementById('openEditPlanModalBtn').click()" class="btn-primary text-xs py-2 px-4 cursor-pointer shadow-md inline-flex items-center gap-1.5">
-                        <span>🎨</span>
-                        <span>${isEn ? 'Paste & Setup Plan' : 'لصق وإعداد الخطة'}</span>
-                    </button>
-                </div>
-            `;
-        }
-        if (planScheduledDaysPillsContainer) planScheduledDaysPillsContainer.innerHTML = '';
-        if (notebookHeroTitle) notebookHeroTitle.innerText = isEn ? 'Notebook Summary' : 'خلاصة آخر صفحة في الكشكول';
-        if (notebookHeroContent) {
-            notebookHeroContent.innerText = isEn 
-                ? 'No notebook summary saved yet. Click "Quick Edit" to record closing recommendations.' 
-                : 'لا توجد ملاحظات بالكشكول مسجلة حتى الآن. اضغط على "تعديل سريع" لكتابة التوصيات والملاحظات.';
-        }
-        if (notebookHeroUpdated) notebookHeroUpdated.innerText = '';
-        return;
-    }
-
-    if (planHeroTitle) planHeroTitle.innerText = cachedActivePlan.title || (isEn ? 'Service Plan' : 'خطة خدمة وسائل الإيضاح');
+    if (planHeroTitle) planHeroTitle.innerText = cachedActivePlan.title || 'خطة خدمة وسائل الإيضاح';
     if (planHeroDates) {
         if (cachedActivePlan.startDate && cachedActivePlan.endDate) {
-            planHeroDates.innerText = isEn 
-                ? `From ${cachedActivePlan.startDate} to ${cachedActivePlan.endDate}`
-                : `من ${cachedActivePlan.startDate} إلى ${cachedActivePlan.endDate}`;
+            planHeroDates.innerText = `من ${cachedActivePlan.startDate} إلى ${cachedActivePlan.endDate}`;
         } else {
-            planHeroDates.innerText = '';
+            planHeroDates.innerText = 'أكتوبر ونوفمبر 2026';
         }
     }
 
@@ -430,24 +418,24 @@ function renderPlanAndNotebookHero() {
             if (isCompleted) {
                 pillStyle = 'bg-emerald-500/20 text-emerald-800 dark:text-emerald-200 border-emerald-500/40 hover:bg-emerald-500/30';
                 statusIcon = '✅';
-                statusLabel = isEn ? 'Attendance recorded' : 'تم تسجيل الحضور';
+                statusLabel = 'تم تسجيل الحضور';
             } else if (isPastOrToday) {
                 pillStyle = 'bg-rose-500/20 text-rose-800 dark:text-rose-200 border-rose-500/40 hover:bg-rose-500/30 animate-pulse';
                 statusIcon = '⏳';
-                statusLabel = isEn ? 'Attendance pending (click)' : 'لم يُسجل الغياب (اضغط للتسجيل)';
+                statusLabel = 'لم يُسجل الغياب (اضغط للتسجيل)';
             } else {
                 pillStyle = 'bg-blue-500/15 text-blue-800 dark:text-blue-200 border-blue-500/30 hover:bg-blue-500/25';
                 statusIcon = '📅';
-                statusLabel = isEn ? 'Upcoming day' : 'يوم قادم';
+                statusLabel = 'يوم قادم';
             }
 
             const pill = document.createElement('button');
             pill.type = 'button';
             pill.className = `plan-day-pill px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-sm ${pillStyle}`;
-            pill.setAttribute('title', `${day.dayTitle || (isEn ? 'Scheduled Day' : 'يوم بالخطة')} - ${statusLabel}`);
+            pill.setAttribute('title', `${day.dayTitle || 'يوم بالخطة'} - ${statusLabel}`);
             pill.innerHTML = `
                 <span>${statusIcon}</span>
-                <span>${escapeHTML(day.date)}: ${escapeHTML(day.dayTitle || (isEn ? 'Plan Day' : 'يوم بالخطة'))}</span>
+                <span>${escapeHTML(day.date)}: ${escapeHTML(day.dayTitle || 'يوم بالخطة')}</span>
             `;
 
             pill.addEventListener('click', () => {
@@ -457,26 +445,11 @@ function renderPlanAndNotebookHero() {
             planScheduledDaysPillsContainer.appendChild(pill);
         });
     }
-
-    // Render Notebook Last Page
-    const notebook = cachedActivePlan.notebookLastPage;
-    if (notebook) {
-        if (notebookHeroTitle) notebookHeroTitle.innerText = notebook.title || (isEn ? 'Notebook Summary' : 'خلاصة وتوصيات الخدمة');
-        if (notebookHeroContent) {
-            notebookHeroContent.innerText = notebook.content || (isEn ? 'No notes recorded.' : 'لا توجد ملاحظات مسجلة حتى الآن.');
-        }
-        if (notebookHeroUpdated && notebook.updatedAt) {
-            const dateObj = new Date(notebook.updatedAt);
-            notebookHeroUpdated.innerText = isEn 
-                ? `Updated: ${dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}`
-                : `آخر تحديث: ${dateObj.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' })}`;
-        }
-    }
 }
 
 // --- 2. MISSED-DAYS AUTO DETECTOR ---
 function checkAndRenderMissedDays() {
-    if (!cachedActivePlan || !Array.isArray(cachedActivePlan.scheduledDays) || cachedActivePlan.scheduledDays.length === 0) {
+    if (!cachedActivePlan || !Array.isArray(cachedActivePlan.scheduledDays)) {
         if (pendingMissedDaysBanner) pendingMissedDaysBanner.classList.add('hidden');
         return;
     }
@@ -517,9 +490,16 @@ function checkAndRenderMissedDays() {
 }
 
 // Open Attendance Recording Modal Pre-loaded for exact date
-function openAttendanceModalForDate(targetDate, targetTitle = '', linkedEventId = null) {
+function openAttendanceModalForDate(targetDate, targetTitle = '', linkedEventId = null, forcedDayType = null) {
     if (quickAddDateInput) quickAddDateInput.value = targetDate;
     if (dayNameInput) dayNameInput.value = targetTitle || `جلسة حضور ${targetDate}`;
+
+    const existingSession = cachedAttendanceSessions[targetDate];
+    const dayTypeVal = forcedDayType || existingSession?.dayType || 'meeting';
+    if (quickAddDayTypeSelect) {
+        quickAddDayTypeSelect.value = dayTypeVal;
+    }
+
     renderQuickAddListForDate(targetDate);
     if (quickAddModal) quickAddModal.style.display = 'flex';
 }
@@ -542,9 +522,7 @@ function renderQuickAddListForDate(dateStr) {
         row.dataset.personId = person.id;
 
         const safeName = escapeHTML(person.name);
-        const roleBadge = person.role === 'servant' 
-            ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-600 font-bold">خادم</span>'
-            : '<span class="text-[10px] px-1.5 py-0.5 rounded bg-gray-500/20 text-gray-500 font-bold">مخدوم</span>';
+        const roleBadge = '<span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-700 dark:text-amber-300 font-bold">خادم ✝️</span>';
 
         row.innerHTML = `
             <div class="flex items-center gap-2 text-right">
@@ -577,48 +555,20 @@ function renderCardsFromCache() {
     if (connectionError) connectionError.classList.add('hidden');
     personCardsContainer.innerHTML = '';
 
-    const isEn = currentLanguage === 'en';
     const allPeopleWithStats = calculatePeopleStats(cachedPeople, cachedAttendanceSessions, cachedTasks, cachedEvents);
 
     if (allPeopleWithStats.length === 0) {
-        if (noDataMessage) noDataMessage.classList.add('hidden');
-        if (personSearchResultsCount) personSearchResultsCount.innerText = isEn ? '0 People' : '0 شخص';
-        personCardsContainer.innerHTML = `
-            <div class="col-span-full p-8 sm:p-12 text-center rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md shadow-lg">
-                <span class="text-4xl sm:text-5xl block mb-3 animate-bounce">👤✨</span>
-                <h3 class="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100 mb-1">
-                    ${isEn ? 'No people registered yet' : 'لا توجد بيانات مسجلة حالياً'}
-                </h3>
-                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-5 max-w-md mx-auto">
-                    ${isEn ? 'All old and test data has been cleared successfully. Start fresh by adding your first servants and members!' : 'تم مسح كافة البيانات القديمة والتجريبية بنجاح. يمكنك الآن البدء بإضافة الخدام والمخدومين الجدد.'}
-                </p>
-                <div class="flex justify-center gap-3">
-                    <button type="button" id="emptyStateAddPersonBtn" class="btn-primary text-xs sm:text-sm py-2.5 px-5 cursor-pointer shadow-lg inline-flex items-center gap-2">
-                        <span>➕</span>
-                        <span>${isEn ? 'Add New Person' : 'إضافة فرد جديد'}</span>
-                    </button>
-                </div>
-            </div>
-        `;
-        const emptyBtn = document.getElementById('emptyStateAddPersonBtn');
-        if (emptyBtn) emptyBtn.addEventListener('click', () => {
-            if (openAddPersonModalBtn) openAddPersonModalBtn.click();
-        });
+        if (noDataMessage) noDataMessage.classList.remove('hidden');
+        if (personSearchResultsCount) personSearchResultsCount.innerText = '0 شخص';
         return;
     }
     if (noDataMessage) noDataMessage.classList.add('hidden');
 
-    // Filter by query (Name or Phone number)
+    // Filter by query (Name only)
     const query = (personCardsSearchQuery || '').trim().toLowerCase();
     const filteredPeople = allPeopleWithStats.filter(person => {
-        // Role Filter Check
-        if (currentRoleFilter === 'servants' && person.role !== 'servant') return false;
-        if (currentRoleFilter === 'members' && person.role === 'servant') return false;
-
         if (!query) return true;
-        const nameMatch = (person.name || '').toLowerCase().includes(query);
-        const phoneMatch = (person.phone || '').includes(query);
-        return nameMatch || phoneMatch;
+        return (person.name || '').toLowerCase().includes(query);
     });
 
     if (personSearchResultsCount) {
@@ -633,7 +583,7 @@ function renderCardsFromCache() {
             <div class="col-span-full text-center py-12 p-6 rounded-3xl liquid-glass">
                 <span class="text-4xl block mb-2">🔍</span>
                 <h4 class="text-base font-bold mb-1" style="color: var(--card-text-color)">لا توجد نتائج مطابقة للبحث "${escapeHTML(personCardsSearchQuery)}"</h4>
-                <p class="text-xs text-gray-500">تأكد من كتابة الاسم أو رقم الهاتف بصورة صحيحة.</p>
+                <p class="text-xs text-gray-500">تأكد من كتابة الاسم بصورة صحيحة.</p>
                 <button type="button" onclick="window.clearPersonSearchAndFocus()" class="mt-4 px-4 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white cursor-pointer hover:bg-amber-600 transition shadow">
                     عرض جميع الأفراد
                 </button>
@@ -651,7 +601,6 @@ function renderCardsFromCache() {
         const safeRawName = escapeHTML(person.name);
         const firstLetter = safeRawName.charAt(0);
         const commitmentPercentage = (person.commitmentRatio * 100).toFixed(0);
-        const isServant = person.role === 'servant';
 
         // Progress bar color gradient
         let progressColor = 'linear-gradient(90deg, #10b981, #059669)';
@@ -660,9 +609,6 @@ function renderCardsFromCache() {
         } else if (person.commitmentRatio < 0.8) {
             progressColor = 'linear-gradient(90deg, #f59e0b, #d97706)';
         }
-
-        const whatsAppUrl = formatWhatsAppUrl(person.phone);
-        const phoneCallUrl = person.phone ? `tel:${person.phone}` : null;
 
         card.innerHTML = `
             <div class="absolute top-4 left-4 flex gap-1 z-20">
@@ -682,29 +628,11 @@ function renderCardsFromCache() {
                 ${firstLetter}
             </div>
             
-            <div class="flex items-center gap-1.5 mt-1">
+            <div class="flex items-center gap-1.5 mt-2">
                 <h3 class="text-xl font-bold cursor-pointer" data-id="${escapeHTML(person.id)}">${safeRawName}</h3>
-                ${isServant 
-                    ? '<span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500 text-white shadow-sm">خادم ✝️</span>' 
-                    : '<span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-600 text-white shadow-sm">مخدوم 🎒</span>'}
+                <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500 text-white shadow-sm">خادم ✝️</span>
             </div>
 
-            ${person.phone ? `
-            <span class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-mono" dir="ltr">${escapeHTML(person.phone)}</span>` : ''}
-
-            <!-- 1-Click WhatsApp & Phone Actions -->
-            <div class="flex items-center gap-2 mt-2 w-full justify-center">
-                ${whatsAppUrl ? `
-                <a href="${whatsAppUrl}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold transition flex items-center gap-1 shadow-sm">
-                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.187-2.59-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.303c-.087.087-.177.182-.076.355.101.173.449.741.964 1.2.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.086s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z"/></svg>
-                    <span>واتساب</span>
-                </a>` : ''}
-
-                ${phoneCallUrl ? `
-                <a href="${phoneCallUrl}" class="px-2.5 py-1 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold transition flex items-center gap-1 shadow-sm">
-                    <span>اتصال 📞</span>
-                </a>` : ''}
-            </div>
 
             ${person.totalOverload > 0 ? `
             <div class="mt-2 px-3 py-0.5 rounded-full text-xs font-bold bg-purple-500 text-white shadow-sm flex items-center gap-1">
@@ -787,6 +715,158 @@ function attachCardsEventListeners() {
     });
 }
 
+// Open Person Attendance History Modal
+function openPersonHistoryModal(personId) {
+    const person = cachedPeople.find(p => p.id === personId);
+    if (!person) return;
+
+    const modal = document.getElementById('personHistoryModal');
+    const titleEl = document.getElementById('personHistoryTitle');
+    const listEl = document.getElementById('personHistoryList');
+    if (!modal || !listEl) return;
+
+    if (titleEl) titleEl.innerText = `سجل حضور الخادم: ${person.name} ✝️`;
+    listEl.innerHTML = '';
+
+    const sessions = Object.values(cachedAttendanceSessions || {}).sort((a, b) => new Date(b.date) - new Date(a.date));
+    if (sessions.length === 0) {
+        listEl.innerHTML = '<li class="p-4 text-center text-xs text-gray-400">لا توجد جلسات حضور مسجلة بعد.</li>';
+    } else {
+        sessions.forEach(sess => {
+            const status = sess.records ? sess.records[person.id] : undefined;
+            if (status === undefined) return;
+
+            let badgeHtml = '';
+            if (status === 'present' || status === 'late') {
+                badgeHtml = '<span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-bold text-xs">حاضر 🟢</span>';
+            } else if (status === 'excused') {
+                badgeHtml = '<span class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-700 dark:text-amber-300 font-bold text-xs">غياب بعذر 🟡</span>';
+            } else {
+                badgeHtml = '<span class="px-2.5 py-1 rounded-lg bg-red-500/20 text-red-700 dark:text-red-300 font-bold text-xs">غياب بدون عذر 🔴</span>';
+            }
+
+            const dayTypeBadge = getDayTypeBadge(sess.dayType);
+            const li = document.createElement('li');
+            li.className = 'p-3 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between gap-3 text-right text-xs';
+            li.innerHTML = `
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="font-bold text-sm text-gray-900 dark:text-white">${escapeHTML(sess.title || 'جلسة خدمة')}</span>
+                        ${dayTypeBadge}
+                    </div>
+                    <span class="text-gray-500 font-mono text-[11px]">${escapeHTML(sess.date)}</span>
+                </div>
+                <div>${badgeHtml}</div>
+            `;
+            listEl.appendChild(li);
+        });
+
+        if (listEl.children.length === 0) {
+            listEl.innerHTML = '<li class="p-4 text-center text-xs text-gray-400">لم يتم تسجيل حضور أو غياب لهذا الخادم في أي جلسة حتى الآن.</li>';
+        }
+    }
+
+    modal.style.display = 'flex';
+}
+
+// Open Edit Person Name Modal
+let currentEditingPersonId = null;
+function openEditPersonNameModal(personId) {
+    const person = cachedPeople.find(p => p.id === personId);
+    if (!person) return;
+    currentEditingPersonId = personId;
+    const modal = document.getElementById('editNameModal');
+    const input = document.getElementById('editNameInput');
+    if (input) input.value = person.name;
+    if (modal) modal.style.display = 'flex';
+}
+
+// Open Person Visual Analytics Modal
+function openPersonAnalyticsModal(personId) {
+    const people = calculatePeopleStats(cachedPeople, cachedAttendanceSessions, cachedTasks, cachedEvents);
+    const person = people.find(p => p.id === personId);
+    if (!person) return;
+
+    const modal = document.getElementById('personAnalyticsModal');
+    if (!modal) return;
+
+    const nameEl = document.getElementById('analyticsPersonName');
+    if (nameEl) nameEl.innerText = `تحليلات وإحصائيات: ${person.name} ✝️`;
+
+    const metricCommitmentRate = document.getElementById('metricCommitmentRate');
+    const metricAttendanceRate = document.getElementById('metricAttendanceRate');
+    const metricTotalSessions = document.getElementById('metricTotalSessions');
+    const metricCountPresent = document.getElementById('metricCountPresent');
+    const metricCountExcused = document.getElementById('metricCountExcused');
+    const metricCountAbsent = document.getElementById('metricCountAbsent');
+    const metricTotalOverload = document.getElementById('metricTotalOverload');
+    const metricTaskRate = document.getElementById('metricTaskRate');
+
+    if (metricCommitmentRate) metricCommitmentRate.innerText = `${(person.commitmentRatio * 100).toFixed(0)}%`;
+    if (metricAttendanceRate) metricAttendanceRate.innerText = `${(person.attendanceRatio * 100).toFixed(0)}%`;
+    if (metricTotalSessions) metricTotalSessions.innerText = `${person.attendedSessions} من ${person.totalSessions}`;
+    if (metricCountPresent) metricCountPresent.innerText = `${person.attendedSessions} 🟢`;
+    if (metricCountExcused) metricCountExcused.innerText = `${person.excusedSessions} 🟡`;
+    if (metricCountAbsent) metricCountAbsent.innerText = `${person.unexcusedSessions} 🔴`;
+    if (metricTotalOverload) metricTotalOverload.innerText = `+${person.totalOverload} نزول`;
+    if (metricTaskRate) metricTaskRate.innerText = `${(person.taskRatio * 100).toFixed(0)}% (${person.completedTasks}/${person.totalTasks})`;
+
+    if (typeof Chart !== 'undefined') {
+        try {
+            const doughnutCanvas = document.getElementById('attendanceDoughnutChart');
+            if (doughnutCanvas) {
+                if (chartInstances.personAttendance) chartInstances.personAttendance.destroy();
+                chartInstances.personAttendance = new Chart(doughnutCanvas, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['حاضر 🟢', 'غياب بعذر 🟡', 'غياب بدون عذر 🔴'],
+                        datasets: [{
+                            data: [person.attendedSessions || 0, person.excusedSessions || 0, person.unexcusedSessions || 0],
+                            backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom' } }
+                    }
+                });
+            }
+
+            const eventsCanvas = document.getElementById('eventsBarChart');
+            if (eventsCanvas) {
+                if (chartInstances.personEvents) chartInstances.personEvents.destroy();
+                const eventLabels = (cachedEvents || []).map(e => e.name);
+                const eventData = (cachedEvents || []).map(ev => {
+                    const count = (person.attendance || []).filter(s => s.status && (s.eventId === ev.id || (s.dayName && s.dayName.includes(ev.name)))).length;
+                    return count;
+                });
+                chartInstances.personEvents = new Chart(eventsCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: eventLabels.length ? eventLabels : ['الهدف الأساسي'],
+                        datasets: [{
+                            label: 'مرات النزول',
+                            data: eventData.length ? eventData : [person.attendedSessions],
+                            backgroundColor: '#8b5cf6'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+                    }
+                });
+            }
+        } catch (chartErr) {
+            console.warn('Chart render fallback:', chartErr);
+        }
+    }
+
+    modal.style.display = 'flex';
+}
+
 // Global Clear search helper
 window.clearPersonSearchAndFocus = () => {
     personCardsSearchQuery = '';
@@ -797,85 +877,116 @@ window.clearPersonSearchAndFocus = () => {
     renderCardsFromCache();
 };
 
+// --- UNIFIED RENDER FOR ALL MODULES (RENDER FOR ALL) ---
+function renderForAll() {
+    // 1. Strictly guarantee all state arrays & objects are initialized
+    if (!Array.isArray(cachedPeople)) cachedPeople = [];
+    if (!Array.isArray(cachedTasks)) cachedTasks = [];
+    if (!Array.isArray(cachedEvents)) cachedEvents = [];
+    if (!cachedAttendanceSessions || typeof cachedAttendanceSessions !== 'object') cachedAttendanceSessions = {};
+    if (cachedActivePlan && !Array.isArray(cachedActivePlan.scheduledDays)) {
+        cachedActivePlan.scheduledDays = [];
+    }
+
+    // 2. Render all core UI views immediately
+    renderPlanAndNotebookHero();
+    checkAndRenderMissedDays();
+    renderCardsFromCache();
+    renderDaysList();
+    renderTasksList();
+    renderEventsList();
+    renderAdminInsights();
+
+    // 3. Sync Dynamic Island state if initialized
+    if (typeof window.syncDynamicIslandState === 'function') {
+        window.syncDynamicIslandState();
+    }
+}
+window.renderForAll = renderForAll;
+
 // --- DATA FETCHING & SYNC ENGINE ---
 async function fetchAllData() {
     try {
         // 1. Fetch Plan & Notebook
-        const planRes = await fetch(`${API_URL}/plan`);
-        if (planRes.ok) {
-            const planData = await planRes.json();
-            cachedActivePlan = planData.activePlan;
+        try {
+            const planRes = await fetch(`${API_URL}/plan`);
+            if (planRes.ok) {
+                const planData = await planRes.json();
+                cachedActivePlan = planData.activePlan || null;
+                if (cachedActivePlan && !Array.isArray(cachedActivePlan.scheduledDays)) {
+                    cachedActivePlan.scheduledDays = [];
+                }
+            }
+        } catch (e) {
+            console.warn('Plan fetch fallback:', e);
         }
 
         // 2. Fetch Normalized Attendance Sessions
-        const sessRes = await fetch(`${API_URL}/attendance-sessions`);
-        if (sessRes.ok) {
-            const sessData = await sessRes.json();
-            cachedAttendanceSessions = sessData.attendanceSessions || {};
+        try {
+            const sessRes = await fetch(`${API_URL}/attendance-sessions`);
+            if (sessRes.ok) {
+                const sessData = await sessRes.json();
+                cachedAttendanceSessions = (sessData && sessData.attendanceSessions && typeof sessData.attendanceSessions === 'object') ? sessData.attendanceSessions : {};
+            }
+        } catch (e) {
+            console.warn('Sessions fetch fallback:', e);
         }
 
         // 3. Fetch People
-        const peopleRes = await fetch(`${API_URL}/people`);
-        if (peopleRes.ok) {
-            const pData = await peopleRes.json();
-            cachedPeople = pData.people || [];
+        try {
+            const peopleRes = await fetch(`${API_URL}/people`);
+            if (peopleRes.ok) {
+                const pData = await peopleRes.json();
+                cachedPeople = Array.isArray(pData.people) ? pData.people : [];
+            }
+        } catch (e) {
+            console.warn('People fetch fallback:', e);
         }
 
         // 4. Fetch Tasks
-        const tasksRes = await fetch(`${API_URL}/tasks`);
-        if (tasksRes.ok) {
-            cachedTasks = await tasksRes.json();
+        try {
+            const tasksRes = await fetch(`${API_URL}/tasks`);
+            if (tasksRes.ok) {
+                const tasksData = await tasksRes.json();
+                cachedTasks = Array.isArray(tasksData) ? tasksData : (tasksData?.tasks || []);
+            }
+        } catch (e) {
+            console.warn('Tasks fetch fallback:', e);
         }
 
         // 5. Fetch Events
-        const eventsRes = await fetch(`${API_URL}/events`);
-        if (eventsRes.ok) {
-            cachedEvents = await eventsRes.json();
+        try {
+            const eventsRes = await fetch(`${API_URL}/events`);
+            if (eventsRes.ok) {
+                const eventsData = await eventsRes.json();
+                cachedEvents = Array.isArray(eventsData) ? eventsData : (eventsData?.events || []);
+            }
+        } catch (e) {
+            console.warn('Events fetch fallback:', e);
         }
 
-        // Update UI
-        renderPlanAndNotebookHero();
-        checkAndRenderMissedDays();
-        renderCardsFromCache();
-        renderDaysList();
-        renderTasksList();
-        renderEventsList();
-        updateDynamicIslandData();
+        // Render all elements immediately upon completion of data loading
+        renderForAll();
 
-        // Sync connection indicators on Hero and Dynamic Island
         if (connectionStatusDot) connectionStatusDot.classList.add('online');
-        if (connectionStatusText) {
-            connectionStatusText.innerText = currentLanguage === 'en' ? 'Cloud Connected ⚡' : 'متصل سحابياً ⚡';
-        }
-        const islandDot = document.getElementById('islandConnectionDot');
-        const islandText = document.getElementById('islandConnectionText');
-        if (islandDot) islandDot.classList.add('online');
-        if (islandText) {
-            islandText.innerText = currentLanguage === 'en' ? 'Connected ⚡' : 'متصل سحابياً ⚡';
-        }
+        if (connectionStatusText) connectionStatusText.innerText = 'متصل سحابياً ⚡';
     } catch (err) {
         console.error('Error fetching data from API:', err);
+        renderForAll();
         if (connectionStatusDot) connectionStatusDot.classList.remove('online');
-        if (connectionStatusText) {
-            connectionStatusText.innerText = currentLanguage === 'en' ? 'Local Server' : 'سيرفر محلي';
-        }
-        const islandDot = document.getElementById('islandConnectionDot');
-        const islandText = document.getElementById('islandConnectionText');
-        if (islandDot) islandDot.classList.remove('online');
-        if (islandText) {
-            islandText.innerText = currentLanguage === 'en' ? 'Local Mode' : 'سيرفر محلي';
-        }
+        if (connectionStatusText) connectionStatusText.innerText = 'سيرفر محلي';
     }
 }
 
 // --- ATTENDANCE SESSION SAVING ---
-async function saveAttendanceSession(dateStr, titleStr, recordsMap, source = 'plan', linkedEventId = null) {
+async function saveAttendanceSession(dateStr, titleStr, recordsMap, source = 'plan', linkedEventId = null, dayType = 'meeting') {
     try {
         const payload = {
             date: dateStr,
             title: titleStr,
             source: source,
             linkedEventId: linkedEventId,
+            dayType: dayType,
             isCompleted: true,
             records: recordsMap
         };
@@ -886,15 +997,15 @@ async function saveAttendanceSession(dateStr, titleStr, recordsMap, source = 'pl
             body: JSON.stringify(payload)
         });
 
+        const dayTypeLabel = dayType === 'work' ? 'شغل 🛠️' : (dayType === 'meeting_work' ? 'اجتماع وشغل 📖🛠️' : 'اجتماع 📖');
         if (res.ok) {
             cachedAttendanceSessions[dateStr] = payload;
-            showToast(`تم تسجيل الحضور ليوم ${dateStr} بنجاح! ✅`);
+            showToast(`تم تسجيل الحضور ليوم ${dateStr} [${dayTypeLabel}] بنجاح! ✅`);
             renderPlanAndNotebookHero();
             checkAndRenderMissedDays();
             renderCardsFromCache();
             renderDaysList();
             renderEventsList();
-            updateDynamicIslandData();
             return true;
         } else {
             const err = await res.json();
@@ -909,36 +1020,38 @@ async function saveAttendanceSession(dateStr, titleStr, recordsMap, source = 'pl
             title: titleStr,
             source: source,
             linkedEventId: linkedEventId,
+            dayType: dayType,
             isCompleted: true,
             records: recordsMap
         };
-        showToast(`تم الحفظ محلياً ليوم ${dateStr} ⚡`);
+        const dayTypeLabel = dayType === 'work' ? 'شغل 🛠️' : (dayType === 'meeting_work' ? 'اجتماع وشغل 📖🛠️' : 'اجتماع 📖');
+        showToast(`تم الحفظ محلياً ليوم ${dateStr} [${dayTypeLabel}] ⚡`);
         renderPlanAndNotebookHero();
         checkAndRenderMissedDays();
         renderCardsFromCache();
-        updateDynamicIslandData();
+        renderDaysList();
+        renderEventsList();
         return true;
     }
 }
 
 // --- PERSON MANAGEMENT HANDLERS ---
-async function createPersonHandler(name, role, phone, birthdate, notes) {
+async function createPersonHandler(name, role, birthdate, notes) {
     try {
         const res = await fetch(`${API_URL}/people`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, role, phone, birthdate, notes })
+            body: JSON.stringify({ name, role: 'servant', birthdate, notes })
         });
         if (res.ok) {
             const data = await res.json();
             cachedPeople.push(data.person);
-            showToast(`تم إضافة ${data.person.name} بنجاح! 👤`);
+            showToast(`تم إضافة الخادم ${data.person.name} بنجاح! ✝️`);
             renderCardsFromCache();
-            updateDynamicIslandData();
             return true;
         } else {
             const err = await res.json();
-            showToast(err.message || 'فشل إضافة الشخص', true);
+            showToast(err.message || 'فشل إضافة الخادم', true);
             return false;
         }
     } catch (e) {
@@ -955,7 +1068,6 @@ async function deletePersonHandler(personId) {
             cachedPeople = cachedPeople.filter(p => p.id !== personId);
             showToast('تم حذف الشخص بنجاح');
             renderCardsFromCache();
-            updateDynamicIslandData();
         }
     } catch (e) {
         showToast('فشل حذف الشخص', true);
@@ -1068,9 +1180,14 @@ function renderDaysList() {
         const excusedCount = Object.values(recs).filter(s => s === 'excused').length;
         const absentCount = Object.values(recs).filter(s => s === 'absent').length;
 
+        const dayTypeBadge = getDayTypeBadge(sess.dayType);
+
         row.innerHTML = `
             <div>
-                <h4 class="font-bold text-sm text-gray-900 dark:text-white">${escapeHTML(sess.title || sess.date)}</h4>
+                <div class="flex items-center gap-2 mb-1">
+                    <h4 class="font-bold text-sm text-gray-900 dark:text-white">${escapeHTML(sess.title || sess.date)}</h4>
+                    ${dayTypeBadge}
+                </div>
                 <span class="text-xs text-gray-500 font-mono">${escapeHTML(sess.date)}</span>
                 <div class="flex items-center gap-2 mt-1 text-[11px] font-bold">
                     <span class="text-emerald-600">🟢 ${presentCount} حاضر</span>
@@ -1079,14 +1196,15 @@ function renderDaysList() {
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <button type="button" class="open-day-rec-btn px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition shadow cursor-pointer" data-date="${escapeHTML(sess.date)}" data-title="${escapeHTML(sess.title || '')}">
+                <button type="button" class="open-day-rec-btn px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition shadow cursor-pointer" data-date="${escapeHTML(sess.date)}" data-title="${escapeHTML(sess.title || '')}" data-type="${escapeHTML(sess.dayType || 'meeting')}">
                     تعديل الحضور ✍️
                 </button>
             </div>
         `;
 
-        row.querySelector('.open-day-rec-btn').addEventListener('click', () => {
-            openAttendanceModalForDate(sess.date, sess.title, sess.linkedEventId);
+        row.querySelector('.open-day-rec-btn').addEventListener('click', (e) => {
+            const btn = e.currentTarget;
+            openAttendanceModalForDate(btn.dataset.date, btn.dataset.title, sess.linkedEventId, btn.dataset.type);
         });
 
         container.appendChild(row);
@@ -1219,27 +1337,7 @@ function renderEventsList() {
 // --- ADMIN INSIGHTS (EXECUTIVE SUMMARY) ---
 function renderAdminInsights() {
     const people = calculatePeopleStats(cachedPeople, cachedAttendanceSessions, cachedTasks, cachedEvents);
-    const kpiTotalPeople = document.getElementById('kpiTotalPeople');
-    const kpiAvgCommitment = document.getElementById('kpiAvgCommitment');
-    const kpiUrgentFollowup = document.getElementById('kpiUrgentFollowup');
-    const kpiTotalUnexcused = document.getElementById('kpiTotalUnexcused');
-    const kpiTotalExcused = document.getElementById('kpiTotalExcused');
-    const kpiPerfectPeople = document.getElementById('kpiPerfectPeople');
-
-    if (people.length === 0) {
-        if (kpiTotalPeople) kpiTotalPeople.innerText = '0';
-        if (kpiAvgCommitment) kpiAvgCommitment.innerText = '0%';
-        if (kpiUrgentFollowup) kpiUrgentFollowup.innerText = '0';
-        if (kpiTotalUnexcused) kpiTotalUnexcused.innerText = '0';
-        if (kpiTotalExcused) kpiTotalExcused.innerText = '0';
-        if (kpiPerfectPeople) kpiPerfectPeople.innerText = '0';
-
-        const list = document.getElementById('insightsResultsList');
-        if (list) {
-            list.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">${currentLanguage === 'en' ? 'Awaiting members to calculate statistics.' : 'في انتظار تسجيل الأفراد لبدء التحليل الإحصائي.'}</p>`;
-        }
-        return;
-    }
+    if (people.length === 0) return;
 
     const totalPeople = people.length;
     const avgCommitment = people.reduce((acc, p) => acc + p.commitmentRatio, 0) / (totalPeople || 1);
@@ -1247,6 +1345,13 @@ function renderAdminInsights() {
     const totalUnexcused = people.reduce((acc, p) => acc + p.unexcusedSessions, 0);
     const totalExcused = people.reduce((acc, p) => acc + p.excusedSessions, 0);
     const perfectCount = people.filter(p => p.commitmentRatio === 1 && p.totalSessions > 0).length;
+
+    const kpiTotalPeople = document.getElementById('kpiTotalPeople');
+    const kpiAvgCommitment = document.getElementById('kpiAvgCommitment');
+    const kpiUrgentFollowup = document.getElementById('kpiUrgentFollowup');
+    const kpiTotalUnexcused = document.getElementById('kpiTotalUnexcused');
+    const kpiTotalExcused = document.getElementById('kpiTotalExcused');
+    const kpiPerfectPeople = document.getElementById('kpiPerfectPeople');
 
     if (kpiTotalPeople) kpiTotalPeople.innerText = totalPeople;
     if (kpiAvgCommitment) kpiAvgCommitment.innerText = `${(avgCommitment * 100).toFixed(0)}%`;
@@ -1286,16 +1391,14 @@ function renderAdminQuestionResults(qKey) {
     targetList.slice(0, 10).forEach(p => {
         const item = document.createElement('div');
         item.className = 'p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between text-xs text-right';
-        const whatsAppUrl = formatWhatsAppUrl(p.phone);
 
         item.innerHTML = `
             <div class="flex items-center gap-2">
-                <span class="font-bold">${escapeHTML(p.name)}</span>
-                <span class="text-gray-400 font-mono text-[11px]">${p.phone || ''}</span>
+                <span class="font-bold text-gray-900 dark:text-white">${escapeHTML(p.name)}</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-700 dark:text-amber-300 font-bold">خادم ✝️</span>
             </div>
             <div class="flex items-center gap-2">
-                <span class="font-bold text-amber-500">${(p.commitmentRatio * 100).toFixed(0)}% التزام</span>
-                ${whatsAppUrl ? `<a href="${whatsAppUrl}" target="_blank" class="px-2 py-0.5 rounded bg-emerald-600 text-white font-bold text-[10px]">واتساب</a>` : ''}
+                <span class="font-bold text-amber-600 dark:text-amber-400">${(p.commitmentRatio * 100).toFixed(0)}% التزام</span>
             </div>
         `;
         list.appendChild(item);
@@ -1332,7 +1435,7 @@ function initEventListeners() {
         });
     }
 
-    // Copy Plan to WhatsApp
+    // Copy Plan Text
     if (copyPlanWhatsAppBtn) {
         copyPlanWhatsAppBtn.addEventListener('click', () => {
             if (!cachedActivePlan || !cachedActivePlan.rawWhatsAppText) {
@@ -1340,7 +1443,7 @@ function initEventListeners() {
                 return;
             }
             navigator.clipboard.writeText(cachedActivePlan.rawWhatsAppText).then(() => {
-                showToast('تم نسخ رسالة الخطة إلى الحافظة بنجاح! 📋 جاهزة للإرسال في واتساب');
+                showToast('تم نسخ نص الخطة إلى الحافظة بنجاح! 📋');
             }).catch(() => {
                 showToast('تعذر النسخ التلقائي، يمكنك نسخ النص يدوياً', true);
             });
@@ -1358,10 +1461,6 @@ function initEventListeners() {
                 if (planRawTextInput) planRawTextInput.value = cachedActivePlan.rawWhatsAppText || '';
                 modalWorkingDays = JSON.parse(JSON.stringify(cachedActivePlan.scheduledDays || []));
                 renderScheduledDaysListInModal(modalWorkingDays);
-
-                const nb = cachedActivePlan.notebookLastPage;
-                if (notebookTitleInput) notebookTitleInput.value = nb?.title || '';
-                if (notebookContentInput) notebookContentInput.value = nb?.content || '';
             }
             if (planModal) planModal.style.display = 'flex';
         });
@@ -1370,12 +1469,12 @@ function initEventListeners() {
     if (closePlanModalXBtn) closePlanModalXBtn.addEventListener('click', () => planModal.style.display = 'none');
     if (cancelPlanModalBtn) cancelPlanModalBtn.addEventListener('click', () => planModal.style.display = 'none');
 
-    // Auto Parse WhatsApp Plan Button
+    // Auto Parse Plan Button
     if (parseWhatsAppPlanBtn) {
         parseWhatsAppPlanBtn.addEventListener('click', () => {
             const raw = planRawTextInput ? planRawTextInput.value : '';
             if (!raw.trim()) {
-                showToast('يرجى لصق رسالة الواتساب أولاً في الحقل', true);
+                showToast('يرجى إدخال أو لصق نص الخطة أولاً في الحقل', true);
                 return;
             }
             const parsed = parseWhatsAppPlanText(raw);
@@ -1426,11 +1525,6 @@ function initEventListeners() {
                 startDate: planStartDateInput?.value || '',
                 endDate: planEndDateInput?.value || '',
                 rawWhatsAppText: planRawTextInput?.value || '',
-                notebookLastPage: {
-                    title: notebookTitleInput?.value || 'خلاصة آخر صفحة في الكشكول',
-                    content: notebookContentInput?.value || '',
-                    updatedAt: new Date().toISOString()
-                },
                 scheduledDays: updatedDays
             };
 
@@ -1447,48 +1541,8 @@ function initEventListeners() {
                 planModal.style.display = 'none';
                 renderPlanAndNotebookHero();
                 checkAndRenderMissedDays();
-                updateDynamicIslandData();
             } else {
                 showToast('حدث خطأ أثناء حفظ الخطة', true);
-            }
-        });
-    }
-
-    // Quick Notebook Modal
-    if (quickEditNotebookBtn) {
-        quickEditNotebookBtn.addEventListener('click', () => {
-            const nb = cachedActivePlan?.notebookLastPage;
-            if (quickNotebookTitleInput) quickNotebookTitleInput.value = nb?.title || '';
-            if (quickNotebookContentInput) quickNotebookContentInput.value = nb?.content || '';
-            if (notebookQuickModal) notebookQuickModal.style.display = 'flex';
-        });
-    }
-
-    if (closeNotebookQuickXBtn) closeNotebookQuickXBtn.addEventListener('click', () => notebookQuickModal.style.display = 'none');
-    if (cancelQuickNotebookBtn) cancelQuickNotebookBtn.addEventListener('click', () => notebookQuickModal.style.display = 'none');
-
-    if (saveQuickNotebookBtn) {
-        saveQuickNotebookBtn.addEventListener('click', async () => {
-            const title = quickNotebookTitleInput?.value || '';
-            const content = quickNotebookContentInput?.value || '';
-
-            const res = await fetch(`${API_URL}/plan/notebook`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, content })
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-                if (cachedActivePlan) {
-                    cachedActivePlan.notebookLastPage = data.notebookLastPage;
-                }
-                showToast('تم تحديث صفحة الكشكول بنجاح! 📖');
-                notebookQuickModal.style.display = 'none';
-                renderPlanAndNotebookHero();
-                updateDynamicIslandData();
-            } else {
-                showToast('فشل تحديث الكشكول', true);
             }
         });
     }
@@ -1510,12 +1564,13 @@ function initEventListeners() {
         confirmExtraDayBtn.addEventListener('click', () => {
             const dateVal = extraDayDateInput?.value;
             const titleVal = extraDayTitleInput?.value || 'يوم إضافي (خارج الخطة)';
+            const dayTypeVal = document.getElementById('extraDayTypeSelect')?.value || 'meeting';
             if (!dateVal) {
                 showToast('يرجى اختيار التاريخ', true);
                 return;
             }
             extraDayModal.style.display = 'none';
-            openAttendanceModalForDate(dateVal, titleVal);
+            openAttendanceModalForDate(dateVal, titleVal, null, dayTypeVal);
         });
     }
 
@@ -1524,10 +1579,10 @@ function initEventListeners() {
         addPersonBtn.addEventListener('click', async () => {
             const name = personNameInput ? personNameInput.value.trim() : '';
             if (!name) {
-                showToast('يرجى إدخال اسم الشخص أولاً', true);
+                showToast('يرجى إدخال اسم الخادم أولاً', true);
                 return;
             }
-            const success = await createPersonHandler(name, 'member', '', '', '');
+            const success = await createPersonHandler(name, 'servant', '', '');
             if (success && personNameInput) personNameInput.value = '';
         });
     }
@@ -1536,7 +1591,6 @@ function initEventListeners() {
     if (openAddPersonModalBtn) {
         openAddPersonModalBtn.addEventListener('click', () => {
             if (newPersonFullNameInput) newPersonFullNameInput.value = '';
-            if (newPersonPhoneInput) newPersonPhoneInput.value = '';
             if (newPersonBirthdateInput) newPersonBirthdateInput.value = '';
             if (newPersonNotesInput) newPersonNotesInput.value = '';
             if (addPersonModal) addPersonModal.style.display = 'flex';
@@ -1553,53 +1607,74 @@ function initEventListeners() {
                 showToast('الاسم الكامل مطلوب', true);
                 return;
             }
-            const role = newPersonRoleSelect ? newPersonRoleSelect.value : 'member';
-            const phone = newPersonPhoneInput ? newPersonPhoneInput.value.trim() : '';
+            const role = 'servant';
             const birthdate = newPersonBirthdateInput ? newPersonBirthdateInput.value : '';
             const notes = newPersonNotesInput ? newPersonNotesInput.value.trim() : '';
 
-            const success = await createPersonHandler(name, role, phone, birthdate, notes);
+            const success = await createPersonHandler(name, role, birthdate, notes);
             if (success) {
                 addPersonModal.style.display = 'none';
             }
         });
     }
 
-    // Passkey Login Modal
-    if (passkeySignInBtn) {
-        passkeySignInBtn.addEventListener('click', () => {
-            if (passkeyInput) passkeyInput.value = '';
-            if (passkeyLoginModal) passkeyLoginModal.style.display = 'flex';
-        });
-    }
-
-    if (closePasskeyLoginXBtn) closePasskeyLoginXBtn.addEventListener('click', () => passkeyLoginModal.style.display = 'none');
-
-    if (confirmPasskeyBtn) {
-        confirmPasskeyBtn.addEventListener('click', () => {
-            const code = (passkeyInput?.value || '').trim().toLowerCase();
-            if (code === 'arsany' || code === '777' || code === 'admin') {
-                currentUserRole = code === '777' || code === 'admin' ? 'admin' : 'servant';
-                localStorage.setItem('passkey_role', currentUserRole);
-                showToast(`تم تفعيل وضع ${currentUserRole === 'admin' ? 'مسؤول النظام 👑' : 'الخادم ✍️'} بنجاح!`);
-                passkeyLoginModal.style.display = 'none';
-                loggedOutView?.classList.add('hidden');
-                loggedInView?.classList.remove('hidden');
-                if (userName) userName.textContent = currentUserRole === 'admin' ? 'مسؤول الأسرة' : 'خادم وسائل الإيضاح';
-                if (userRoleBadge) {
-                    userRoleBadge.textContent = currentUserRole === 'admin' ? '👑 مسؤول النظام' : '✍️ خادم الأسرة';
+    // Edit Person Name Modal wiring
+    const editNameSaveBtn = document.getElementById('editNameSaveBtn');
+    const editNameCancelBtn = document.getElementById('editNameCancelBtn');
+    const editNameInput = document.getElementById('editNameInput');
+    const editNameModal = document.getElementById('editNameModal');
+    if (editNameCancelBtn) editNameCancelBtn.addEventListener('click', () => { if (editNameModal) editNameModal.style.display = 'none'; });
+    if (editNameSaveBtn) {
+        editNameSaveBtn.addEventListener('click', async () => {
+            const newName = editNameInput?.value?.trim();
+            if (!newName) {
+                showToast('يرجى إدخال اسم صحيح', true);
+                return;
+            }
+            if (currentEditingPersonId) {
+                try {
+                    const res = await fetch(`${API_URL}/people/${currentEditingPersonId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: newName, role: 'servant' })
+                    });
+                    if (res.ok) {
+                        const updated = await res.json();
+                        const p = cachedPeople.find(x => x.id === currentEditingPersonId);
+                        if (p) p.name = updated.name || newName;
+                        showToast('تم تحديث اسم الخادم بنجاح ✅');
+                        if (editNameModal) editNameModal.style.display = 'none';
+                        renderCardsFromCache();
+                    } else {
+                        showToast('فشل تحديث الاسم', true);
+                    }
+                } catch(e) {
+                    showToast('تعذر الاتصال بالسيرفر', true);
                 }
-            } else {
-                showToast('رمز المرور غير صحيح. استخدم: arsany أو 777', true);
             }
         });
     }
+
+    // Person History Modal wiring
+    const closePersonHistoryXBtn = document.getElementById('closePersonHistoryXBtn');
+    const closePersonHistoryBtn = document.getElementById('closePersonHistoryBtn');
+    const personHistoryModal = document.getElementById('personHistoryModal');
+    if (closePersonHistoryXBtn) closePersonHistoryXBtn.addEventListener('click', () => { if (personHistoryModal) personHistoryModal.style.display = 'none'; });
+    if (closePersonHistoryBtn) closePersonHistoryBtn.addEventListener('click', () => { if (personHistoryModal) personHistoryModal.style.display = 'none'; });
+
+    // Person Analytics Modal wiring
+    const closeAnalyticsBtn = document.getElementById('closeAnalyticsBtn');
+    const closeAnalyticsOkBtn = document.getElementById('closeAnalyticsOkBtn');
+    const personAnalyticsModal = document.getElementById('personAnalyticsModal');
+    if (closeAnalyticsBtn) closeAnalyticsBtn.addEventListener('click', () => { if (personAnalyticsModal) personAnalyticsModal.style.display = 'none'; });
+    if (closeAnalyticsOkBtn) closeAnalyticsOkBtn.addEventListener('click', () => { if (personAnalyticsModal) personAnalyticsModal.style.display = 'none'; });
 
     // Quick Add Attendance Modal Confirm
     if (quickAddConfirmBtn) {
         quickAddConfirmBtn.addEventListener('click', async () => {
             const dateStr = quickAddDateInput?.value;
             const titleStr = dayNameInput?.value || `جلسة حضور ${dateStr}`;
+            const dayTypeStr = document.getElementById('quickAddDayTypeSelect')?.value || 'meeting';
             if (!dateStr) {
                 showToast('يرجى تحديد تاريخ الجلسة', true);
                 return;
@@ -1613,7 +1688,7 @@ function initEventListeners() {
                 recordsMap[pId] = checkedRadio ? checkedRadio.value : 'present';
             });
 
-            const success = await saveAttendanceSession(dateStr, titleStr, recordsMap);
+            const success = await saveAttendanceSession(dateStr, titleStr, recordsMap, 'manual_session', null, dayTypeStr);
             if (success && quickAddModal) {
                 quickAddModal.style.display = 'none';
             }
@@ -1651,14 +1726,16 @@ function initEventListeners() {
         });
     }
 
-    // Theme toggle in Hero
+    // Theme toggle
     if (themeToggleBtn) {
-        themeToggleBtn.addEventListener('click', toggleTheme);
-    }
-
-    // Language toggle in Hero
-    if (languageToggleBtn) {
-        languageToggleBtn.addEventListener('click', toggleLanguage);
+        themeToggleBtn.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            if (sunIcon && moonIcon) {
+                sunIcon.classList.toggle('hidden', !isDark);
+                moonIcon.classList.toggle('hidden', isDark);
+            }
+        });
     }
 
     // Scroll back to top
@@ -1688,485 +1765,207 @@ function initEventListeners() {
     };
 }
 
-// --- THEME & LANGUAGE HELPERS (TOP-LEVEL MODULE SCOPE) ---
-function syncThemeIcons(isDark) {
-    if (sunIcon) sunIcon.classList.toggle('hidden', !isDark);
-    if (moonIcon) moonIcon.classList.toggle('hidden', isDark);
-    const islandSun = document.getElementById('islandSunIcon');
-    const islandMoon = document.getElementById('islandMoonIcon');
-    if (islandSun) islandSun.classList.toggle('hidden', !isDark);
-    if (islandMoon) islandMoon.classList.toggle('hidden', isDark);
-}
-
-function toggleTheme() {
-    const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    syncThemeIcons(isDark);
-}
-
-function toggleLanguage() {
-    const newLang = currentLanguage === 'ar' ? 'en' : 'ar';
-    applyLanguage(newLang);
-}
-
-function applyLanguage(lang) {
-    currentLanguage = lang;
-    localStorage.setItem('language', lang);
-    const isEn = lang === 'en';
-    document.documentElement.lang = lang;
-    document.documentElement.dir = isEn ? 'ltr' : 'rtl';
-
-    if (languageToggleBtn) languageToggleBtn.innerText = isEn ? '🇬🇧 EN' : '🇪🇬 عربي';
-    const islandLang = document.getElementById('islandLangLabel');
-    if (islandLang) islandLang.innerText = isEn ? '🇬🇧 EN' : '🇪🇬 عربي';
-
-    const isOnline = connectionStatusDot && connectionStatusDot.classList.contains('online');
-    if (connectionStatusText) {
-        connectionStatusText.innerText = isOnline ? (isEn ? 'Cloud Connected ⚡' : 'متصل سحابياً ⚡') : (isEn ? 'Local Server' : 'سيرفر محلي');
-    }
-    const islandConnText = document.getElementById('islandConnectionText');
-    if (islandConnText) {
-        islandConnText.innerText = isOnline ? (isEn ? 'Connected ⚡' : 'متصل سحابياً ⚡') : (isEn ? 'Local Mode' : 'سيرفر محلي');
-    }
-
-    const islandServantLabel = document.getElementById('islandServantLabel');
-    if (islandServantLabel) {
-        islandServantLabel.innerText = currentUserRole === 'admin' ? (isEn ? 'Admin' : 'المسؤول') : (isEn ? 'Servant' : 'الخادم');
-    }
-
-    renderPlanAndNotebookHero();
-    renderCardsFromCache();
-    renderTasksList();
-    renderEventsList();
-    renderDaysList();
-    renderAdminInsights();
-    updateDynamicIslandData();
-}
-
-// --- DYNAMIC ISLAND ENGINE & DATA BINDING ---
-function updateDynamicIslandData() {
-    const isEn = currentLanguage === 'en';
-    const island = document.getElementById('dynamicIsland');
-    if (!island) return;
-
-    // 1. Plan Title & Current / Next Day
-    const islandPlanTitle = document.getElementById('islandPlanTitle');
-    const islandNextDayBadge = document.getElementById('islandNextDayBadge');
-    const islandWhatsAppSnippet = document.getElementById('islandWhatsAppSnippet');
-    const islandNextDaySnippet = document.getElementById('islandNextDaySnippet');
-
-    const todayStr = new Date().toISOString().slice(0, 10);
-    let nextDayObj = null;
-
-    if (cachedActivePlan && cachedActivePlan.scheduledDays && cachedActivePlan.scheduledDays.length > 0) {
-        if (islandPlanTitle) {
-            islandPlanTitle.innerText = cachedActivePlan.title || (isEn ? 'Service Plan' : 'خطة وسائل الإيضاح');
-        }
-        nextDayObj = cachedActivePlan.scheduledDays.find(d => d.date >= todayStr) || cachedActivePlan.scheduledDays[cachedActivePlan.scheduledDays.length - 1];
-        if (islandNextDayBadge) {
-            islandNextDayBadge.innerText = nextDayObj ? `${nextDayObj.date.slice(5)}: ${nextDayObj.dayTitle}` : (isEn ? 'Up to date' : 'مكتملة');
-        }
-        if (islandWhatsAppSnippet) {
-            islandWhatsAppSnippet.innerText = cachedActivePlan.rawWhatsAppText ? cachedActivePlan.rawWhatsAppText.slice(0, 180) + '...' : (isEn ? 'No text' : 'لا يوجد نص للخطة');
-        }
-        if (islandNextDaySnippet) {
-            islandNextDaySnippet.innerText = nextDayObj ? (isEn ? `Next: ${nextDayObj.date} - ${nextDayObj.dayTitle}` : `اليوم القادم: ${nextDayObj.date} - ${nextDayObj.dayTitle}`) : (isEn ? 'All days finished' : 'انتهت جميع أيام الخطة');
-        }
-    } else {
-        if (islandPlanTitle) islandPlanTitle.innerText = isEn ? 'St. Arsanius Family' : 'أسرة أرسانيوس ونيقولاوس';
-        if (islandNextDayBadge) islandNextDayBadge.innerText = isEn ? 'No active plan' : 'لا توجد خطة مسجلة';
-        if (islandWhatsAppSnippet) islandWhatsAppSnippet.innerText = isEn ? 'No plan registered yet.' : 'لا توجد خطة مسجلة حالياً.';
-        if (islandNextDaySnippet) islandNextDaySnippet.innerText = isEn ? 'Ready to add a plan' : 'جاهز لإضافة خطة جديدة';
-    }
-
-    // 2. Notebook Last Page Snippet
-    const islandNotebookSnippet = document.getElementById('islandNotebookSnippet');
-    const islandNotebookUpdated = document.getElementById('islandNotebookUpdated');
-    if (cachedActivePlan && cachedActivePlan.notebookLastPage) {
-        if (islandNotebookSnippet) {
-            islandNotebookSnippet.innerText = cachedActivePlan.notebookLastPage.content || (isEn ? 'No notes recorded yet.' : 'لا توجد ملاحظات مسجلة بعد.');
-        }
-        if (islandNotebookUpdated) {
-            islandNotebookUpdated.innerText = isEn ? 'Last Updated: Recent' : 'آخر تحديث: مؤخراً';
-        }
-    } else {
-        if (islandNotebookSnippet) islandNotebookSnippet.innerText = isEn ? 'No notes recorded yet.' : 'لا توجد ملاحظات مسجلة حالياً.';
-        if (islandNotebookUpdated) islandNotebookUpdated.innerText = isEn ? 'Last Updated: Today' : 'آخر تحديث: اليوم';
-    }
-
-    // 3. Compute Pending Missed Days
-    const missedDays = [];
-    if (cachedActivePlan && Array.isArray(cachedActivePlan.scheduledDays)) {
-        cachedActivePlan.scheduledDays.forEach(day => {
-            if (day.date <= todayStr) {
-                const session = cachedAttendanceSessions[day.date];
-                if (!session || !session.isCompleted) {
-                    missedDays.push(day);
-                }
-            }
-        });
-    }
-
-    // 4. Update Island Aura & Status Ring
-    const islandStatusRing = document.getElementById('islandStatusRing');
-    const islandMissedDaysBadge = document.getElementById('islandMissedDaysBadge');
-    const islandMissedIcon = document.getElementById('islandMissedIcon');
-    const islandMissedText = document.getElementById('islandMissedText');
-
-    if (missedDays.length > 0) {
-        island.classList.add('has-missed-days');
-        if (islandStatusRing) {
-            islandStatusRing.className = 'absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-amber-400 border-2 border-amber-950 shadow-sm animate-pulse';
-        }
-        if (islandMissedDaysBadge) {
-            islandMissedDaysBadge.className = 'px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-extrabold bg-red-500/25 text-red-300 border border-red-500/40 hover:bg-red-500/40 transition cursor-pointer flex items-center gap-1 whitespace-nowrap shadow-sm';
-        }
-        if (islandMissedIcon) islandMissedIcon.innerText = '⚠️';
-        if (islandMissedText) islandMissedText.innerText = isEn ? `${missedDays.length} Missed` : `${missedDays.length} أيام معلقة`;
-    } else {
-        island.classList.remove('has-missed-days');
-        if (islandStatusRing) {
-            islandStatusRing.className = 'absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-amber-950 shadow-sm transition-colors duration-300';
-        }
-        if (islandMissedDaysBadge) {
-            islandMissedDaysBadge.className = 'px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 transition cursor-pointer flex items-center gap-1 whitespace-nowrap';
-        }
-        if (islandMissedIcon) islandMissedIcon.innerText = '✅';
-        if (islandMissedText) islandMissedText.innerText = isEn ? 'All Recorded' : 'الغياب مكتمل';
-    }
-
-    // 5. Compute Attendance Rate & People Count
-    const peopleCount = cachedPeople.length;
-    const islandPeopleText = document.getElementById('islandPeopleText');
-    if (islandPeopleText) {
-        islandPeopleText.innerText = isEn ? `${peopleCount} people` : `${peopleCount} فرد`;
-    }
-
-    const sessionKeys = Object.keys(cachedAttendanceSessions);
-    let totalPresentMarks = 0;
-    let totalMarks = 0;
-    sessionKeys.forEach(k => {
-        const sess = cachedAttendanceSessions[k];
-        if (sess && sess.records) {
-            Object.values(sess.records).forEach(status => {
-                totalMarks++;
-                if (status === 'present' || status === 'late') totalPresentMarks++;
-            });
-        }
-    });
-    const avgRate = totalMarks > 0 ? Math.round((totalPresentMarks / totalMarks) * 100) : 0;
-    const islandRateText = document.getElementById('islandRateText');
-    if (islandRateText) {
-        islandRateText.innerText = `${avgRate}%`;
-    }
-
-    // 6. Actionable Missed Days Chips in Expanded View
-    const islandMissedDaysChips = document.getElementById('islandMissedDaysChips');
-    if (islandMissedDaysChips) {
-        if (missedDays.length === 0) {
-            islandMissedDaysChips.innerHTML = `<span class="text-[11px] text-emerald-300">${isEn ? '✅ All scheduled days are recorded! No pending attendance.' : '✅ جميع أيام الخطة مسجلة بنجاح ولا توجد أيام معلقة!'}</span>`;
-        } else {
-            islandMissedDaysChips.innerHTML = missedDays.map(d => `
-                <button type="button" class="island-record-day-chip px-2.5 py-1 rounded-xl bg-red-600/30 hover:bg-red-600/60 active:scale-95 text-red-200 border border-red-500/40 text-[10px] sm:text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shadow-sm" data-date="${d.date}" data-title="${escapeHTML(d.dayTitle)}">
-                    <span>⚡ ${d.date.slice(5)}</span>
-                    <span class="truncate max-w-[90px] sm:max-w-[130px]">${escapeHTML(d.dayTitle)}</span>
-                    <span class="bg-red-500 text-white rounded px-1 text-[9px] font-extrabold">تسجيل</span>
-                </button>
-            `).join('');
-
-            islandMissedDaysChips.querySelectorAll('.island-record-day-chip').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const targetDate = btn.getAttribute('data-date');
-                    const targetTitle = btn.getAttribute('data-title');
-                    openAttendanceModalForDate(targetDate, targetTitle);
-                });
-            });
-        }
-    }
-
-    // 7. Sync Connection Dot & Text
-    const isOnline = connectionStatusDot && connectionStatusDot.classList.contains('online');
-    const expandedDot = document.getElementById('islandExpandedConnDot');
-    const expandedText = document.getElementById('islandExpandedConnText');
-    if (expandedDot) expandedDot.className = `connection-dot ${isOnline ? 'online' : ''}`;
-    if (expandedText) expandedText.innerText = isOnline ? (isEn ? 'Connected ⚡' : 'متصل سحابياً ⚡') : (isEn ? 'Local Server' : 'سيرفر محلي');
-
-    const servantLabel = document.getElementById('islandServantLabel');
-    if (servantLabel) servantLabel.innerText = currentUserRole === 'admin' ? (isEn ? 'Admin' : 'المسؤول') : (isEn ? 'Servant' : 'الخادم');
-}
-
-// --- DYNAMIC ISLAND ENGINE (TOP-LEVEL MODULE SCOPE) ---
-function initDynamicIsland() {
-    const dynamicIsland = document.getElementById('dynamicIsland');
-    const mainAppHeader = document.getElementById('mainAppHeader');
-    const sentinel = document.getElementById('heroScrollSentinel');
-    const islandExpandedView = document.getElementById('islandExpandedView');
-    const chevron = document.getElementById('islandExpandChevron');
-
-    if (!dynamicIsland) return;
-
-    let isExpanded = false;
-    let lastScrollY = window.pageYOffset || 0;
-    let rAFScheduled = false;
-
-    // Show Island
-    function activateIsland() {
-        dynamicIsland.classList.add('island-active');
-        if (mainAppHeader) {
-            mainAppHeader.classList.add('header-scrolled-away');
-        }
-    }
-
-    // Hide Island
-    function deactivateIsland() {
-        dynamicIsland.classList.remove('island-active');
-        collapseIsland();
-        if (mainAppHeader) {
-            mainAppHeader.classList.remove('header-scrolled-away');
-        }
-    }
-
-    // Expand Island (State 2)
-    function expandIsland() {
-        if (!dynamicIsland.classList.contains('island-active')) {
-            activateIsland();
-        }
-        isExpanded = true;
-        dynamicIsland.classList.add('island-expanded');
-        if (islandExpandedView) {
-            islandExpandedView.classList.remove('hidden');
-            islandExpandedView.classList.add('flex');
-        }
-        if (chevron) {
-            chevron.classList.add('rotate-180');
-        }
-    }
-
-    // Collapse Island (State 1)
-    function collapseIsland() {
-        isExpanded = false;
-        dynamicIsland.classList.remove('island-expanded');
-        if (islandExpandedView) {
-            islandExpandedView.classList.add('hidden');
-            islandExpandedView.classList.remove('flex');
-        }
-        if (chevron) {
-            chevron.classList.remove('rotate-180');
-        }
-    }
-
-    function toggleIsland() {
-        if (isExpanded) {
-            collapseIsland();
-        } else {
-            expandIsland();
-        }
-    }
-
-    // 1. GPU 60fps Scroll Engine using IntersectionObserver on sentinel
-    if (sentinel && 'IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-            const entry = entries[0];
-            if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
-                activateIsland();
-            } else if (entry.isIntersecting || entry.boundingClientRect.top >= 0) {
-                deactivateIsland();
-            }
-        }, {
-            threshold: 0,
-            rootMargin: '-20px 0px 0px 0px'
-        });
-        observer.observe(sentinel);
-    }
-
-    // 2. rAF-throttled scroll listener for 60fps smoothness and auto-collapse
-    window.addEventListener('scroll', () => {
-        if (!rAFScheduled) {
-            rAFScheduled = true;
-            window.requestAnimationFrame(() => {
-                const currentY = window.pageYOffset || document.documentElement.scrollTop || 0;
-                
-                // Fallback activation if IntersectionObserver is not fired
-                if (!sentinel && currentY > 160) {
-                    activateIsland();
-                } else if (!sentinel && currentY <= 160) {
-                    deactivateIsland();
-                }
-
-                // Auto-collapse when scrolling more than 100px while expanded
-                if (isExpanded && Math.abs(currentY - lastScrollY) > 100) {
-                    collapseIsland();
-                }
-                lastScrollY = currentY;
-                rAFScheduled = false;
-            });
-        }
-    }, { passive: true });
-
-    // 3. Auto-collapse on Outside Click
-    document.addEventListener('click', (e) => {
-        if (isExpanded && !dynamicIsland.contains(e.target)) {
-            collapseIsland();
-        }
-    });
-
-    // 4. Auto-collapse on Escape key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && isExpanded) {
-            collapseIsland();
-        }
-    });
-
-    // 5. Interactive Buttons & Triggers
-    const logoBtn = document.getElementById('islandLogoBtn');
-    const headerTitleTrigger = document.getElementById('islandHeaderTitleTrigger');
-    const expandToggleBtn = document.getElementById('islandExpandToggleBtn');
-    const collapseBtn = document.getElementById('islandCollapseBtn');
-    const missedBadge = document.getElementById('islandMissedDaysBadge');
-    const quickSearchBtn = document.getElementById('islandQuickSearchBtn');
-    const notebookPeekBtn = document.getElementById('islandNotebookPeekBtn');
-    const themeBtn = document.getElementById('islandThemeToggleBtn');
-    const langBtn = document.getElementById('islandLanguageToggleBtn');
-    const scrollTopBtn = document.getElementById('islandScrollTopBtn');
-    const passkeyBtn = document.getElementById('islandPasskeyBtn');
-
-    if (logoBtn) logoBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-    if (scrollTopBtn) scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-    if (headerTitleTrigger) headerTitleTrigger.addEventListener('click', toggleIsland);
-    if (expandToggleBtn) expandToggleBtn.addEventListener('click', toggleIsland);
-    if (collapseBtn) collapseBtn.addEventListener('click', collapseIsland);
-
-    // Click missed days badge to jump into recording immediately
-    if (missedBadge) {
-        missedBadge.addEventListener('click', () => {
-            const todayStr = new Date().toISOString().slice(0, 10);
-            let targetDay = null;
-            if (cachedActivePlan && Array.isArray(cachedActivePlan.scheduledDays)) {
-                targetDay = cachedActivePlan.scheduledDays.find(d => d.date <= todayStr && (!cachedAttendanceSessions[d.date] || !cachedAttendanceSessions[d.date].isCompleted));
-            }
-            if (targetDay) {
-                openAttendanceModalForDate(targetDay.date, targetDay.dayTitle);
-            } else {
-                expandIsland();
-            }
-        });
-    }
-
-    // Quick Search button: smoothly scroll to search input and focus
-    if (quickSearchBtn) {
-        quickSearchBtn.addEventListener('click', () => {
-            const searchInput = document.getElementById('personSearchInput');
-            if (searchInput) {
-                searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                setTimeout(() => searchInput.focus(), 300);
-            }
-        });
-    }
-
-    // Notebook Peek: toggle expanded drawer
-    if (notebookPeekBtn) {
-        notebookPeekBtn.addEventListener('click', () => {
-            toggleIsland();
-        });
-    }
-
-    if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
-    if (langBtn) langBtn.addEventListener('click', toggleLanguage);
-    if (passkeyBtn) passkeyBtn.addEventListener('click', () => {
-        if (passkeySignInBtn) passkeySignInBtn.click();
-    });
-
-    // Expanded view actions:
-    const copyPlanBtn = document.getElementById('islandCopyPlanBtn');
-    const editPlanBtn = document.getElementById('islandEditPlanBtn');
-    const editNotebookBtn = document.getElementById('islandEditNotebookBtn');
-    const addExtraDayBtn = document.getElementById('islandAddExtraDayBtn');
-
-    if (copyPlanBtn) {
-        copyPlanBtn.addEventListener('click', () => {
-            const copyBtnMain = document.getElementById('copyPlanWhatsAppBtn');
-            if (copyBtnMain) copyBtnMain.click();
-        });
-    }
-    if (editPlanBtn) {
-        editPlanBtn.addEventListener('click', () => {
-            const editBtnMain = document.getElementById('openEditPlanModalBtn');
-            if (editBtnMain) editBtnMain.click();
-        });
-    }
-    if (editNotebookBtn) {
-        editNotebookBtn.addEventListener('click', () => {
-            const nbBtnMain = document.getElementById('quickEditNotebookBtn');
-            if (nbBtnMain) nbBtnMain.click();
-        });
-    }
-    if (addExtraDayBtn) {
-        addExtraDayBtn.addEventListener('click', () => {
-            const extraBtnMain = document.getElementById('openExtraDayModalBtn');
-            if (extraBtnMain) extraBtnMain.click();
-        });
-    }
-
-    // Quick Navigation shortcuts
-    const navPeopleBtn = document.getElementById('islandNavPeopleBtn');
-    const navPlanBtn = document.getElementById('islandNavPlanBtn');
-    const navTasksBtn = document.getElementById('islandNavTasksBtn');
-    const navEventsBtn = document.getElementById('islandNavEventsBtn');
-
-    if (navPeopleBtn) {
-        navPeopleBtn.addEventListener('click', () => {
-            collapseIsland();
-            const el = document.getElementById('personCardsContainer');
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-    }
-    if (navPlanBtn) {
-        navPlanBtn.addEventListener('click', () => {
-            collapseIsland();
-            const el = document.getElementById('heroPlanAndNotebookSection');
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-    }
-    if (navTasksBtn) {
-        navTasksBtn.addEventListener('click', () => {
-            collapseIsland();
-            const el = document.getElementById('tasksSection');
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-    }
-    if (navEventsBtn) {
-        navEventsBtn.addEventListener('click', () => {
-            collapseIsland();
-            const el = document.getElementById('eventsSection');
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-    }
-
-    // Initial data populate
-    updateDynamicIslandData();
-}
-
 // --- BOOTSTRAP ---
 document.addEventListener('DOMContentLoaded', async () => {
     // Theme setup
     const savedTheme = localStorage.getItem('theme');
-    const isDark = savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    if (isDark) {
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
-    } else {
-        document.documentElement.classList.remove('dark');
+        if (sunIcon && moonIcon) {
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
+        }
     }
-    syncThemeIcons(isDark);
 
-    // Language setup
-    const savedLang = localStorage.getItem('language') || 'ar';
-    applyLanguage(savedLang);
-
-    // Initialize interactive event listeners & Dynamic Island
     initEventListeners();
-    initDynamicIsland();
-
-    // Fetch initial data
+    initAndSyncDynamicIsland();
+    renderForAll();
     await fetchAllData();
 });
+
+// ==========================================================================
+// 60FPS DYNAMIC ISLAND CONTROLLER (SINGLE-LINE GLOWING POP-UP & HEADER HIDE)
+// ==========================================================================
+function initAndSyncDynamicIsland() {
+    const island = document.getElementById('dynamic-island-wrapper');
+    const mainHeader = document.getElementById('mainAppHeader');
+    if (!island) return;
+
+    const missedBadge = document.getElementById('islandMissedDaysBadge');
+    const searchBtn = document.getElementById('islandSearchBtn');
+    const copyPlanBtn = document.getElementById('islandCopyPlanBtn');
+    const scrollTopBtn = document.getElementById('islandScrollTopBtn');
+    const logoBadge = document.getElementById('islandLogoBadge');
+
+    // 1. Smooth 60fps Scroll Trigger (Hide Big Header, Pop Up Glowing Island)
+    let scrollRafId = null;
+    window.addEventListener('scroll', () => {
+        if (scrollRafId !== null) return;
+        scrollRafId = window.requestAnimationFrame(() => {
+            const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollY > 180) {
+                if (mainHeader) mainHeader.classList.add('header-hidden');
+                island.classList.add('island-visible');
+            } else {
+                if (mainHeader) mainHeader.classList.remove('header-hidden');
+                island.classList.remove('island-visible');
+            }
+            scrollRafId = null;
+        });
+    }, { passive: true });
+
+    // 2. Action: Click Missed Days Badge to directly record attendance
+    if (missedBadge) {
+        missedBadge.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const todayStr = new Date().toISOString().slice(0, 10);
+            const scheduledDays = Array.isArray(cachedActivePlan?.scheduledDays) ? cachedActivePlan.scheduledDays : [];
+            const missedDays = scheduledDays.filter(day => {
+                if (day.date > todayStr) return false;
+                const session = cachedAttendanceSessions[day.date];
+                return !session || !session.isCompleted;
+            });
+            if (missedDays.length > 0) {
+                const targetDay = missedDays[0];
+                openAttendanceModalForDate(targetDay.date, targetDay.dayTitle || 'غياب بالخطة', targetDay.linkedEventId);
+            } else {
+                showToast('ممتاز! جميع أيام الخطة حتى اليوم مسجلة بنجاح ✅');
+            }
+        });
+    }
+
+    // 3. Action: Quick Search Focus
+    if (searchBtn) {
+        searchBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const searchInput = document.getElementById('personCardsSearchInput');
+            if (searchInput) {
+                searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => {
+                    searchInput.focus();
+                    searchInput.select?.();
+                }, 300);
+            }
+        });
+    }
+
+    // 4. Action: Direct Copy Plan
+    if (copyPlanBtn) {
+        copyPlanBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const rawPlan = cachedActivePlan?.rawWhatsAppText;
+            if (rawPlan && rawPlan.trim()) {
+                navigator.clipboard.writeText(rawPlan).then(() => {
+                    showToast('تم نسخ نص الخطة إلى الحافظة بنجاح! 📋');
+                }).catch(() => {
+                    showToast('تعذر النسخ التلقائي للخطة', true);
+                });
+            } else {
+                showToast('لا توجد خطة مسجلة بعد للنسخ', true);
+            }
+        });
+    }
+
+    // 5. Action: Scroll to Top (Unhides big header)
+    function scrollToTopAction() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    if (scrollTopBtn) scrollTopBtn.addEventListener('click', scrollToTopAction);
+    if (logoBadge) logoBadge.addEventListener('click', scrollToTopAction);
+
+    // 6. Live Reactive Sync with Existing Global State
+    window.syncDynamicIslandState = function() {
+        const titleEl = document.getElementById('islandPlanTitle');
+        const missedText = document.getElementById('islandMissedDaysText');
+        const missedBadgeEl = document.getElementById('islandMissedDaysBadge');
+        const statusDot = document.getElementById('islandStatusDot');
+        const attendText = document.getElementById('islandAttendanceText');
+        const peopleText = document.getElementById('islandPeopleText');
+
+        // A. Title
+        const planTitle = cachedActivePlan?.title || 'أسرة الأنبا أرسانيوس';
+        if (titleEl) titleEl.innerText = planTitle;
+
+        // B. Missed Days Detection
+        const todayStr = new Date().toISOString().slice(0, 10);
+        const scheduledDays = Array.isArray(cachedActivePlan?.scheduledDays) ? cachedActivePlan.scheduledDays : [];
+        const missedDays = scheduledDays.filter(day => {
+            if (day.date > todayStr) return false;
+            const session = cachedAttendanceSessions[day.date];
+            return !session || !session.isCompleted;
+        });
+
+        const missedCount = missedDays.length;
+        if (missedText) {
+            missedText.innerText = missedCount > 0 ? `${missedCount} معلق` : 'الكل مسجل ✅';
+        }
+        if (missedBadgeEl) {
+            if (missedCount > 0) {
+                missedBadgeEl.className = 'island-chip px-2.5 py-0.5 rounded-full bg-amber-500/15 hover:bg-amber-500/25 text-amber-700 dark:text-amber-300 border border-amber-500/30 flex items-center gap-1 transition-all cursor-pointer';
+                missedBadgeEl.title = `يوجد ${missedCount} أيام معلقة بالخطة - اضغط لتسجيل الحضور الفوري`;
+            } else {
+                missedBadgeEl.className = 'island-chip px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 flex items-center gap-1 transition-all';
+                missedBadgeEl.title = 'جميع أيام الخطة حتى اليوم مسجلة بنجاح';
+            }
+        }
+
+        // Status Dot: Amber if missed days, Green if all recorded
+        if (statusDot) {
+            if (missedCount > 0) {
+                statusDot.className = 'island-status-pulse amber';
+                statusDot.title = `تنبيه: يوجد ${missedCount} أيام معلقة بالخطة`;
+            } else {
+                statusDot.className = 'island-status-pulse green';
+                statusDot.title = 'ممتاز: جميع أيام الخطة مسجلة بنجاح';
+            }
+        }
+
+        // C. General Attendance Ratio
+        let overallAttendancePct = 0;
+        try {
+            const stats = calculatePeopleStats(cachedPeople, cachedAttendanceSessions, cachedTasks, cachedEvents);
+            if (stats.length > 0) {
+                const totalRatioSum = stats.reduce((acc, p) => acc + (p.attendanceRatio || 0), 0);
+                overallAttendancePct = Math.round((totalRatioSum / stats.length) * 100);
+            }
+        } catch (err) {
+            overallAttendancePct = 0;
+        }
+        if (attendText) attendText.innerText = `${overallAttendancePct}%`;
+
+        // D. Total People Count
+        if (peopleText) peopleText.innerText = `${cachedPeople.length} فرد`;
+    };
+
+    // Transparent Hooks into Existing Render Functions
+    if (typeof renderPlanAndNotebookHero === 'function') {
+        const originalRenderPlan = renderPlanAndNotebookHero;
+        renderPlanAndNotebookHero = function(...args) {
+            const res = originalRenderPlan.apply(this, args);
+            window.syncDynamicIslandState();
+            return res;
+        };
+    }
+
+    if (typeof checkAndRenderMissedDays === 'function') {
+        const originalCheckMissed = checkAndRenderMissedDays;
+        checkAndRenderMissedDays = function(...args) {
+            const res = originalCheckMissed.apply(this, args);
+            window.syncDynamicIslandState();
+            return res;
+        };
+    }
+
+    if (typeof renderCardsFromCache === 'function') {
+        const originalRenderCards = renderCardsFromCache;
+        renderCardsFromCache = function(...args) {
+            const res = originalRenderCards.apply(this, args);
+            window.syncDynamicIslandState();
+            return res;
+        };
+    }
+
+    // Initial sync
+    window.syncDynamicIslandState();
+}
+

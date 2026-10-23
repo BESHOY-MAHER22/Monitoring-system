@@ -646,91 +646,164 @@
         .dark .progress-bar-container {
             background-color: rgba(255, 255, 255, 0.12);
         }
-        /* Zero Layout Shift GPU morphing for top header */
-        #mainAppHeader {
-            will-change: transform, opacity;
-            transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-            transform-origin: top center;
-        }
-        #mainAppHeader.header-scrolled-away {
-            opacity: 0.15;
-            transform: translate3d(0, -15px, 0) scale(0.96);
-            pointer-events: none;
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.6s ease;
         }
 
-        /* Dynamic Island 60fps GPU-Accelerated Capsule */
-        .dynamic-island-container {
+        /* Dynamic Island 60fps Single-Line Glowing Pop-up */
+        #dynamic-island-wrapper {
             position: fixed;
             top: 14px;
             left: 50%;
-            transform: translate3d(-50%, -130%, 0) scale(0.75);
-            z-index: 9990;
-            pointer-events: none;
+            transform: translate3d(-50%, -160%, 0) scale(0.75);
             opacity: 0;
-            will-change: transform, opacity, width, max-height;
-            transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-                        opacity 0.32s ease,
-                        width 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
-                        border-radius 0.3s ease,
-                        box-shadow 0.3s ease;
+            pointer-events: none;
+            z-index: 9980;
+            transition: transform 0.42s cubic-bezier(0.175, 0.885, 0.32, 1.25), opacity 0.35s ease, box-shadow 0.4s ease;
+            will-change: transform, opacity;
+            background: rgba(255, 253, 247, 0.94);
+            backdrop-filter: blur(20px) saturate(190%);
+            -webkit-backdrop-filter: blur(20px) saturate(190%);
+            border: 1.5px solid rgba(212, 175, 55, 0.65);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.45), 0 0 50px rgba(245, 158, 11, 0.25), 0 10px 25px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.85);
             border-radius: 9999px;
-            background: rgba(26, 17, 11, 0.92);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(212, 175, 55, 0.45);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(212, 175, 55, 0.25);
+            padding: 6px 16px;
             width: auto;
-            max-width: 95vw;
+            max-width: 96vw;
+            box-sizing: border-box;
+            white-space: nowrap;
         }
 
-        .dark .dynamic-island-container {
-            background: rgba(15, 10, 6, 0.95);
-            border-color: rgba(212, 175, 55, 0.4);
-            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.3);
+        .dark #dynamic-island-wrapper {
+            background: rgba(26, 18, 12, 0.94);
+            border: 1.5px solid rgba(245, 158, 11, 0.6);
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.45), 0 0 60px rgba(212, 175, 55, 0.22), 0 14px 40px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            color: #f7ecd7;
         }
 
-        /* Active State on Scroll (Compact Pill) */
-        .dynamic-island-container.island-active {
-            pointer-events: auto;
-            opacity: 1;
+        #dynamic-island-wrapper.island-visible {
             transform: translate3d(-50%, 0, 0) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+            animation: islandPopGlow 2.8s infinite alternate ease-in-out;
         }
 
-        /* Pending Missed Days Glowing Aura */
-        .dynamic-island-container.has-missed-days {
-            border-color: rgba(245, 158, 11, 0.75);
-            animation: islandPulseGlow 3s infinite ease-in-out;
-        }
-
-        @keyframes islandPulseGlow {
-            0%, 100% {
-                box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(212, 175, 55, 0.3);
+        @keyframes islandPopGlow {
+            0% {
+                box-shadow: 0 0 22px rgba(212, 175, 55, 0.4), 0 0 45px rgba(245, 158, 11, 0.2), 0 10px 25px rgba(0, 0, 0, 0.15);
             }
-            50% {
-                box-shadow: 0 16px 45px rgba(0, 0, 0, 0.7), 0 0 35px rgba(239, 68, 68, 0.45);
-                border-color: rgba(239, 68, 68, 0.65);
+            100% {
+                box-shadow: 0 0 38px rgba(245, 158, 11, 0.65), 0 0 70px rgba(212, 175, 55, 0.35), 0 14px 35px rgba(0, 0, 0, 0.25);
             }
         }
 
-        /* Expanded Interactive Island */
-        .dynamic-island-container.island-expanded {
-            border-radius: 26px;
-            width: 720px;
-            max-width: 95vw;
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 45px rgba(212, 175, 55, 0.4);
+        .island-status-pulse {
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: 1.5px solid #fff;
+            transition: background-color 0.3s ease;
         }
-        .connection-dot.online {
+        .dark .island-status-pulse {
+            border-color: #17110c;
+        }
+        .island-status-pulse.amber {
+            background-color: #f59e0b;
+            box-shadow: 0 0 8px #f59e0b;
+            animation: pulse-island 1.8s infinite;
+        }
+        .island-status-pulse.green {
             background-color: #10b981;
-            box-shadow: 0 0 10px #10b981;
-            animation: pulseDot 2s infinite;
+            box-shadow: 0 0 8px #10b981;
         }
-        @keyframes pulseDot {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.75; }
+
+        @keyframes pulse-island {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
+
+        .island-btn {
+            user-select: none;
+            touch-action: manipulation;
+            transition: all 0.2s ease;
+        }
+        .island-btn:active {
+            transform: scale(0.92);
+        }
+        .island-chip {
+            transition: all 0.2s ease;
+        }
+        .island-chip:hover {
+            transform: translateY(-1px);
         }
     </style>
 </head>
 <body class="transition-colors duration-300">
+
+    <!-- Dynamic Island 60fps Single-Line Glowing Pop-up -->
+    <div id="dynamic-island-wrapper" role="region" aria-label="Dynamic Island Single Line Quick Bar">
+        <div class="flex items-center gap-2 sm:gap-3 select-none flex-nowrap whitespace-nowrap text-xs">
+            <!-- 1. Mini Family Logo & Service Title (Single line) -->
+            <div class="flex items-center gap-1.5 flex-shrink-0 cursor-pointer" id="islandLogoBadge" title="أسرة الأنبا أرسانيوس والقديس نيقولاوس - اضغط للصعود للأعلى">
+                <div class="relative w-7 h-7 rounded-full overflow-hidden border border-amber-400/70 shadow-sm flex items-center justify-center bg-amber-100 dark:bg-amber-900/50 flex-shrink-0">
+                    <img src="logo.png" alt="Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/60x60/966c34/ffffff?text=✝'">
+                    <span id="islandStatusDot" class="island-status-pulse green" title="الحالة"></span>
+                </div>
+                <span id="islandPlanTitle" class="font-bold text-gray-900 dark:text-amber-100 hidden sm:inline">أسرة الأنبا أرسانيوس</span>
+            </div>
+
+            <!-- Subtle Gold Divider -->
+            <span class="w-px h-4 bg-amber-500/30 hidden sm:inline-block"></span>
+
+            <!-- 2. Live Stats Badges (Side-by-side on the same line) -->
+            <div class="flex items-center gap-1.5 font-bold flex-shrink-0">
+                <!-- Missed Days Counter (Clickable to open attendance immediately) -->
+                <button type="button" id="islandMissedDaysBadge" class="island-chip px-2.5 py-0.5 rounded-full bg-amber-500/15 hover:bg-amber-500/25 text-amber-700 dark:text-amber-300 border border-amber-500/30 flex items-center gap-1 transition-all cursor-pointer" title="أيام معلقة بالخطة - اضغط لتسجيل الحضور">
+                    <span>⏳</span>
+                    <span id="islandMissedDaysText">0 معلق</span>
+                </button>
+
+                <!-- Attendance Percentage -->
+                <span id="islandAttendanceBadge" class="island-chip px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 flex items-center gap-1" title="نسبة الحضور العام">
+                    <span>📊</span>
+                    <span id="islandAttendanceText">0%</span>
+                </span>
+
+                <!-- People Count -->
+                <span id="islandPeopleBadge" class="island-chip hidden md:flex px-2.5 py-0.5 rounded-full bg-blue-500/15 text-blue-700 dark:text-blue-300 border border-blue-500/30 items-center gap-1" title="إجمالي الأفراد المسجلين">
+                    <span>👥</span>
+                    <span id="islandPeopleText">0 فرد</span>
+                </span>
+            </div>
+
+            <!-- Subtle Gold Divider -->
+            <span class="w-px h-4 bg-amber-500/30"></span>
+
+            <!-- 3. Quick Action Buttons (Side-by-side on the same line) -->
+            <div class="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+                <!-- Search Button -->
+                <button id="islandSearchBtn" type="button" class="island-btn px-2.5 py-1 rounded-full bg-black/5 dark:bg-white/10 hover:bg-amber-500 hover:text-white text-gray-800 dark:text-gray-100 transition-all font-bold flex items-center gap-1 cursor-pointer" title="بحث سريع بالاسم">
+                    <span>🔍</span>
+                    <span class="hidden lg:inline text-[11px]">بحث</span>
+                </button>
+                <!-- Copy Plan Button -->
+                <button id="islandCopyPlanBtn" type="button" class="island-btn px-2.5 py-1 rounded-full bg-emerald-600/20 hover:bg-emerald-600 hover:text-white text-emerald-800 dark:text-emerald-300 transition-all font-bold flex items-center gap-1 cursor-pointer" title="نسخ جدول الخطة">
+                    <span>📋</span>
+                    <span class="hidden md:inline text-[11px]">نسخ الخطة</span>
+                </button>
+                <!-- Scroll to Top (Unhides main big header) -->
+                <button id="islandScrollTopBtn" type="button" class="island-btn p-1 px-2.5 rounded-full bg-black/5 dark:bg-white/10 hover:bg-amber-500 hover:text-white text-gray-800 dark:text-gray-100 transition-all cursor-pointer font-bold" title="الرجوع للأعلى وإظهار الهيدر الرئيسي">
+                    ⬆️
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Floating Coptic Symbols -->
     <div class="floating-symbols" id="floatingSymbols"></div>
@@ -766,7 +839,7 @@
                 <button id="quickAddCloseXBtn" class="text-gray-400 hover:text-gray-600 text-2xl font-bold cursor-pointer" type="button">&times;</button>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 text-right">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3 text-right">
                 <div>
                     <label for="dayNameInput" class="block mb-1 text-xs font-bold text-gray-700 dark:text-gray-300">اسم اليوم / الاجتماع (اختياري)</label>
                     <input type="text" id="dayNameInput" class="form-input text-sm py-2" placeholder="مثال: اجتماع الخدام / درس كتاب">
@@ -774,6 +847,14 @@
                 <div>
                     <label for="quickAddDateInput" class="block mb-1 text-xs font-bold text-gray-700 dark:text-gray-300">تاريخ الجلسة</label>
                     <input type="date" id="quickAddDateInput" class="form-input text-sm py-2">
+                </div>
+                <div>
+                    <label for="quickAddDayTypeSelect" class="block mb-1 text-xs font-bold text-gray-700 dark:text-gray-300">نوع اليوم 🏷️</label>
+                    <select id="quickAddDayTypeSelect" class="form-input text-sm py-2 font-bold bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                        <option value="meeting">1. اجتماع 📖</option>
+                        <option value="work">2. شغل 🛠️</option>
+                        <option value="meeting_work">3. اجتماع وشغل 📖🛠️</option>
+                    </select>
                 </div>
             </div>
 
@@ -864,7 +945,7 @@
                 </h2>
                 <button id="closeEditDayXBtn" class="text-gray-400 hover:text-gray-600 text-2xl font-bold cursor-pointer" type="button">&times;</button>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 text-right">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 text-right">
                 <div>
                     <label for="editDayNameInput" class="block mb-1 text-xs font-bold">اسم اليوم / الاجتماع</label>
                     <input type="text" id="editDayNameInput" class="form-input text-sm py-2" placeholder="مثال: اجتماع الخدام">
@@ -872,6 +953,14 @@
                 <div>
                     <label for="editDateInput" class="block mb-1 text-xs font-bold">التاريخ</label>
                     <input type="date" id="editDateInput" class="form-input text-sm py-2">
+                </div>
+                <div>
+                    <label for="editDayTypeSelect" class="block mb-1 text-xs font-bold">نوع اليوم 🏷️</label>
+                    <select id="editDayTypeSelect" class="form-input text-sm py-2 font-bold bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                        <option value="meeting">1. اجتماع 📖</option>
+                        <option value="work">2. شغل 🛠️</option>
+                        <option value="meeting_work">3. اجتماع وشغل 📖🛠️</option>
+                    </select>
                 </div>
             </div>
             <div class="mb-4 text-right border-t border-gray-200 dark:border-gray-700 pt-3">
@@ -1325,13 +1414,13 @@
         </div>
     </div>
 
-    <!-- Smart WhatsApp Plan & Notebook Editor Modal -->
+    <!-- Smart WhatsApp Plan Editor Modal -->
     <div id="planModal" class="modal">
         <div class="modal-content" style="max-width: 860px; width: 95%; max-height: 92vh; text-align: right;">
             <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-3 mb-4">
                 <div class="flex items-center gap-2">
                     <span class="text-2xl">🎨</span>
-                    <h2 class="text-xl font-bold">تعديل ولصق الخطة الذكية ومحتوى الكشكول</h2>
+                    <h2 class="text-xl font-bold">تعديل ولصق خطة الخدمة المعتمدة</h2>
                 </div>
                 <button id="closePlanModalXBtn" class="text-gray-400 hover:text-gray-600 text-2xl font-bold cursor-pointer" type="button">&times;</button>
             </div>
@@ -1353,18 +1442,17 @@
                 </div>
             </div>
 
-            <!-- WhatsApp Message Raw Textarea with Auto-Parser -->
+            <!-- Plan Details Raw Textarea with Auto-Parser -->
             <div class="mb-4">
                 <div class="flex items-center justify-between mb-1">
-                    <label for="planRawTextInput" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.187-2.59-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.303c-.087.087-.177.182-.076.355.101.173.449.741.964 1.2.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.086s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z"/></svg>
-                        <span>نص رسالة الواتساب (الصق الرسالة هنا مع الإيموجي والتواريخ):</span>
+                    <label for="planRawTextInput" class="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                        <span>📋 نص وتفاصيل جدول الخطة والموضوعات:</span>
                     </label>
-                    <button type="button" id="parseWhatsAppPlanBtn" class="px-3 py-1 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition cursor-pointer shadow-sm flex items-center gap-1">
-                        <span>⚡ استخراج الأيام تلقائياً من الرسالة</span>
+                    <button type="button" id="parseWhatsAppPlanBtn" class="px-3 py-1 text-xs font-bold rounded-lg bg-amber-600 hover:bg-amber-700 text-white transition cursor-pointer shadow-sm flex items-center gap-1">
+                        <span>⚡ استخراج الأيام تلقائياً من النص</span>
                     </button>
                 </div>
-                <textarea id="planRawTextInput" rows="6" class="form-input text-xs font-mono w-full p-2.5 rounded-xl border border-emerald-500/30 bg-emerald-50/20 dark:bg-emerald-950/20" placeholder="الصق رسالة الواتساب الخاصة بالخطة هنا..."></textarea>
+                <textarea id="planRawTextInput" rows="6" class="form-input text-xs font-mono w-full p-2.5 rounded-xl border border-amber-500/30 bg-amber-50/20 dark:bg-amber-950/20" placeholder="أدخل أو الصق تفاصيل ومواعيد جدول الخطة هنا..."></textarea>
             </div>
 
             <!-- Dynamic Scheduled Days Manager -->
@@ -1377,55 +1465,15 @@
                         + إضافة يوم يدوي
                     </button>
                 </div>
-                <p class="text-[11px] text-gray-400 mb-2">الأيام المستخرجة تظهر كأزرار وحالات لمتابعة تسجيل الغياب الفائت تلقائياً.</p>
+                <p class="text-[11px] text-gray-400 mb-2">الأيام المجدولة تظهر كأزرار وحالات لمتابعة تسجيل الغياب الفائت تلقائياً.</p>
                 <div id="scheduledDaysListContainer" class="space-y-2 max-h-48 overflow-y-auto">
                     <!-- Populated dynamically -->
-                </div>
-            </div>
-
-            <!-- Notebook Last Page Summary Section -->
-            <div class="p-4 rounded-2xl notebook-page mb-5 text-right">
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="text-xl">📖</span>
-                    <h3 class="text-sm font-bold text-amber-800 dark:text-amber-200">خلاصة آخر صفحة في الكشكول:</h3>
-                </div>
-                <div class="mb-2">
-                    <label for="notebookTitleInput" class="block text-[11px] font-semibold mb-1">عنوان الملاحظات / الخلاصة:</label>
-                    <input type="text" id="notebookTitleInput" class="form-input text-xs py-1.5" placeholder="مثال: خلاصة آخر صفحة في الكشكول | توصيات وميزانية الخدمة">
-                </div>
-                <div>
-                    <label for="notebookContentInput" class="block text-[11px] font-semibold mb-1">النقاط المهمة والتوصيات الختامية:</label>
-                    <textarea id="notebookContentInput" rows="3" class="form-input text-xs w-full" placeholder="اكتب الملاحظات والتوصيات الختامية هنا..."></textarea>
                 </div>
             </div>
 
             <div class="flex justify-end gap-3 pt-3 border-t border-gray-200 dark:border-gray-700">
                 <button type="button" id="savePlanModalBtn" class="btn-primary">حفظ واعتماد الخطة 💾</button>
                 <button type="button" id="cancelPlanModalBtn" class="btn-secondary">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notebook Quick Inline Editor Modal -->
-    <div id="notebookQuickModal" class="modal">
-        <div class="modal-content" style="max-width: 600px; width: 95%; text-align: right;">
-            <div class="flex items-center justify-between border-b pb-3 mb-4">
-                <h3 class="text-lg font-bold flex items-center gap-2">
-                    <span>📖 تعديل خلاصة آخر صفحة في الكشكول</span>
-                </h3>
-                <button id="closeNotebookQuickXBtn" class="text-gray-400 hover:text-gray-600 text-2xl font-bold cursor-pointer" type="button">&times;</button>
-            </div>
-            <div class="mb-3">
-                <label for="quickNotebookTitleInput" class="block text-xs font-bold mb-1">العنوان:</label>
-                <input type="text" id="quickNotebookTitleInput" class="form-input text-sm">
-            </div>
-            <div class="mb-4">
-                <label for="quickNotebookContentInput" class="block text-xs font-bold mb-1">الملاحظات والتوصيات:</label>
-                <textarea id="quickNotebookContentInput" rows="5" class="form-input text-xs"></textarea>
-            </div>
-            <div class="flex justify-end gap-3 pt-3 border-t">
-                <button type="button" id="saveQuickNotebookBtn" class="btn-primary">حفظ الملاحظات 💾</button>
-                <button type="button" id="cancelQuickNotebookBtn" class="btn-secondary">إلغاء</button>
             </div>
         </div>
     </div>
@@ -1439,14 +1487,24 @@
                 </h3>
                 <button id="closeExtraDayXBtn" class="text-gray-400 hover:text-gray-600 text-2xl font-bold cursor-pointer" type="button">&times;</button>
             </div>
-            <p class="text-xs text-gray-500 mb-3">سجل حضور يوم استثنائي أو طارئ (نزول للمخزن، اجتماع تحضيري، نشاط مفاجئ). سيتم ربطه تلقائياً بالأحداث إن توافق التاريخ.</p>
-            <div class="mb-3">
-                <label for="extraDayDateInput" class="block text-xs font-bold mb-1">تاريخ اليوم:</label>
-                <input type="date" id="extraDayDateInput" class="form-input text-sm" required>
+            <p class="text-xs text-gray-500 mb-3">سجل حضور يوم استثنائي أو طارئ (نزول للمخزن، اجتماع تحضيري، ورشة مفاجئة). سيتم ربطه تلقائياً بالأحداث إن توافق التاريخ.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                <div>
+                    <label for="extraDayDateInput" class="block text-xs font-bold mb-1">تاريخ اليوم:</label>
+                    <input type="date" id="extraDayDateInput" class="form-input text-sm py-2" required>
+                </div>
+                <div>
+                    <label for="extraDayTypeSelect" class="block text-xs font-bold mb-1">نوع اليوم 🏷️:</label>
+                    <select id="extraDayTypeSelect" class="form-input text-sm py-2 font-bold bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                        <option value="meeting">1. اجتماع 📖</option>
+                        <option value="work">2. شغل 🛠️</option>
+                        <option value="meeting_work">3. اجتماع وشغل 📖🛠️</option>
+                    </select>
+                </div>
             </div>
             <div class="mb-4">
                 <label for="extraDayTitleInput" class="block text-xs font-bold mb-1">عنوان اليوم / المناسبة:</label>
-                <input type="text" id="extraDayTitleInput" class="form-input text-sm" placeholder="مثال: نزول طارئ لفرز خامات المعرض" required>
+                <input type="text" id="extraDayTitleInput" class="form-input text-sm py-2" placeholder="مثال: ورشة عمل طارئة لفرز الخامات" required>
             </div>
             <div class="flex justify-end gap-3 pt-3 border-t">
                 <button type="button" id="confirmExtraDayBtn" class="btn-primary">متابعة لتسجيل الغياب 🟢</button>
@@ -1454,71 +1512,29 @@
             </div>
         </div>
     </div>
+    <!-- Direct Access Enabled - No Login Gate Required -->
 
-    <!-- Passkey / Servant Fast Login Modal (Zero-Terminal Auth) -->
-    <div id="passkeyLoginModal" class="modal">
-        <div class="modal-content" style="max-width: 480px; width: 95%; text-align: center;">
-            <div class="flex items-center justify-between border-b pb-3 mb-4">
-                <h3 class="text-lg font-bold flex items-center gap-2 text-center w-full justify-center">
-                    <span>🔑 دخول الخدام والمسؤولين</span>
-                </h3>
-                <button id="closePasskeyLoginXBtn" class="text-gray-400 hover:text-gray-600 text-2xl font-bold cursor-pointer" type="button">&times;</button>
-            </div>
-            <p class="text-xs text-gray-500 mb-4">لتعديل البيانات وأخذ الغياب، يمكنك تسجيل الدخول بـ Google أو إدخال الرمز المعتمد لخدام الأسرة:</p>
-            <div class="mb-4 text-right">
-                <label for="passkeyInput" class="block text-xs font-bold mb-1">رمز المرور المعتمد (Passkey):</label>
-                <input type="password" id="passkeyInput" class="form-input text-center text-lg tracking-widest font-bold" placeholder="••••">
-                <p class="text-[11px] text-gray-400 mt-1 text-center">رمز خادم الأسرة: <strong>arsany</strong> أو <strong>777</strong></p>
-            </div>
-            <div class="flex flex-col gap-2">
-                <button type="button" id="confirmPasskeyBtn" class="btn-primary w-full py-2.5">
-                    تأكيد الدخول المباشر 🔓
-                </button>
-                <div class="relative my-2">
-                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-300 dark:border-gray-700"></div></div>
-                    <div class="relative flex justify-center text-xs uppercase"><span class="bg-white dark:bg-gray-800 px-2 text-gray-400">أو</span></div>
-                </div>
-                <button type="button" id="modalGoogleSignInBtn" class="w-full py-2.5 px-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white font-bold text-xs flex items-center justify-center gap-2 hover:bg-gray-50 transition cursor-pointer">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-                    <span>تسجيل الدخول بحساب Google</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Complete Add Person Modal with Role, Phone, Birthdate, Notes -->
+    <!-- Complete Add Person Modal (All Servants) -->
     <div id="addPersonModal" class="modal">
         <div class="modal-content" style="max-width: 580px; width: 95%; text-align: right;">
             <div class="flex items-center justify-between border-b pb-3 mb-4">
                 <h3 class="text-xl font-bold flex items-center gap-2">
-                    <span>👤 إضافة فرد جديد (خادم / مخدوم)</span>
+                    <span>👤 إضافة خادم جديد بالأسرة ✝️</span>
                 </h3>
                 <button id="closeAddPersonModalXBtn" class="text-gray-400 hover:text-gray-600 text-2xl font-bold cursor-pointer" type="button">&times;</button>
             </div>
             <div class="mb-3">
-                <label for="newPersonFullNameInput" class="block text-xs font-bold mb-1">الاسم الكامل:</label>
+                <label for="newPersonFullNameInput" class="block text-xs font-bold mb-1">اسم الخادم الكامل:</label>
                 <input type="text" id="newPersonFullNameInput" class="form-input text-sm" placeholder="مثال: يوحنا ملاك" required>
-            </div>
-            <div class="grid grid-cols-2 gap-3 mb-3">
-                <div>
-                    <label for="newPersonRoleSelect" class="block text-xs font-bold mb-1">الصفة / الدور:</label>
-                    <select id="newPersonRoleSelect" class="form-input text-sm py-2">
-                        <option value="member">مخدوم / شاب 🎒</option>
-                        <option value="servant">خادم بالأسرة ✝️</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="newPersonPhoneInput" class="block text-xs font-bold mb-1">رقم الهاتف (واتساب):</label>
-                    <input type="tel" id="newPersonPhoneInput" class="form-input text-sm py-2" placeholder="012xxxxxxxx">
-                </div>
+                <input type="hidden" id="newPersonRoleSelect" value="servant">
             </div>
             <div class="mb-3">
                 <label for="newPersonBirthdateInput" class="block text-xs font-bold mb-1">تاريخ الميلاد (اختياري):</label>
                 <input type="date" id="newPersonBirthdateInput" class="form-input text-sm py-2">
             </div>
             <div class="mb-4">
-                <label for="newPersonNotesInput" class="block text-xs font-bold mb-1">ملاحظات وافتقاد (اختياري):</label>
-                <input type="text" id="newPersonNotesInput" class="form-input text-sm py-2" placeholder="مثال: مسؤول الورشة، متفوق، يحتاج تواصل...">
+                <label for="newPersonNotesInput" class="block text-xs font-bold mb-1">ملاحظات ومتابعة (اختياري):</label>
+                <input type="text" id="newPersonNotesInput" class="form-input text-sm py-2" placeholder="مثال: مسؤول الورشة، متفوق، إبداع في الأعمال الفنية...">
             </div>
             <div class="flex justify-end gap-3 pt-3 border-t">
                 <button type="button" id="confirmAddPersonBtn" class="btn-primary">إضافة وحفظ 👤</button>
@@ -1526,179 +1542,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Floating Liquid Glass Dynamic Island Header (60fps GPU-Accelerated Capsule) -->
-    <aside id="dynamicIsland" class="dynamic-island-container" aria-label="Dynamic Island Capsule">
-        <!-- COMPACT PILL STATE (State 1) -->
-        <div id="islandCompactView" class="flex items-center justify-between gap-1.5 sm:gap-2.5 px-2.5 sm:px-4 py-2 select-none">
-            <!-- Left (RTL Start): Logo + Status Ring + Plan Title -->
-            <div class="flex items-center gap-1.5 sm:gap-2">
-                <button id="islandLogoBtn" type="button" class="relative flex items-center justify-center p-0.5 rounded-full hover:scale-105 active:scale-95 transition cursor-pointer group" title="شعار الأسرة - اضغط للصعود للأعلى">
-                    <img src="logo.png" alt="Logo" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-amber-400/80 shadow object-cover" onerror="this.onerror=null; this.src='https://placehold.co/60x60/966c34/ffffff?text=شعار'">
-                    <!-- Glowing status ring -->
-                    <span id="islandStatusRing" class="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-amber-950 shadow-sm transition-colors duration-300"></span>
-                </button>
-                <div class="flex flex-col text-right cursor-pointer" id="islandHeaderTitleTrigger" title="اضغط لتوسيع الملخص الذكي">
-                    <span id="islandPlanTitle" class="text-xs font-black text-amber-200 truncate max-w-[100px] sm:max-w-[140px] md:max-w-[170px]">خطة وسائل الإيضاح</span>
-                    <span id="islandNextDayBadge" class="text-[9px] sm:text-[10px] font-bold text-amber-300/80 truncate max-w-[100px] sm:max-w-[140px]">الجمعة القادمة</span>
-                </div>
-            </div>
-
-            <!-- Center Badges: Live Missed Days, Attendance Rate, People Count -->
-            <div class="flex items-center gap-1 sm:gap-1.5" id="islandBadgesRow">
-                <!-- Missed Days Badge (Clickable to record) -->
-                <button type="button" id="islandMissedDaysBadge" class="px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 transition cursor-pointer flex items-center gap-1 whitespace-nowrap" title="متابعة الغياب المعلق">
-                    <span id="islandMissedIcon">✅</span>
-                    <span id="islandMissedText">الغياب مكتمل</span>
-                </button>
-
-                <!-- Attendance Rate Badge -->
-                <div id="islandRateBadge" class="hidden md:flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold bg-amber-500/20 text-amber-200 border border-amber-500/30 whitespace-nowrap" title="متوسط نسبة الحضور">
-                    <span>📊</span>
-                    <span id="islandRateText">--%</span>
-                </div>
-
-                <!-- People Count Badge -->
-                <div id="islandPeopleBadge" class="hidden sm:flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold bg-white/10 text-white/90 border border-white/20 whitespace-nowrap" title="إجمالي الأفراد">
-                    <span>👥</span>
-                    <span id="islandPeopleText">0 فرد</span>
-                </div>
-            </div>
-
-            <!-- Right Controls: Quick Search, Notebook Peek, Theme, Language, Expand Toggle -->
-            <div class="flex items-center gap-1 sm:gap-1.5">
-                <!-- Quick Search Focus -->
-                <button type="button" id="islandQuickSearchBtn" class="p-1 sm:p-1.5 rounded-full hover:bg-white/15 active:scale-95 text-amber-200 hover:text-white transition cursor-pointer" title="بحث سريع في الأفراد">
-                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                </button>
-
-                <!-- Notebook Peek -->
-                <button type="button" id="islandNotebookPeekBtn" class="p-1 sm:p-1.5 rounded-full hover:bg-white/15 active:scale-95 text-amber-200 hover:text-white transition cursor-pointer" title="ملاحظات آخر صفحة في الكشكول">
-                    <span class="text-xs sm:text-sm">📖</span>
-                </button>
-
-                <!-- Language Toggle -->
-                <button id="islandLanguageToggleBtn" type="button" class="px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-[11px] rounded-full hover:bg-white/20 active:scale-95 transition cursor-pointer font-bold text-white border border-white/20" title="تحويل اللغة">
-                    <span id="islandLangLabel">🇪🇬 عربي</span>
-                </button>
-
-                <!-- Theme (Sun / Moon) -->
-                <button id="islandThemeToggleBtn" type="button" class="p-1 sm:p-1.5 rounded-full hover:bg-white/20 active:scale-95 transition cursor-pointer text-amber-200 border border-white/20" title="الوضع النهاري / الليلي">
-                    <svg id="islandSunIcon" xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-                    <svg id="islandMoonIcon" xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-                </button>
-
-                <!-- Scroll to Top -->
-                <button id="islandScrollTopBtn" type="button" class="p-1 sm:p-1.5 rounded-full hover:bg-white/20 active:scale-95 text-amber-200 hover:text-white transition cursor-pointer border border-white/20" title="الصعود لأعلى الصفحة">
-                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
-                </button>
-
-                <!-- Expand / Collapse Toggle -->
-                <button id="islandExpandToggleBtn" type="button" class="p-1 sm:p-1.5 rounded-full bg-amber-500/20 hover:bg-amber-500/35 active:scale-95 text-amber-300 transition cursor-pointer border border-amber-500/30" title="توسيع ملخص الخطة والكشكول">
-                    <svg id="islandExpandChevron" class="w-3.5 h-3.5 sm:w-4 sm:h-4 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
-            </div>
-        </div>
-
-        <!-- EXPANDED INTERACTIVE DRAWER (State 2) -->
-        <div id="islandExpandedView" class="hidden flex-col p-4 sm:p-5 border-t border-amber-400/25 text-white max-h-[75vh] overflow-y-auto">
-            <!-- Header row of expanded island -->
-            <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
-                <div class="flex items-center gap-2">
-                    <img src="logo.png" alt="Logo" class="w-6 h-6 rounded-full border border-amber-400" onerror="this.onerror=null; this.src='https://placehold.co/60x60/966c34/ffffff?text=شعار'">
-                    <span class="text-xs sm:text-sm font-black text-amber-300">الملخص التفاعلي الذكي (Dynamic Island)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/30 border border-white/10 text-[10px]">
-                        <span id="islandExpandedConnDot" class="connection-dot online"></span>
-                        <span id="islandExpandedConnText" class="text-emerald-400 font-bold">متصل سحابياً ⚡</span>
-                    </div>
-                    <button type="button" id="islandCollapseBtn" class="p-1 rounded-full hover:bg-white/20 active:scale-95 text-white/80 transition cursor-pointer" title="تصغير الجزيرة">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Content Grid inside Expanded Island -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-right mb-3">
-                <!-- Box 1: Mini WhatsApp Plan -->
-                <div class="p-3 rounded-2xl bg-black/30 border border-emerald-500/30 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-1.5">
-                            <span class="text-xs font-bold text-emerald-300 flex items-center gap-1">
-                                <span>📱 خطة الواتساب:</span>
-                            </span>
-                            <div class="flex items-center gap-1">
-                                <button type="button" id="islandCopyPlanBtn" class="px-2 py-0.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold transition flex items-center gap-1 cursor-pointer">
-                                    <span>نسخ 📋</span>
-                                </button>
-                                <button type="button" id="islandEditPlanBtn" class="px-2 py-0.5 rounded-lg bg-white/15 hover:bg-white/25 text-white text-[10px] font-bold transition cursor-pointer">
-                                    <span>تعديل ✏️</span>
-                                </button>
-                            </div>
-                        </div>
-                        <p id="islandWhatsAppSnippet" class="text-[11px] text-gray-200 line-clamp-3 leading-relaxed whitespace-pre-line">
-                            لا توجد خطة مسجلة حالياً.
-                        </p>
-                    </div>
-                    <div id="islandNextDaySnippet" class="mt-2 pt-2 border-t border-emerald-500/20 text-[10px] text-emerald-200 font-semibold">
-                        اليوم القادم: جاري التحديد...
-                    </div>
-                </div>
-
-                <!-- Box 2: Notebook Last Page -->
-                <div class="p-3 rounded-2xl bg-black/30 border border-amber-500/30 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-1.5">
-                            <span class="text-xs font-bold text-amber-300 flex items-center gap-1">
-                                <span>📖 آخر صفحة في الكشكول:</span>
-                            </span>
-                            <button type="button" id="islandEditNotebookBtn" class="px-2 py-0.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-[10px] font-bold transition cursor-pointer">
-                                <span>تعديل سريع ✏️</span>
-                            </button>
-                        </div>
-                        <p id="islandNotebookSnippet" class="text-[11px] text-gray-200 line-clamp-3 leading-relaxed whitespace-pre-line">
-                            لا توجد ملاحظات مسجلة حالياً.
-                        </p>
-                    </div>
-                    <div id="islandNotebookUpdated" class="mt-2 pt-2 border-t border-amber-500/20 text-[10px] text-amber-200 font-semibold">
-                        آخر تحديث: اليوم
-                    </div>
-                </div>
-            </div>
-
-            <!-- Actionable Missed Days Chips & Extra Day Button -->
-            <div class="p-3 rounded-2xl bg-black/30 border border-amber-500/25 mb-3 text-right">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-bold text-amber-200 flex items-center gap-1">
-                        <span>⚠️ استدراك الغياب الفائت (اضغط للتسجيل الفوري):</span>
-                    </span>
-                    <button type="button" id="islandAddExtraDayBtn" class="px-2 py-0.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-[10px] font-bold transition flex items-center gap-1 cursor-pointer">
-                        <span>+ يوم إضافي ⚡</span>
-                    </button>
-                </div>
-                <div id="islandMissedDaysChips" class="flex flex-wrap gap-1.5">
-                    <span class="text-[11px] text-emerald-300">✅ جميع أيام الخطة مسجلة بنجاح ولا توجد أيام معلقة!</span>
-                </div>
-            </div>
-
-            <!-- Quick Navigation Footer inside Island -->
-            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/10 text-xs">
-                <div class="flex items-center gap-1">
-                    <button type="button" id="islandNavPeopleBtn" class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-semibold transition cursor-pointer">👥 الأفراد</button>
-                    <button type="button" id="islandNavPlanBtn" class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-semibold transition cursor-pointer">📅 الخطة</button>
-                    <button type="button" id="islandNavTasksBtn" class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-semibold transition cursor-pointer">📝 المهام</button>
-                    <button type="button" id="islandNavEventsBtn" class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-semibold transition cursor-pointer">🎉 الفعاليات</button>
-                </div>
-                <div class="flex items-center gap-1.5">
-                    <button type="button" id="islandPasskeyBtn" class="px-2.5 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 active:scale-95 text-white text-[10px] font-bold transition cursor-pointer flex items-center gap-1">
-                        <span>🔑</span>
-                        <span id="islandServantLabel">وضع الخادم</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </aside>
 
     <div class="container mx-auto p-3 sm:p-6 md:p-8">
 
@@ -1738,126 +1581,52 @@
                     </button>
                 </div>
             </div>
-
-            <!-- 4. User Authentication & Account Name / Role Bar -->
-            <div id="authBar" class="w-full max-w-2xl mt-3 pt-3 border-t border-white/20 flex flex-wrap items-center justify-between gap-3 text-sm">
-                <!-- Logged Out State -->
-                <div id="loggedOutView" class="flex items-center justify-between w-full flex-wrap gap-2">
-                    <div class="flex items-center gap-2">
-                        <span class="text-white/90 text-xs md:text-sm">👋 لتسجيل الحضور والتعديل، يرجى تفعيل وضع الخادم:</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button id="passkeySignInBtn" type="button" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-1.5 px-3 md:py-2 md:px-3.5 rounded-xl shadow-md flex items-center gap-1.5 transition cursor-pointer backdrop-blur-md text-xs">
-                            <span>🔑 دخول برمز الخادم</span>
-                        </button>
-                        <button id="googleSignInBtn" type="button" class="bg-white/95 text-gray-800 hover:bg-white font-bold py-1.5 px-3 md:py-2 md:px-3.5 rounded-xl shadow-md flex items-center gap-1.5 transition cursor-pointer backdrop-blur-md text-xs">
-                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-                            <span>حساب Google</span>
-                        </button>
-                    </div>
-                </div>
-                <!-- Logged In State (Account Name, Role Badge, Email, Avatar) -->
-                <div id="loggedInView" class="hidden flex items-center justify-between w-full flex-wrap gap-2">
-                    <div class="flex items-center gap-3">
-                        <img id="userAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-amber-300/80 shadow-md bg-white/20 object-cover">
-                        <div class="flex flex-col text-right">
-                            <div class="flex items-center gap-2">
-                                <span id="userName" class="font-bold text-sm text-white"></span>
-                                <span id="userRoleBadge" class="text-xs px-2.5 py-0.5 rounded-full font-bold bg-amber-500 text-white shadow-sm">👑 مسؤول</span>
-                            </div>
-                            <span id="userEmail" class="text-xs text-amber-100/80"></span>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button id="syncDataBtn" type="button" title="مزامنة بيانات data.json القديمة مع Firestore" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow transition cursor-pointer">
-                            مزامنة من السيرفر ☁️
-                        </button>
-                        <button id="signOutBtn" type="button" class="bg-white/20 hover:bg-white/30 text-white text-xs font-bold py-1.5 px-3 rounded-lg transition cursor-pointer">
-                            خروج 🚪
-                        </button>
-                    </div>
-                </div>
-            </div>
         </header>
 
         <main>
-            <!-- 1. Hero Plan & Notebook Last Page Showcase (Directly at top of view) -->
+            <!-- 1. Hero Plan Showcase (Full Width) -->
             <div id="heroPlanAndNotebookSection" class="w-full mb-8">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <!-- Card A: WhatsApp Plan Viewer (7 Cols) -->
-                    <div class="lg:col-span-7 flex flex-col p-6 rounded-3xl shadow-lg whatsapp-chat-box transition-all text-right">
-                        <!-- Card Header & Actions -->
-                        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-500/20 pb-3 mb-4">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-9 h-9 rounded-2xl bg-emerald-500/20 text-emerald-600 flex items-center justify-center text-xl font-bold shadow-sm">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.187-2.59-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.303c-.087.087-.177.182-.076.355.101.173.449.741.964 1.2.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.086s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z"/></svg>
-                                </div>
-                                <div>
-                                    <h2 id="planHeroTitle" class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">خطة خدمة وسائل الإيضاح</h2>
-                                    <span id="planHeroDates" class="text-[11px] font-semibold text-emerald-700 dark:text-emerald-300">أكتوبر ونوفمبر 2026</span>
-                                </div>
+                <!-- Plan Viewer (Full Width) -->
+                <div class="w-full flex flex-col p-6 rounded-3xl shadow-lg plan-details-box transition-all text-right">
+                    <!-- Card Header & Actions -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-amber-500/20 pb-3 mb-4">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-9 h-9 rounded-2xl bg-amber-500/20 text-amber-700 dark:text-amber-300 flex items-center justify-center text-xl font-bold shadow-sm">
+                                📋
                             </div>
-                            <div class="flex items-center gap-2">
-                                <button type="button" id="copyPlanWhatsAppBtn" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm flex items-center gap-1 cursor-pointer">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                                    <span>نسخ كرسالة واتساب 📋</span>
-                                </button>
-                                <button type="button" id="openEditPlanModalBtn" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition shadow-sm flex items-center gap-1 cursor-pointer">
-                                    <span>تعديل الخطة ✏️</span>
-                                </button>
+                            <div>
+                                <h2 id="planHeroTitle" class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">خطة خدمة وسائل الإيضاح</h2>
+                                <span id="planHeroDates" class="text-[11px] font-semibold text-amber-700 dark:text-amber-300">أكتوبر ونوفمبر 2026</span>
                             </div>
                         </div>
-
-                        <!-- Formatted WhatsApp Message Preview -->
-                        <div class="p-3.5 rounded-2xl bg-white/70 dark:bg-black/30 backdrop-blur-md border border-emerald-500/20 mb-4 max-h-52 overflow-y-auto">
-                            <div id="planWhatsAppFormattedText" class="text-xs text-gray-800 dark:text-gray-100 whitespace-pre-line leading-relaxed font-sans">
-                                <!-- Formatted WhatsApp text rendered here -->
-                            </div>
-                        </div>
-
-                        <!-- Scheduled Days Interactive Status Pills -->
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
-                                    <span>📅 متابعة أيام الخطة (اضغط على أي يوم لأخذ الغياب):</span>
-                                </span>
-                                <span class="text-[10px] text-gray-400">✅ مسجل | ⏳ لم يسجل | 📅 قادم</span>
-                            </div>
-                            <div id="planScheduledDaysPillsContainer" class="flex flex-wrap gap-2">
-                                <!-- Days rendered here dynamically -->
-                            </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" id="copyPlanWhatsAppBtn" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition shadow-sm flex items-center gap-1 cursor-pointer">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                <span>نسخ نص الخطة 📋</span>
+                            </button>
+                            <button type="button" id="openEditPlanModalBtn" class="px-3 py-1.5 rounded-xl bg-gray-600 hover:bg-gray-700 text-white text-xs font-bold transition shadow-sm flex items-center gap-1 cursor-pointer">
+                                <span>تعديل الخطة ✏️</span>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Card B: Notebook Last Page ("آخر صفحة في الكشكول") (5 Cols) -->
-                    <div class="lg:col-span-5 flex flex-col justify-between p-6 rounded-3xl shadow-lg notebook-page transition-all text-right">
-                        <div>
-                            <div class="flex items-center justify-between border-b border-amber-500/30 pb-3 mb-3">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-700 dark:text-amber-300 flex items-center justify-center text-lg font-bold">
-                                        📖
-                                    </div>
-                                    <div>
-                                        <h3 class="text-base font-extrabold text-amber-900 dark:text-amber-100">آخر صفحة في الكشكول</h3>
-                                        <span class="text-[10px] text-amber-700/80 dark:text-amber-300/80">خلاصة الملاحظات والتوصيات الختامية</span>
-                                    </div>
-                                </div>
-                                <button type="button" id="quickEditNotebookBtn" class="px-2.5 py-1 rounded-lg bg-amber-700/20 hover:bg-amber-700/30 text-amber-900 dark:text-amber-200 text-xs font-bold transition cursor-pointer">
-                                    تعديل سريع ✏️
-                                </button>
-                            </div>
-
-                            <h4 id="notebookHeroTitle" class="text-xs font-bold text-amber-800 dark:text-amber-300 mb-2">
-                                خلاصة وتوصيات الخدمة
-                            </h4>
-                            <div id="notebookHeroContent" class="text-xs text-gray-800 dark:text-gray-200 whitespace-pre-line leading-relaxed max-h-56 overflow-y-auto p-2 rounded-xl bg-white/40 dark:bg-black/20 border border-amber-500/15">
-                                <!-- Populated dynamically -->
-                            </div>
+                    <!-- Formatted WhatsApp Message Preview -->
+                    <div class="p-4 rounded-2xl bg-white/70 dark:bg-black/30 backdrop-blur-md border border-emerald-500/20 mb-4 max-h-56 overflow-y-auto">
+                        <div id="planWhatsAppFormattedText" class="text-xs sm:text-sm text-gray-800 dark:text-gray-100 whitespace-pre-line leading-relaxed font-sans">
+                            <!-- Formatted WhatsApp text rendered here -->
                         </div>
+                    </div>
 
-                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-amber-500/20 text-[10px] text-amber-800/70 dark:text-amber-300/70">
-                            <span>✝️ أسرة وسائل الإيضاح</span>
-                            <span id="notebookHeroUpdated">آخر تحديث: اليوم</span>
+                    <!-- Scheduled Days Interactive Status Pills -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                                <span>📅 متابعة أيام الخطة (اضغط على أي يوم لأخذ الغياب):</span>
+                            </span>
+                            <span class="text-[10px] text-gray-400">✅ مسجل | ⏳ لم يسجل | 📅 قادم</span>
+                        </div>
+                        <div id="planScheduledDaysPillsContainer" class="flex flex-wrap gap-2">
+                            <!-- Days rendered here dynamically -->
                         </div>
                     </div>
                 </div>
@@ -1891,17 +1660,15 @@
                             <span>+ إضافة يوم إضافي (خارج الخطة) ⚡</span>
                         </button>
                     </div>
+                </div>
             </div>
-
-            <!-- Sentinel element for 60fps GPU IntersectionObserver -->
-            <div id="heroScrollSentinel" class="w-full h-1 pointer-events-none opacity-0 select-none"></div>
 
             <!-- 3. Actions Toolbar & Add Person -->
             <div class="w-full p-6 rounded-3xl shadow-lg flex flex-col mb-8" style="background: var(--card-bg);">
                 <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
                     <h2 class="text-2xl font-bold" style="color: var(--card-text-color);">الحضور والمهام وإدارة الأفراد</h2>
                     <button type="button" id="openAddPersonModalBtn" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2 px-3.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1.5">
-                        <span>+ إضافة خادم / مخدوم 👤</span>
+                        <span>+ إضافة خادم جديد 👤</span>
                     </button>
                 </div>
                 <div class="flex flex-col gap-4">
@@ -1973,9 +1740,9 @@
                         </div>
                     </div>
                     <div class="flex flex-wrap items-center gap-2">
-                        <button id="copyAdminBriefBtn" type="button" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-3.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1.5" title="نسخ تقرير رسالة موجزة جاهزة للإرسال في واتساب">
+                        <button id="copyAdminBriefBtn" type="button" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2 px-3.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1.5" title="نسخ تقرير رسالة موجزة للمسؤولين">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                            <span>نسخ تقرير المسؤول (WhatsApp) 📋</span>
+                            <span>نسخ تقرير المسؤولين 📋</span>
                         </button>
                         <button id="toggleAdminInsightsBtn" type="button" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 text-xs font-bold py-2 px-3 rounded-xl transition cursor-pointer flex items-center gap-1">
                             <span id="toggleAdminInsightsText">طي المركز ▴</span>
@@ -1988,7 +1755,7 @@
                     <!-- Executive Summary KPI Cards -->
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center">
                         <div class="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/20">
-                            <span class="text-[11px] text-gray-500 dark:text-gray-400 block font-semibold">إجمالي المخدومين</span>
+                            <span class="text-[11px] text-gray-500 dark:text-gray-400 block font-semibold">إجمالي الخدام ✝️</span>
                             <span id="kpiTotalPeople" class="text-2xl font-black text-blue-600">0</span>
                         </div>
                         <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
@@ -2027,7 +1794,7 @@
                                 <span id="badgeUnexcusedCount" class="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px]">0</span>
                             </button>
                             <button type="button" data-q="followup" class="q-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-red-500/20">
-                                <span>📞 يحتاجون افتقاد فوري (غياب متتالي)</span>
+                                <span>⚠️ يحتاجون افتقاد فوري (غياب متتالي)</span>
                                 <span id="badgeFollowupCount" class="px-1.5 py-0.2 rounded-full bg-red-500/20 text-red-600 text-[10px]">0</span>
                             </button>
                             <button type="button" data-q="excused" class="q-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-amber-500/20">
@@ -2049,7 +1816,7 @@
                     <div class="p-4 rounded-2xl bg-white/5 border border-white/10 text-right">
                         <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
                             <h3 id="insightsResultHeading" class="text-sm font-bold text-gray-800 dark:text-gray-200 flex items-center gap-2">
-                                <span>🚨 قائمة الأكثر غياباً بدون عذر (تحتاج إنذار وتواصل):</span>
+                                <span>🚨 قائمة الأكثر غياباً بدون عذر (تحتاج افتقاد ومتابعة):</span>
                             </h3>
                             <div class="flex items-center gap-2">
                                 <input type="text" id="insightsSearchInput" class="form-input text-xs py-1.5 px-3 min-w-[200px]" placeholder="بحث بالاسم في النتائج...">
@@ -2064,7 +1831,7 @@
                 </div>
             </div>
 
-            <!-- Quick Search Bar to Filter People in person-card-container (Name, Phone, and Role Filters) -->
+            <!-- Quick Search Bar to Filter People in person-card-container (Name Filter) -->
             <div class="w-full p-4 sm:p-5 rounded-3xl liquid-glass mb-6 transition-all duration-300">
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     <div class="flex items-center gap-2.5">
@@ -2076,7 +1843,7 @@
                                 البحث والتصفية الفورية للأفراد
                             </h3>
                             <p class="text-xs text-gray-500 dark:text-gray-400">
-                                تصفية فورية بالاسم أو الهاتف وتصنيف الخدام والمخدومين
+                                تصفية وبحث فوري بالاسم لجميع الخدام
                             </p>
                         </div>
                     </div>
@@ -2086,13 +1853,7 @@
                         <!-- Role Filter Chips -->
                         <div class="flex items-center p-1 rounded-2xl bg-black/10 dark:bg-white/10 border border-white/20 text-xs font-bold w-full sm:w-auto justify-center">
                             <button type="button" class="role-filter-btn active px-3 py-1.5 rounded-xl transition cursor-pointer bg-amber-600 text-white shadow-sm" data-role="all">
-                                الكل
-                            </button>
-                            <button type="button" class="role-filter-btn px-3 py-1.5 rounded-xl transition cursor-pointer text-gray-700 dark:text-gray-200 hover:text-amber-600" data-role="servants">
-                                الخدام ✝️
-                            </button>
-                            <button type="button" class="role-filter-btn px-3 py-1.5 rounded-xl transition cursor-pointer text-gray-700 dark:text-gray-200 hover:text-amber-600" data-role="members">
-                                المخدومين 🎒
+                                جميع خدام الأسرة ✝️
                             </button>
                         </div>
 
@@ -2103,7 +1864,7 @@
                                 id="personCardsSearchInput" 
                                 dir="auto"
                                 class="form-input text-xs sm:text-sm py-2 pr-9 pl-9 rounded-2xl w-full border border-amber-500/30 bg-white/70 dark:bg-black/40 backdrop-blur-md shadow-sm focus:ring-2 focus:ring-amber-500/50 transition-all" 
-                                placeholder="ابحث بالاسم أو رقم الهاتف..."
+                                placeholder="ابحث بالاسم..."
                             >
                             <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none">
                                 🔎

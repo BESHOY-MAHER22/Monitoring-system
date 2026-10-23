@@ -10,10 +10,9 @@ const PORT = process.env.PORT || 3000;
 const DATA_FILE = path.join(__dirname, 'data.json');
 const DATA_TEMP_FILE = path.join(__dirname, 'data.json.tmp');
 
-// Security Headers Middleware
+// Security Headers Middleware (Permit AI Studio iFrame preview)
 app.use((req, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
     res.setHeader('X-XSS-Protection', '1; mode=block');
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     next();
@@ -45,14 +44,79 @@ app.use((req, res, next) => {
 // Serve web application static files
 app.use(express.static(path.join(__dirname)));
 
-// Helper: Initial clean data structure if file is missing or corrupted
+// Helper: Rich initial seed data if file is missing or corrupted
 function getInitialSeedData() {
     return {
-        activePlan: null,
-        attendanceSessions: {},
-        people: [],
-        tasks: [],
-        events: []
+        activePlan: {
+            id: 'plan-oct-nov-2026',
+            title: 'خطة خدمة وسائل الإيضاح - الربع الرابع 2026',
+            startDate: '2026-10-01',
+            endDate: '2026-11-30',
+            rawWhatsAppText: '✝️ *أسرة الأنبا أرسانيوس والقديس نيقولاوس* ✝️\n📋 *خطة خدمة وسائل الإيضاح - شهري أكتوبر ونوفمبر 2026*\n\nسلام ونعمة يا أحباء المسيح وخدام الوسائل المباركين،\nإليكم جدول لقاءات الخدمة وورش العمل للفترة القادمة:\n\n1️⃣ *الجمعة 10/02:* ورشة افتتاحية - تخطيط وسائل مدارس الأحد وتوزيع الأدوار\n2️⃣ *الجمعة 10/09:* تجهيز مجسمات العهد القديم (خيمة الاجتماع وفلك نوح)\n3️⃣ *الجمعة 10/16:* اللقاء الروحي الشهري + مراجعة تقارير الافتقاد\n4️⃣ *الجمعة 10/23:* تدريب على الوسائل الرقمية والشاشات التفاعلية\n5️⃣ *الجمعة 10/30:* التحضير لمعرض وسائل الإيضاح السنوي والتقييم\n6️⃣ *الجمعة 11/06:* لقاء المتابعة الميدانية وورشة الأعمال الخشبية\n7️⃣ *الجمعة 11/13:* يوم رياضي وروحي مفتوح لشباب وخدام الأسرة\n8️⃣ *الجمعة 11/20:* الاحتفال الختامي وتكريم المنضبطين والمتميزين\n\nصلوا من أجل الخدمة وتذكروا دائماً:\n_\"كُلُّ مَا تَفْعَلُونَهُ، فَافْعَلُوهُ مِنْ كُلِّ الْقَلْبِ، كَمَا لِلرَّبِّ لَيْسَ لِلنَّاسِ\"_',
+            scheduledDays: [
+                { date: '2026-10-02', dayTitle: 'ورشة افتتاحية وتوزيع الأدوار', details: 'تخطيط وسائل مدارس الأحد', linkedEventId: 'ev-mahrajan' },
+                { date: '2026-10-09', dayTitle: 'تجهيز مجسمات العهد القديم', details: 'خيمة الاجتماع وفلك نوح', linkedEventId: 'ev-mahrajan' },
+                { date: '2026-10-16', dayTitle: 'اللقاء الروحي الشهري', details: 'مراجعة تقارير الافتقاد', linkedEventId: null },
+                { date: '2026-10-23', dayTitle: 'تدريب الوسائل الرقمية', details: 'الشاشات التفاعلية والبرمجيات', linkedEventId: null },
+                { date: '2026-10-30', dayTitle: 'التحضير لمعرض الوسائل السنوي', details: 'تنسيق القاعات والعروض', linkedEventId: 'ev-mahrajan' },
+                { date: '2026-11-06', dayTitle: 'المتابعة الميدانية وورشة الخشب', details: 'أعمال النجارة والمجسمات', linkedEventId: null },
+                { date: '2026-11-13', dayTitle: 'يوم رياضي وروحي مفتوح', details: 'نشاط ترفيهي وبناء الفريق', linkedEventId: null },
+                { date: '2026-11-20', dayTitle: 'الاحتفال الختامي وتكريم المنضبطين', details: 'تسليم الجوائز والشهادات', linkedEventId: null }
+            ]
+        },
+        attendanceSessions: {
+            '2026-10-02': {
+                date: '2026-10-02',
+                title: 'ورشة افتتاحية وتوزيع الأدوار',
+                dayType: 'meeting_work',
+                source: 'plan',
+                linkedEventId: 'ev-mahrajan',
+                isCompleted: true,
+                records: { p1: 'present', p2: 'present', p3: 'present', p4: 'present', p5: 'present', p6: 'absent', p7: 'present', p8: 'present', p9: 'present', p10: 'excused' }
+            },
+            '2026-10-09': {
+                date: '2026-10-09',
+                title: 'تجهيز مجسمات العهد القديم',
+                dayType: 'work',
+                source: 'plan',
+                linkedEventId: 'ev-mahrajan',
+                isCompleted: true,
+                records: { p1: 'present', p2: 'present', p3: 'present', p4: 'present', p5: 'excused', p6: 'absent', p7: 'present', p8: 'present', p9: 'present', p10: 'present' }
+            },
+            '2026-10-16': {
+                date: '2026-10-16',
+                title: 'اللقاء الروحي الشهري',
+                dayType: 'meeting',
+                source: 'plan',
+                linkedEventId: null,
+                isCompleted: true,
+                records: { p1: 'present', p2: 'present', p3: 'late', p4: 'present', p5: 'present', p6: 'absent', p7: 'excused', p8: 'present', p9: 'present', p10: 'present' }
+            }
+        },
+        people: [
+            { id: 'p1', name: 'أرساني ملاك', role: 'servant', birthdate: '1994-05-12', notes: 'مسؤول الأسرة وورشة وسائل الإيضاح' },
+            { id: 'p2', name: 'نيقولاوس شحاتة', role: 'servant', birthdate: '1996-08-20', notes: 'أمين الصندوق ومتابعة الخامات والماليات' },
+            { id: 'p3', name: 'مينا عادل فايز', role: 'servant', birthdate: '1998-11-03', notes: 'مسؤول الوسائط الرقمية والطباعة والتصميم' },
+            { id: 'p4', name: 'كيرلس عماد شوقي', role: 'servant', birthdate: '2005-03-14', notes: 'مبدع في أعمال المجسمات والرسم بالألوان' },
+            { id: 'p5', name: 'يوسف إبراهيم جورج', role: 'servant', birthdate: '2006-07-22', notes: 'ملتزم جداً، يحتاج تشجيع ومشاركة بالورش' },
+            { id: 'p6', name: 'فادي رزق بشاي', role: 'servant', birthdate: '2005-09-18', notes: 'غياب متكرر بسبب ظروف العمل - يحتاج افتقاد فوري' },
+            { id: 'p7', name: 'أندرو سمير نظير', role: 'servant', birthdate: '2004-12-05', notes: 'مسؤول الصوتيات والتجهيز الفني بالقاعات' },
+            { id: 'p8', name: 'ماركوس وجيه عزمي', role: 'servant', birthdate: '2006-01-30', notes: 'متميز في الابتكار والوسائل التفاعلية' },
+            { id: 'p9', name: 'بيشوي رأفت زكي', role: 'servant', birthdate: '2005-04-15', notes: 'التزام كامل 100% في جميع الأنشطة واللقاءات' },
+            { id: 'p10', name: 'ديفيد مرقس لبيب', role: 'servant', birthdate: '2007-06-10', notes: 'محب للخدمة ويشارك في مواسم الكنيسة' }
+        ],
+        tasks: [
+            { id: 't1', title: 'تصميم مجسم سفينة نوح بالخشب والألوان', personId: 'p4', personName: 'كيرلس عماد شوقي', status: 'completed', dueDate: '2026-10-15', priority: 'high' },
+            { id: 't2', title: 'طباعة بنرات أسبوع الصلاة والافتتاح', personId: 'p3', personName: 'مينا عادل فايز', status: 'completed', dueDate: '2026-10-18', priority: 'medium' },
+            { id: 't3', title: 'تجهيز هدايا المتفوقين في المسابقة الكتابية', personId: 'p2', personName: 'نيقولاوس شحاتة', status: 'pending', dueDate: '2026-10-25', priority: 'high' },
+            { id: 't4', title: 'متابعة وافتقاد الخدام الغائبين أسبوعين متتاليين', personId: 'p1', personName: 'أرساني ملاك', status: 'pending', dueDate: '2026-10-22', priority: 'high' },
+            { id: 't5', title: 'تنسيق معرض وسائل الإيضاح السنوي واللوحات', personId: 'p8', personName: 'ماركوس وجيه عزمي', status: 'completed', dueDate: '2026-10-16', priority: 'medium' }
+        ],
+        events: [
+            { id: 'ev-mahrajan', name: 'مهرجان الكرازة المرقسية - ورشة الوسائل', startDate: '2026-10-01', endDate: '2026-10-31', targetCount: 2, notes: 'مطلوب حضور مرتين لكل خادم - أي نزول إضافي يحسب Overload' },
+            { id: 'ev-pascha', name: 'أسبوع الآلام وعيد القيامة 2026', startDate: '2026-04-10', endDate: '2026-04-20', targetCount: 2, notes: 'تنظيم مجسمات القبر المقدس والجلجثة' },
+            { id: 'ev-nahda', name: 'نهضة صوم السيدة العذراء مريم', startDate: '2026-08-07', endDate: '2026-08-22', targetCount: 2, notes: 'معرض الصور والأيقونات القبطية والمجسمات' }
+        ]
     };
 }
 
@@ -171,8 +235,7 @@ function computePersonStats(person, attendanceSessions, tasks, events) {
 
     return {
         ...person,
-        role: person.role || 'member',
-        phone: person.phone || '',
+        role: 'servant',
         birthdate: person.birthdate || '',
         notes: person.notes || '',
         attendance: virtualAttendance, // Virtual synthesized for UI charts and backward compatibility
@@ -301,7 +364,7 @@ app.get('/api/attendance-sessions', (req, res) => {
 
 // POST /api/attendance-session: Unified session recording (from Plan Day, Extra Day, or Event)
 app.post('/api/attendance-session', (req, res) => {
-    const { date, source, planId, linkedEventId, title, isCompleted, records } = req.body;
+    const { date, source, planId, linkedEventId, title, dayType, isCompleted, records } = req.body;
     if (!date) {
         return res.status(400).json({ message: 'تاريخ الجلسة مطلوب' });
     }
@@ -320,6 +383,7 @@ app.post('/api/attendance-session', (req, res) => {
         planId: planId || existingSession.planId || data.activePlan?.id || null,
         linkedEventId: detectedEventId,
         title: title || existingSession.title || `جلسة حضور ${date}`,
+        dayType: dayType || existingSession.dayType || 'meeting',
         isCompleted: isCompleted !== undefined ? Boolean(isCompleted) : true,
         records: records && typeof records === 'object' ? records : (existingSession.records || {})
     };
@@ -365,7 +429,7 @@ app.get('/api/people', (req, res) => {
 });
 
 app.post('/api/people', (req, res) => {
-    const { name, role, phone, birthdate, notes } = req.body;
+    const { name, role, birthdate, notes } = req.body;
     if (!name || typeof name !== 'string' || !name.trim()) {
         return res.status(400).json({ message: 'الاسم مطلوب' });
     }
@@ -380,8 +444,7 @@ app.post('/api/people', (req, res) => {
     const newPerson = {
         id: uuidv4(),
         name: trimmedName,
-        role: role === 'servant' ? 'servant' : 'member',
-        phone: phone ? String(phone).trim() : '',
+        role: 'servant',
         birthdate: birthdate ? String(birthdate).trim() : '',
         notes: notes ? String(notes).trim() : ''
     };
@@ -389,12 +452,12 @@ app.post('/api/people', (req, res) => {
     writeData(data);
 
     const personWithStats = computePersonStats(newPerson, data.attendanceSessions || {}, data.tasks || [], data.events || []);
-    res.status(201).json({ person: personWithStats, message: 'تم إضافة الشخص بنجاح' });
+    res.status(201).json({ person: personWithStats, message: 'تم إضافة الخادم بنجاح' });
 });
 
 app.put('/api/people/:id', (req, res) => {
     const { id } = req.params;
-    const { name, role, phone, birthdate, notes } = req.body;
+    const { name, role, birthdate, notes } = req.body;
 
     const data = readData();
     const index = data.people.findIndex(p => p.id === id);
@@ -411,8 +474,7 @@ app.put('/api/people/:id', (req, res) => {
         data.people[index].name = trimmed;
     }
 
-    if (role !== undefined) data.people[index].role = role;
-    if (phone !== undefined) data.people[index].phone = String(phone).trim();
+    data.people[index].role = 'servant';
     if (birthdate !== undefined) data.people[index].birthdate = String(birthdate).trim();
     if (notes !== undefined) data.people[index].notes = String(notes).trim();
 
@@ -741,18 +803,17 @@ app.get('/api/export', (req, res) => {
 
     if (format === 'csv') {
         let csv = '\uFEFF';
-        csv += 'الاسم,الدور,رقم الهاتف,تاريخ الميلاد,ملاحظات,نسبة الالتزام بالعذر,مرات الحضور,الغياب بعذر,الغياب بدون عذر,المهام المنجزة,إجمالي المهام\n';
+        csv += 'الاسم,الدور,تاريخ الميلاد,ملاحظات,نسبة الالتزام بالعذر,مرات الحضور,الغياب بعذر,الغياب بدون عذر,المهام المنجزة,إجمالي المهام\n';
         const peopleWithStats = data.people.map(p => computePersonStats(p, data.attendanceSessions || {}, data.tasks || [], data.events || []));
 
         peopleWithStats.forEach(p => {
             const escapeCsv = (val) => `"${String(val || '').replace(/"/g, '""')}"`;
-            const roleArabic = p.role === 'servant' ? 'خادم' : 'مخدوم';
+            const roleArabic = 'خادم';
             const commitment = `${(p.commitmentRatio * 100).toFixed(0)}%`;
 
             csv += [
                 escapeCsv(p.name),
                 escapeCsv(roleArabic),
-                escapeCsv(p.phone || ''),
                 escapeCsv(p.birthdate || ''),
                 escapeCsv(p.notes || ''),
                 escapeCsv(commitment),
@@ -796,8 +857,7 @@ app.post('/api/import', (req, res) => {
             people: payload.people.map(p => ({
                 id: p.id || uuidv4(),
                 name: String(p.name || '').trim(),
-                role: p.role === 'servant' ? 'servant' : 'member',
-                phone: String(p.phone || '').trim(),
+                role: 'servant',
                 birthdate: String(p.birthdate || '').trim(),
                 notes: String(p.notes || '').trim()
             })).filter(p => p.name),
