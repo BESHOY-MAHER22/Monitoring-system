@@ -41,8 +41,20 @@ app.use((req, res, next) => {
     next();
 });
 
-// Serve web application static files
-app.use(express.static(path.join(__dirname)));
+// Health check endpoint
+app.get('/api/status', (req, res) => {
+    res.status(200).json({ status: 'ok', uptime: process.uptime(), timestamp: Date.now() });
+});
+
+// Serve web application static files with optimized caching
+app.use(express.static(path.join(__dirname), {
+    maxAge: '1h',
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.html') || filePath.endsWith('.json')) {
+            res.setHeader('Cache-Control', 'no-cache');
+        }
+    }
+}));
 
 // Helper: Rich initial seed data if file is missing or corrupted
 function getInitialSeedData() {
@@ -146,16 +158,20 @@ function readData() {
     }
 }
 
-// Atomic file write to avoid corrupted JSON
+// Atomic & queued file write to prevent concurrent file-locking collisions
+let writeQueue = Promise.resolve();
 function writeData(data) {
-    try {
-        const payload = JSON.stringify(data, null, 4);
-        fs.writeFileSync(DATA_TEMP_FILE, payload, 'utf8');
-        fs.renameSync(DATA_TEMP_FILE, DATA_FILE);
-    } catch (err) {
-        console.error('Atomic write failed, falling back to direct write:', err);
-        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 4), 'utf8');
-    }
+    writeQueue = writeQueue.then(() => {
+        try {
+            const payload = JSON.stringify(data, null, 2);
+            fs.writeFileSync(DATA_TEMP_FILE, payload, 'utf8');
+            fs.renameSync(DATA_TEMP_FILE, DATA_FILE);
+        } catch (err) {
+            console.error('Atomic write failed, falling back to direct write:', err);
+            fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
+        }
+    }).catch(err => console.error('Write queue error:', err));
+    return writeQueue;
 }
 
 // Helper: Auto-find matching event for a given date
@@ -210,11 +226,9 @@ function computePersonStats(person, attendanceSessions, tasks, events) {
     // Sort virtual attendance by date descending
     virtualAttendance.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    // Commitment ratio according to user rule: attended out of (total - excused)
-    const requiredSessions = totalSessions - excusedSessions;
-    const commitmentRatio = requiredSessions > 0
-        ? Math.min(1, attendedSessions / requiredSessions)
-        : (attendedSessions > 0 || excusedSessions > 0 ? 1 : 0);
+    // Net commitment formula: ((Present + Excused) / Total Sessions)
+    const requiredSessions = totalSessions;
+    const commitmentRatio = totalSessions === 0 ? 0 : (attendedSessions + excusedSessions) / totalSessions;
     const attendanceRatio = totalSessions === 0 ? 0 : attendedSessions / totalSessions;
 
     // Task Stats Calculation

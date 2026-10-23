@@ -54,7 +54,9 @@
         }
         
         body {
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Cairo', 'Tajawal', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
             background-color: var(--bg-color);
             background-image: 
                 radial-gradient(at 0% 0%, rgba(212, 177, 109, 0.12) 0px, transparent 50%),
@@ -67,6 +69,16 @@
             overflow-x: hidden;
             position: relative;
             min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 60fps Mobile Responsiveness & Zero Tap Delay */
+        button, a, input, select, textarea, .plan-day-pill, .island-chip, .island-btn, .avatar {
+            touch-action: manipulation;
+        }
+
+        button, .btn-primary, .btn-secondary, .island-btn {
+            min-height: 40px;
         }
 
         /* Pure Liquid Glass Panel Utility */
@@ -77,6 +89,7 @@
             border: 1px solid var(--liquid-glass-border);
             box-shadow: var(--glass-shadow);
             position: relative;
+            z-index: 2;
         }
 
         .liquid-glass::after {
@@ -187,40 +200,75 @@
         }
         
         .modal {
-            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center;
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            box-sizing: border-box;
         }
 
         .modal-content {
-            background: var(--card-bg); color: var(--text-color); border-radius: 1.5rem;
-            padding: 2.5rem; width: 90%; max-width: 600px; max-height: 90vh; text-align: center;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2); overflow-y: auto; animation: fadeIn 0.3s ease-out;
+            background: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            width: 95%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
+            text-align: right;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--liquid-glass-border);
+            animation: fadeIn 0.25s ease-out;
+            box-sizing: border-box;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
+            from { opacity: 0; transform: translateY(-16px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .quick-add-list { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+        .quick-add-list { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
         .quick-add-item { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.75rem;
             background-color: var(--bg-color); border-radius: 0.75rem; transition: all 0.2s ease-in-out;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
         .quick-add-item:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); }
 
-        .person-card-container { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+        .person-card-container {
+            display: grid;
+            gap: 1.25rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            width: 100%;
+        }
 
         .person-card {
             background: var(--card-bg);
             backdrop-filter: blur(14px) saturate(160%);
             -webkit-backdrop-filter: blur(14px) saturate(160%);
             color: var(--card-text-color);
-            border-radius: 1.5rem; padding: 2rem; text-align: center;
+            border-radius: 1.5rem;
+            padding: 1.25rem;
+            text-align: right;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
-            position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: space-between;
             border: 1px solid var(--liquid-glass-border);
+            z-index: 2;
         }
 
         .dark .person-card {
@@ -564,11 +612,17 @@
         }
 
         /* Pure Print Stylesheet */
+        /* Pure Print Stylesheet */
         @media print {
+            #dynamic-island-wrapper, #mainAppHeader, .modal, button, input, select, textarea, .floating-symbols, #scrollToTopBtn, #connectionStatus, #systemToast, .no-print, .modal-buttons {
+                display: none !important;
+            }
             body {
                 background: #ffffff !important;
                 color: #111827 !important;
-                font-size: 12pt !important;
+                font-size: 11pt !important;
+                padding: 0 !important;
+                margin: 0 !important;
             }
             body * {
                 visibility: hidden !important;
@@ -587,8 +641,19 @@
                 color: #111827 !important;
                 display: block !important;
             }
-            .no-print, .modal-buttons, .floating-symbols {
-                display: none !important;
+            .report-table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+            .report-table th, .report-table td {
+                border: 1px solid #374151 !important;
+                color: #111827 !important;
+                padding: 6px 8px !important;
+                font-size: 10pt !important;
+            }
+            .report-table th {
+                background-color: #f3f4f6 !important;
+                font-weight: bold !important;
             }
             .avoid-break {
                 page-break-inside: avoid !important;
@@ -655,31 +720,36 @@
         /* Dynamic Island 60fps Single-Line Glowing Pop-up */
         #dynamic-island-wrapper {
             position: fixed;
-            top: 14px;
+            top: 12px;
             left: 50%;
-            transform: translate3d(-50%, -160%, 0) scale(0.75);
+            transform: translate3d(-50%, -140%, 0) scale(0.9);
             opacity: 0;
             pointer-events: none;
-            z-index: 9980;
-            transition: transform 0.42s cubic-bezier(0.175, 0.885, 0.32, 1.25), opacity 0.35s ease, box-shadow 0.4s ease;
+            z-index: 900;
+            transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, box-shadow 0.35s ease;
             will-change: transform, opacity;
-            background: rgba(255, 253, 247, 0.94);
+            background: rgba(255, 253, 247, 0.95);
             backdrop-filter: blur(20px) saturate(190%);
             -webkit-backdrop-filter: blur(20px) saturate(190%);
             border: 1.5px solid rgba(212, 175, 55, 0.65);
-            box-shadow: 0 0 25px rgba(212, 175, 55, 0.45), 0 0 50px rgba(245, 158, 11, 0.25), 0 10px 25px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4), 0 8px 24px rgba(0, 0, 0, 0.12);
             border-radius: 9999px;
-            padding: 6px 16px;
+            padding: 6px 14px;
             width: auto;
-            max-width: 96vw;
+            max-width: calc(100vw - 24px);
             box-sizing: border-box;
             white-space: nowrap;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        #dynamic-island-wrapper::-webkit-scrollbar {
+            display: none;
         }
 
         .dark #dynamic-island-wrapper {
-            background: rgba(26, 18, 12, 0.94);
+            background: rgba(26, 18, 12, 0.95);
             border: 1.5px solid rgba(245, 158, 11, 0.6);
-            box-shadow: 0 0 30px rgba(245, 158, 11, 0.45), 0 0 60px rgba(212, 175, 55, 0.22), 0 14px 40px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.35), 0 12px 35px rgba(0, 0, 0, 0.55);
             color: #f7ecd7;
         }
 
@@ -752,7 +822,7 @@
             <!-- 1. Mini Family Logo & Service Title (Single line) -->
             <div class="flex items-center gap-1.5 flex-shrink-0 cursor-pointer" id="islandLogoBadge" title="أسرة الأنبا أرسانيوس والقديس نيقولاوس - اضغط للصعود للأعلى">
                 <div class="relative w-7 h-7 rounded-full overflow-hidden border border-amber-400/70 shadow-sm flex items-center justify-center bg-amber-100 dark:bg-amber-900/50 flex-shrink-0">
-                    <img src="logo.png" alt="Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/60x60/966c34/ffffff?text=✝'">
+                    <img src="logo.png" alt="Logo" width="28" height="28" decoding="async" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/60x60/966c34/ffffff?text=✝'">
                     <span id="islandStatusDot" class="island-status-pulse green" title="الحالة"></span>
                 </div>
                 <span id="islandPlanTitle" class="font-bold text-gray-900 dark:text-amber-100 hidden sm:inline">أسرة الأنبا أرسانيوس</span>
@@ -1550,7 +1620,7 @@
             <!-- 1. Collapsible Logo Container at the very top (Shrinks/fades away smoothly on scroll) -->
             <div id="headerLogoWrapper" class="logo-wrapper mb-3">
                 <div class="logo-container" id="churchLogoContainer" title="شعار أسرة الأنبا أرسانيوس والقديس نيقولاوس">
-                    <img src="logo.png" alt="Family Logo" onerror="this.onerror=null; this.src='https://placehold.co/120x120/966c34/ffffff?text=شعار+الأسرة'">
+                    <img src="logo.png" alt="Family Logo" width="120" height="120" decoding="async" onerror="this.onerror=null; this.src='https://placehold.co/120x120/966c34/ffffff?text=شعار+الأسرة'">
                 </div>
             </div>
 
